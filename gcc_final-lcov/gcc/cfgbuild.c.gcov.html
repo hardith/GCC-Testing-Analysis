@@ -1,0 +1,856 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/cfgbuild.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - cfgbuild.c<span style="font-size: 80%;"> (source / <a href="cfgbuild.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">271</td>
+            <td class="headerCovTableEntry">299</td>
+            <td class="headerCovTableEntryHi">90.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">255</td>
+            <td class="headerCovTableEntry">312</td>
+            <td class="headerCovTableEntryMed">81.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Control flow graph building code for GNU compiler.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 1987-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : </a>
+<a name="4"><span class="lineNum">       4 </span>                :            : This file is part of GCC.</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : the terms of the GNU General Public License as published by the Free</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : Software Foundation; either version 3, or (at your option) any later</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : version.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : </a>
+<a name="11"><span class="lineNum">      11 </span>                :            : GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : </a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &quot;config.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &quot;system.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &quot;coretypes.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;backend.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &quot;rtl.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &quot;cfghooks.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &quot;memmodel.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &quot;emit-rtl.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : #include &quot;cfgrtl.h&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : #include &quot;cfganal.h&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : #include &quot;cfgbuild.h&quot;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : #include &quot;except.h&quot;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : #include &quot;stmt.h&quot;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : </a>
+<a name="35"><span class="lineNum">      35 </span>                :            : static void make_edges (basic_block, basic_block, int);</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : static void make_label_edge (sbitmap, basic_block, rtx, int);</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : static void find_bb_boundaries (basic_block);</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : static void compute_outgoing_frequencies (basic_block);</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : </a>
+<a name="40"><span class="lineNum">      40 </span>                :            : /* Return true if insn is something that should be contained inside basic</a>
+<a name="41"><span class="lineNum">      41 </span>                :            :    block.  */</a>
+<a name="42"><span class="lineNum">      42 </span>                :            : </a>
+<a name="43"><span class="lineNum">      43 </span>                :            : bool</a>
+<a name="44"><span class="lineNum">      44 </span>                :<span class="lineCov">    6844990 : inside_basic_block_p (const rtx_insn *insn)</span></a>
+<a name="45"><span class="lineNum">      45 </span>                :            : {</a>
+<a name="46"><span class="lineNum">      46 </span>  [<span class="branchCov" title="Branch 0 was taken 422834 times"> + </span><span class="branchCov" title="Branch 1 was taken 3065300 times"> + </span><span class="branchCov" title="Branch 2 was taken 3356850 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">    6844990 :   switch (GET_CODE (insn))</span></a>
+<a name="47"><span class="lineNum">      47 </span>                :            :     {</a>
+<a name="48"><span class="lineNum">      48 </span>                :<span class="lineCov">     422834 :     case CODE_LABEL:</span></a>
+<a name="49"><span class="lineNum">      49 </span>                :            :       /* Avoid creating of basic block for jumptables.  */</a>
+<a name="50"><span class="lineNum">      50 </span>                :<span class="lineCov">     422834 :       return (NEXT_INSN (insn) == 0</span></a>
+<a name="51"><span class="lineNum">      51 </span>  [<span class="branchCov" title="Branch 0 was taken 422832 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span><span class="branchCov" title="Branch 2 was taken 422069 times"> + </span><span class="branchCov" title="Branch 3 was taken 763 times"> + </span>]:<span class="lineCov">     422834 :               || ! JUMP_TABLE_DATA_P (NEXT_INSN (insn)));</span></a>
+<a name="52"><span class="lineNum">      52 </span>                :            : </a>
+<a name="53"><span class="lineNum">      53 </span>                :<span class="lineCov">    3065300 :     case JUMP_INSN:</span></a>
+<a name="54"><span class="lineNum">      54 </span>                :            :     case CALL_INSN:</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :     case INSN:</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :     case DEBUG_INSN:</a>
+<a name="57"><span class="lineNum">      57 </span>                :<span class="lineCov">    3065300 :       return true;</span></a>
+<a name="58"><span class="lineNum">      58 </span>                :            : </a>
+<a name="59"><span class="lineNum">      59 </span>                :<span class="lineCov">    3356850 :     case JUMP_TABLE_DATA:</span></a>
+<a name="60"><span class="lineNum">      60 </span>                :            :     case BARRIER:</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :     case NOTE:</a>
+<a name="62"><span class="lineNum">      62 </span>                :<span class="lineCov">    3356850 :       return false;</span></a>
+<a name="63"><span class="lineNum">      63 </span>                :            : </a>
+<a name="64"><span class="lineNum">      64 </span>                :<span class="lineNoCov">          0 :     default:</span></a>
+<a name="65"><span class="lineNum">      65 </span>                :<span class="lineNoCov">          0 :       gcc_unreachable ();</span></a>
+<a name="66"><span class="lineNum">      66 </span>                :            :     }</a>
+<a name="67"><span class="lineNum">      67 </span>                :            : }</a>
+<a name="68"><span class="lineNum">      68 </span>                :            : </a>
+<a name="69"><span class="lineNum">      69 </span>                :            : /* Return true if INSN may cause control flow transfer, so it should be last in</a>
+<a name="70"><span class="lineNum">      70 </span>                :            :    the basic block.  */</a>
+<a name="71"><span class="lineNum">      71 </span>                :            : </a>
+<a name="72"><span class="lineNum">      72 </span>                :            : bool</a>
+<a name="73"><span class="lineNum">      73 </span>                :<span class="lineCov">   19279800 : control_flow_insn_p (const rtx_insn *insn)</span></a>
+<a name="74"><span class="lineNum">      74 </span>                :            : {</a>
+<a name="75"><span class="lineNum">      75 </span>  [<span class="branchCov" title="Branch 0 was taken 6115630 times"> + </span><span class="branchCov" title="Branch 1 was taken 1222970 times"> + </span><span class="branchCov" title="Branch 2 was taken 2092800 times"> + </span><span class="branchCov" title="Branch 3 was taken 9831950 times"> + </span> :<span class="lineCov">   19279800 :   switch (GET_CODE (insn))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 16428 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<a name="76"><span class="lineNum">      76 </span>                :            :     {</a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineCov">    6115630 :     case NOTE:</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :            :     case CODE_LABEL:</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :     case DEBUG_INSN:</a>
+<a name="80"><span class="lineNum">      80 </span>                :<span class="lineCov">    6115630 :       return false;</span></a>
+<a name="81"><span class="lineNum">      81 </span>                :            : </a>
+<a name="82"><span class="lineNum">      82 </span>                :<span class="lineCov">    1222970 :     case JUMP_INSN:</span></a>
+<a name="83"><span class="lineNum">      83 </span>                :<span class="lineCov">    1222970 :       return true;</span></a>
+<a name="84"><span class="lineNum">      84 </span>                :            : </a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineCov">    2092800 :     case CALL_INSN:</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :            :       /* Noreturn and sibling call instructions terminate the basic blocks</a>
+<a name="87"><span class="lineNum">      87 </span>                :            :          (but only if they happen unconditionally).  */</a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineCov">    2092800 :       if ((SIBLING_CALL_P (insn)</span></a>
+<a name="89"><span class="lineNum">      89 </span>        [<span class="branchCov" title="Branch 0 was taken 133509 times"> + </span><span class="branchCov" title="Branch 1 was taken 1910210 times"> + </span>]:<span class="lineCov">    2043720 :            || find_reg_note (insn, REG_NORETURN, 0))</span></a>
+<a name="90"><span class="lineNum">      90 </span>  [<span class="branchCov" title="Branch 0 was taken 2043720 times"> + </span><span class="branchCov" title="Branch 1 was taken 49079 times"> + </span><span class="branchCov" title="Branch 2 was taken 182588 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">    4136520 :           &amp;&amp; GET_CODE (PATTERN (insn)) != COND_EXEC)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 182588 times"> + </span><span class="branchCov" title="Branch 5 was taken 1910210 times"> + </span>]
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineCov">     182588 :         return true;</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :            : </a>
+<a name="93"><span class="lineNum">      93 </span>                :            :       /* Call insn may return to the nonlocal goto handler.  */</a>
+<a name="94"><span class="lineNum">      94 </span>        [<span class="branchCov" title="Branch 0 was taken 1849 times"> + </span><span class="branchCov" title="Branch 1 was taken 1908360 times"> + </span>]:<span class="lineCov">    1910210 :       if (can_nonlocal_goto (insn))</span></a>
+<a name="95"><span class="lineNum">      95 </span>                :<span class="lineCov">       1849 :         return true;</span></a>
+<a name="96"><span class="lineNum">      96 </span>                :<span class="lineCov">    1908360 :       break;</span></a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :<span class="lineCov">    9831950 :     case INSN:</span></a>
+<a name="99"><span class="lineNum">      99 </span>                :            :       /* Treat trap instructions like noreturn calls (same provision).  */</a>
+<a name="100"><span class="lineNum">     100 </span>                :<span class="lineCov">    9831950 :       if (GET_CODE (PATTERN (insn)) == TRAP_IF</span></a>
+<a name="101"><span class="lineNum">     101 </span>  [<span class="branchCov" title="Branch 0 was taken 1190 times"> + </span><span class="branchCov" title="Branch 1 was taken 9830760 times"> + </span><span class="branchCov" title="Branch 2 was taken 1190 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">    9831950 :           &amp;&amp; XEXP (PATTERN (insn), 0) == const1_rtx)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 1190 times"> + </span><span class="branchCov" title="Branch 5 was taken 9830760 times"> + </span>]
+<a name="102"><span class="lineNum">     102 </span>                :<span class="lineCov">       1190 :         return true;</span></a>
+<a name="103"><span class="lineNum">     103 </span>        [<span class="branchCov" title="Branch 0 was taken 9823370 times"> + </span><span class="branchCov" title="Branch 1 was taken 7394 times"> + </span>]:<span class="lineCov">    9830760 :       if (!cfun-&gt;can_throw_non_call_exceptions)</span></a>
+<a name="104"><span class="lineNum">     104 </span>                :<span class="lineCov">    9823370 :         return false;</span></a>
+<a name="105"><span class="lineNum">     105 </span>                :<span class="lineCov">       7394 :       break;</span></a>
+<a name="106"><span class="lineNum">     106 </span>                :            : </a>
+<a name="107"><span class="lineNum">     107 </span>                :<span class="lineCov">      16428 :     case JUMP_TABLE_DATA:</span></a>
+<a name="108"><span class="lineNum">     108 </span>                :            :     case BARRIER:</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :       /* It is nonsense to reach this when looking for the</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :          end of basic block, but before dead code is eliminated</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :          this may happen.  */</a>
+<a name="112"><span class="lineNum">     112 </span>                :<span class="lineCov">      16428 :       return false;</span></a>
+<a name="113"><span class="lineNum">     113 </span>                :            : </a>
+<a name="114"><span class="lineNum">     114 </span>                :<span class="lineNoCov">          0 :     default:</span></a>
+<a name="115"><span class="lineNum">     115 </span>                :<span class="lineNoCov">          0 :       gcc_unreachable ();</span></a>
+<a name="116"><span class="lineNum">     116 </span>                :            :     }</a>
+<a name="117"><span class="lineNum">     117 </span>                :            : </a>
+<a name="118"><span class="lineNum">     118 </span>                :<span class="lineCov">    1915760 :   return can_throw_internal (insn);</span></a>
+<a name="119"><span class="lineNum">     119 </span>                :            : }</a>
+<a name="120"><span class="lineNum">     120 </span>                :            : </a>
+<a name="121"><span class="lineNum">     121 </span>                :            : </a>
+<a name="122"><span class="lineNum">     122 </span>                :            : /* Create an edge between two basic blocks.  FLAGS are auxiliary information</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :    about the edge that is accumulated between calls.  */</a>
+<a name="124"><span class="lineNum">     124 </span>                :            : </a>
+<a name="125"><span class="lineNum">     125 </span>                :            : /* Create an edge from a basic block to a label.  */</a>
+<a name="126"><span class="lineNum">     126 </span>                :            : </a>
+<a name="127"><span class="lineNum">     127 </span>                :            : static void</a>
+<a name="128"><span class="lineNum">     128 </span>                :<span class="lineCov">     707848 : make_label_edge (sbitmap edge_cache, basic_block src, rtx label, int flags)</span></a>
+<a name="129"><span class="lineNum">     129 </span>                :            : {</a>
+<a name="130"><span class="lineNum">     130 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 707848 times"> + </span>]:<span class="lineCov">     707848 :   gcc_assert (LABEL_P (label));</span></a>
+<a name="131"><span class="lineNum">     131 </span>                :            : </a>
+<a name="132"><span class="lineNum">     132 </span>                :            :   /* If the label was never emitted, this insn is junk, but avoid a</a>
+<a name="133"><span class="lineNum">     133 </span>                :            :      crash trying to refer to BLOCK_FOR_INSN (label).  This can happen</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :      as a result of a syntax error and a diagnostic has already been</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :      printed.  */</a>
+<a name="136"><span class="lineNum">     136 </span>                :            : </a>
+<a name="137"><span class="lineNum">     137 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 707848 times"> + </span>]:<span class="lineCov">     707848 :   if (INSN_UID (label) == 0)</span></a>
+<a name="138"><span class="lineNum">     138 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="139"><span class="lineNum">     139 </span>                :            : </a>
+<a name="140"><span class="lineNum">     140 </span>                :<span class="lineCov">     707848 :   cached_make_edge (edge_cache, src, BLOCK_FOR_INSN (label), flags);</span></a>
+<a name="141"><span class="lineNum">     141 </span>                :            : }</a>
+<a name="142"><span class="lineNum">     142 </span>                :            : </a>
+<a name="143"><span class="lineNum">     143 </span>                :            : /* Create the edges generated by INSN in REGION.  */</a>
+<a name="144"><span class="lineNum">     144 </span>                :            : </a>
+<a name="145"><span class="lineNum">     145 </span>                :            : void</a>
+<a name="146"><span class="lineNum">     146 </span>                :<span class="lineCov">      61292 : rtl_make_eh_edge (sbitmap edge_cache, basic_block src, rtx insn)</span></a>
+<a name="147"><span class="lineNum">     147 </span>                :            : {</a>
+<a name="148"><span class="lineNum">     148 </span>                :<span class="lineCov">      61292 :   eh_landing_pad lp = get_eh_landing_pad_from_rtx (insn);</span></a>
+<a name="149"><span class="lineNum">     149 </span>                :            : </a>
+<a name="150"><span class="lineNum">     150 </span>        [<span class="branchCov" title="Branch 0 was taken 7261 times"> + </span><span class="branchCov" title="Branch 1 was taken 54031 times"> + </span>]:<span class="lineCov">      61292 :   if (lp)</span></a>
+<a name="151"><span class="lineNum">     151 </span>                :            :     {</a>
+<a name="152"><span class="lineNum">     152 </span>                :<span class="lineCov">       7261 :       rtx_insn *label = lp-&gt;landing_pad;</span></a>
+<a name="153"><span class="lineNum">     153 </span>                :            : </a>
+<a name="154"><span class="lineNum">     154 </span>                :            :       /* During initial rtl generation, use the post_landing_pad.  */</a>
+<a name="155"><span class="lineNum">     155 </span>        [<span class="branchCov" title="Branch 0 was taken 5099 times"> + </span><span class="branchCov" title="Branch 1 was taken 2162 times"> + </span>]:<span class="lineCov">       7261 :       if (label == NULL)</span></a>
+<a name="156"><span class="lineNum">     156 </span>                :            :         {</a>
+<a name="157"><span class="lineNum">     157 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5099 times"> + </span>]:<span class="lineCov">       5099 :           gcc_assert (lp-&gt;post_landing_pad);</span></a>
+<a name="158"><span class="lineNum">     158 </span>                :<span class="lineCov">       5099 :           label = label_rtx (lp-&gt;post_landing_pad);</span></a>
+<a name="159"><span class="lineNum">     159 </span>                :            :         }</a>
+<a name="160"><span class="lineNum">     160 </span>                :            : </a>
+<a name="161"><span class="lineNum">     161 </span>                :<span class="lineCov">       7261 :       make_label_edge (edge_cache, src, label,</span></a>
+<a name="162"><span class="lineNum">     162 </span>                :            :                        EDGE_ABNORMAL | EDGE_EH</a>
+<a name="163"><span class="lineNum">     163 </span>        [<span class="branchCov" title="Branch 0 was taken 7261 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       7261 :                        | (CALL_P (insn) ? EDGE_ABNORMAL_CALL : 0));</span></a>
+<a name="164"><span class="lineNum">     164 </span>                :            :     }</a>
+<a name="165"><span class="lineNum">     165 </span>                :<span class="lineCov">      61292 : }</span></a>
+<a name="166"><span class="lineNum">     166 </span>                :            : </a>
+<a name="167"><span class="lineNum">     167 </span>                :            : /* States of basic block as seen by find_many_sub_basic_blocks.  */</a>
+<a name="168"><span class="lineNum">     168 </span>                :            : enum state {</a>
+<a name="169"><span class="lineNum">     169 </span>                :            :   /* Basic blocks created via split_block belong to this state.</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :      make_edges will examine these basic blocks to see if we need to</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :      create edges going out of them.  */</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :   BLOCK_NEW = 0,</a>
+<a name="173"><span class="lineNum">     173 </span>                :            : </a>
+<a name="174"><span class="lineNum">     174 </span>                :            :   /* Basic blocks that do not need examining belong to this state.</a>
+<a name="175"><span class="lineNum">     175 </span>                :            :      These blocks will be left intact.  In particular, make_edges will</a>
+<a name="176"><span class="lineNum">     176 </span>                :            :      not create edges going out of these basic blocks.  */</a>
+<a name="177"><span class="lineNum">     177 </span>                :            :   BLOCK_ORIGINAL,</a>
+<a name="178"><span class="lineNum">     178 </span>                :            : </a>
+<a name="179"><span class="lineNum">     179 </span>                :            :   /* Basic blocks that may need splitting (due to a label appearing in</a>
+<a name="180"><span class="lineNum">     180 </span>                :            :      the middle, etc) belong to this state.  After splitting them,</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :      make_edges will create edges going out of them as needed.  */</a>
+<a name="182"><span class="lineNum">     182 </span>                :            :   BLOCK_TO_SPLIT</a>
+<a name="183"><span class="lineNum">     183 </span>                :            : };</a>
+<a name="184"><span class="lineNum">     184 </span>                :            : </a>
+<a name="185"><span class="lineNum">     185 </span>                :            : #define STATE(BB) (enum state) ((size_t) (BB)-&gt;aux)</a>
+<a name="186"><span class="lineNum">     186 </span>                :            : #define SET_STATE(BB, STATE) ((BB)-&gt;aux = (void *) (size_t) (STATE))</a>
+<a name="187"><span class="lineNum">     187 </span>                :            : </a>
+<a name="188"><span class="lineNum">     188 </span>                :            : /* Used internally by purge_dead_tablejump_edges, ORed into state.  */</a>
+<a name="189"><span class="lineNum">     189 </span>                :            : #define BLOCK_USED_BY_TABLEJUMP         32</a>
+<a name="190"><span class="lineNum">     190 </span>                :            : #define FULL_STATE(BB) ((size_t) (BB)-&gt;aux)</a>
+<a name="191"><span class="lineNum">     191 </span>                :            : </a>
+<a name="192"><span class="lineNum">     192 </span>                :            : /* Identify the edges going out of basic blocks between MIN and MAX,</a>
+<a name="193"><span class="lineNum">     193 </span>                :            :    inclusive, that have their states set to BLOCK_NEW or</a>
+<a name="194"><span class="lineNum">     194 </span>                :            :    BLOCK_TO_SPLIT.</a>
+<a name="195"><span class="lineNum">     195 </span>                :            : </a>
+<a name="196"><span class="lineNum">     196 </span>                :            :    UPDATE_P should be nonzero if we are updating CFG and zero if we</a>
+<a name="197"><span class="lineNum">     197 </span>                :            :    are building CFG from scratch.  */</a>
+<a name="198"><span class="lineNum">     198 </span>                :            : </a>
+<a name="199"><span class="lineNum">     199 </span>                :            : static void</a>
+<a name="200"><span class="lineNum">     200 </span>                :<span class="lineCov">     136508 : make_edges (basic_block min, basic_block max, int update_p)</span></a>
+<a name="201"><span class="lineNum">     201 </span>                :            : {</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :   basic_block bb;</a>
+<a name="203"><span class="lineNum">     203 </span>                :<span class="lineCov">     136508 :   sbitmap edge_cache = NULL;</span></a>
+<a name="204"><span class="lineNum">     204 </span>                :            : </a>
+<a name="205"><span class="lineNum">     205 </span>                :            :   /* Heavy use of computed goto in machine-generated code can lead to</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :      nearly fully-connected CFGs.  In that case we spend a significant</a>
+<a name="207"><span class="lineNum">     207 </span>                :            :      amount of time searching the edge lists for duplicates.  */</a>
+<a name="208"><span class="lineNum">     208 </span>                :<span class="lineCov">     136508 :   if (!vec_safe_is_empty (forced_labels)</span></a>
+<a name="209"><span class="lineNum">     209 </span>  [<span class="branchCov" title="Branch 0 was taken 135898 times"> + </span><span class="branchCov" title="Branch 1 was taken 610 times"> + </span><span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchCov" title="Branch 3 was taken 135892 times"> + </span> :<span class="lineCov">     136508 :       || cfun-&gt;cfg-&gt;max_jumptable_ents &gt; 100)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 616 times"> + </span><span class="branchCov" title="Branch 5 was taken 135892 times"> + </span>]
+<a name="210"><span class="lineNum">     210 </span>                :<span class="lineCov">        616 :     edge_cache = sbitmap_alloc (last_basic_block_for_fn (cfun));</span></a>
+<a name="211"><span class="lineNum">     211 </span>                :            : </a>
+<a name="212"><span class="lineNum">     212 </span>                :            :   /* By nature of the way these get numbered, ENTRY_BLOCK_PTR-&gt;next_bb block</a>
+<a name="213"><span class="lineNum">     213 </span>                :            :      is always the entry.  */</a>
+<a name="214"><span class="lineNum">     214 </span>        [<span class="branchCov" title="Branch 0 was taken 115772 times"> + </span><span class="branchCov" title="Branch 1 was taken 20736 times"> + </span>]:<span class="lineCov">     136508 :   if (min == ENTRY_BLOCK_PTR_FOR_FN (cfun)-&gt;next_bb)</span></a>
+<a name="215"><span class="lineNum">     215 </span>                :<span class="lineCov">     115772 :     make_edge (ENTRY_BLOCK_PTR_FOR_FN (cfun), min, EDGE_FALLTHRU);</span></a>
+<a name="216"><span class="lineNum">     216 </span>                :            : </a>
+<a name="217"><span class="lineNum">     217 </span>        [<span class="branchCov" title="Branch 0 was taken 1200790 times"> + </span><span class="branchCov" title="Branch 1 was taken 136508 times"> + </span>]:<span class="lineCov">    1337300 :   FOR_BB_BETWEEN (bb, min, max-&gt;next_bb, next_bb)</span></a>
+<a name="218"><span class="lineNum">     218 </span>                :            :     {</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :       rtx_insn *insn;</a>
+<a name="220"><span class="lineNum">     220 </span>                :            :       enum rtx_code code;</a>
+<a name="221"><span class="lineNum">     221 </span>                :            :       edge e;</a>
+<a name="222"><span class="lineNum">     222 </span>                :            :       edge_iterator ei;</a>
+<a name="223"><span class="lineNum">     223 </span>                :            : </a>
+<a name="224"><span class="lineNum">     224 </span>        [<span class="branchCov" title="Branch 0 was taken 179765 times"> + </span><span class="branchCov" title="Branch 1 was taken 1021020 times"> + </span>]:<span class="lineCov">    1200790 :       if (STATE (bb) == BLOCK_ORIGINAL)</span></a>
+<a name="225"><span class="lineNum">     225 </span>                :<span class="lineCov">     179765 :         continue;</span></a>
+<a name="226"><span class="lineNum">     226 </span>                :            : </a>
+<a name="227"><span class="lineNum">     227 </span>                :            :       /* If we have an edge cache, cache edges going out of BB.  */</a>
+<a name="228"><span class="lineNum">     228 </span>        [<span class="branchCov" title="Branch 0 was taken 4815 times"> + </span><span class="branchCov" title="Branch 1 was taken 1016210 times"> + </span>]:<span class="lineCov">    1021020 :       if (edge_cache)</span></a>
+<a name="229"><span class="lineNum">     229 </span>                :            :         {</a>
+<a name="230"><span class="lineNum">     230 </span>                :<span class="lineCov">       4815 :           bitmap_clear (edge_cache);</span></a>
+<a name="231"><span class="lineNum">     231 </span>        [<span class="branchCov" title="Branch 0 was taken 4815 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       4815 :           if (update_p)</span></a>
+<a name="232"><span class="lineNum">     232 </span>                :            :             {</a>
+<a name="233"><span class="lineNum">     233 </span>        [<span class="branchCov" title="Branch 0 was taken 6749 times"> + </span><span class="branchCov" title="Branch 1 was taken 4815 times"> + </span>]:<span class="lineCov">      11564 :               FOR_EACH_EDGE (e, ei, bb-&gt;succs)</span></a>
+<a name="234"><span class="lineNum">     234 </span>        [<span class="branchCov" title="Branch 0 was taken 6253 times"> + </span><span class="branchCov" title="Branch 1 was taken 496 times"> + </span>]:<span class="lineCov">       6749 :                 if (e-&gt;dest != EXIT_BLOCK_PTR_FOR_FN (cfun))</span></a>
+<a name="235"><span class="lineNum">     235 </span>                :<span class="lineCov">       6253 :                   bitmap_set_bit (edge_cache, e-&gt;dest-&gt;index);</span></a>
+<a name="236"><span class="lineNum">     236 </span>                :            :             }</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :         }</a>
+<a name="238"><span class="lineNum">     238 </span>                :            : </a>
+<a name="239"><span class="lineNum">     239 </span>        [<span class="branchCov" title="Branch 0 was taken 477137 times"> + </span><span class="branchCov" title="Branch 1 was taken 543885 times"> + </span>]:<span class="lineCov">    1021020 :       if (LABEL_P (BB_HEAD (bb))</span></a>
+<a name="240"><span class="lineNum">     240 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 477137 times"> + </span>]:<span class="lineCov">     477137 :           &amp;&amp; LABEL_ALT_ENTRY_P (BB_HEAD (bb)))</span></a>
+<a name="241"><span class="lineNum">     241 </span>                :<span class="lineNoCov">          0 :         cached_make_edge (NULL, ENTRY_BLOCK_PTR_FOR_FN (cfun), bb, 0);</span></a>
+<a name="242"><span class="lineNum">     242 </span>                :            : </a>
+<a name="243"><span class="lineNum">     243 </span>                :            :       /* Examine the last instruction of the block, and discover the</a>
+<a name="244"><span class="lineNum">     244 </span>                :            :          ways we can leave the block.  */</a>
+<a name="245"><span class="lineNum">     245 </span>                :            : </a>
+<a name="246"><span class="lineNum">     246 </span>                :<span class="lineCov">    1021020 :       insn = BB_END (bb);</span></a>
+<a name="247"><span class="lineNum">     247 </span>                :<span class="lineCov">    1021020 :       code = GET_CODE (insn);</span></a>
+<a name="248"><span class="lineNum">     248 </span>                :            : </a>
+<a name="249"><span class="lineNum">     249 </span>                :            :       /* A branch.  */</a>
+<a name="250"><span class="lineNum">     250 </span>        [<span class="branchCov" title="Branch 0 was taken 693609 times"> + </span><span class="branchCov" title="Branch 1 was taken 327413 times"> + </span>]:<span class="lineCov">    1021020 :       if (code == JUMP_INSN)</span></a>
+<a name="251"><span class="lineNum">     251 </span>                :            :         {</a>
+<a name="252"><span class="lineNum">     252 </span>                :            :           rtx tmp;</a>
+<a name="253"><span class="lineNum">     253 </span>                :            :           rtx_jump_table_data *table;</a>
+<a name="254"><span class="lineNum">     254 </span>                :            : </a>
+<a name="255"><span class="lineNum">     255 </span>                :            :           /* Recognize a non-local goto as a branch outside the</a>
+<a name="256"><span class="lineNum">     256 </span>                :            :              current function.  */</a>
+<a name="257"><span class="lineNum">     257 </span>        [<span class="branchCov" title="Branch 0 was taken 693387 times"> + </span><span class="branchCov" title="Branch 1 was taken 222 times"> + </span>]:<span class="lineCov">     693609 :           if (find_reg_note (insn, REG_NON_LOCAL_GOTO, NULL_RTX))</span></a>
+<a name="258"><span class="lineNum">     258 </span>                :            :             ;</a>
+<a name="259"><span class="lineNum">     259 </span>                :            : </a>
+<a name="260"><span class="lineNum">     260 </span>                :            :           /* Recognize a tablejump and do the right thing.  */</a>
+<a name="261"><span class="lineNum">     261 </span>        [<span class="branchCov" title="Branch 0 was taken 386 times"> + </span><span class="branchCov" title="Branch 1 was taken 693001 times"> + </span>]:<span class="lineCov">     693387 :           else if (tablejump_p (insn, NULL, &amp;table))</span></a>
+<a name="262"><span class="lineNum">     262 </span>                :            :             {</a>
+<a name="263"><span class="lineNum">     263 </span>                :<span class="lineCov">        386 :               rtvec vec = table-&gt;get_labels ();</span></a>
+<a name="264"><span class="lineNum">     264 </span>                :            :               int j;</a>
+<a name="265"><span class="lineNum">     265 </span>                :            : </a>
+<a name="266"><span class="lineNum">     266 </span>        [<span class="branchCov" title="Branch 0 was taken 10181 times"> + </span><span class="branchCov" title="Branch 1 was taken 386 times"> + </span>]:<span class="lineCov">      10567 :               for (j = GET_NUM_ELEM (vec) - 1; j &gt;= 0; --j)</span></a>
+<a name="267"><span class="lineNum">     267 </span>                :<span class="lineCov">      10181 :                 make_label_edge (edge_cache, bb,</span></a>
+<a name="268"><span class="lineNum">     268 </span>                :<span class="lineCov">      10181 :                                  XEXP (RTVEC_ELT (vec, j), 0), 0);</span></a>
+<a name="269"><span class="lineNum">     269 </span>                :            : </a>
+<a name="270"><span class="lineNum">     270 </span>                :            :               /* Some targets (eg, ARM) emit a conditional jump that also</a>
+<a name="271"><span class="lineNum">     271 </span>                :            :                  contains the out-of-range target.  Scan for these and</a>
+<a name="272"><span class="lineNum">     272 </span>                :            :                  add an edge if necessary.  */</a>
+<a name="273"><span class="lineNum">     273 </span>                :<span class="lineCov">        386 :               if ((tmp = single_set (insn)) != NULL</span></a>
+<a name="274"><span class="lineNum">     274 </span>        [<span class="branchCov" title="Branch 0 was taken 386 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        386 :                   &amp;&amp; SET_DEST (tmp) == pc_rtx</span></a>
+<a name="275"><span class="lineNum">     275 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 386 times"> + </span>]:<span class="lineCov">        386 :                   &amp;&amp; GET_CODE (SET_SRC (tmp)) == IF_THEN_ELSE</span></a>
+<a name="276"><span class="lineNum">     276 </span>  [<span class="branchCov" title="Branch 0 was taken 386 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">        772 :                   &amp;&amp; GET_CODE (XEXP (SET_SRC (tmp), 2)) == LABEL_REF)</span></a>
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 386 times"> + </span>]
+<a name="277"><span class="lineNum">     277 </span>                :<span class="lineNoCov">          0 :                 make_label_edge (edge_cache, bb,</span></a>
+<a name="278"><span class="lineNum">     278 </span>                :<span class="lineNoCov">          0 :                                  label_ref_label (XEXP (SET_SRC (tmp), 2)), 0);</span></a>
+<a name="279"><span class="lineNum">     279 </span>                :            :             }</a>
+<a name="280"><span class="lineNum">     280 </span>                :            : </a>
+<a name="281"><span class="lineNum">     281 </span>                :            :           /* If this is a computed jump, then mark it as reaching</a>
+<a name="282"><span class="lineNum">     282 </span>                :            :              everything on the forced_labels list.  */</a>
+<a name="283"><span class="lineNum">     283 </span>        [<span class="branchCov" title="Branch 0 was taken 228 times"> + </span><span class="branchCov" title="Branch 1 was taken 692773 times"> + </span>]:<span class="lineCov">     693001 :           else if (computed_jump_p (insn))</span></a>
+<a name="284"><span class="lineNum">     284 </span>                :            :             {</a>
+<a name="285"><span class="lineNum">     285 </span>                :            :               rtx_insn *insn;</a>
+<a name="286"><span class="lineNum">     286 </span>                :            :               unsigned int i;</a>
+<a name="287"><span class="lineNum">     287 </span>        [<span class="branchCov" title="Branch 0 was taken 501 times"> + </span><span class="branchCov" title="Branch 1 was taken 228 times"> + </span>]:<span class="lineCov">        729 :               FOR_EACH_VEC_SAFE_ELT (forced_labels, i, insn)</span></a>
+<a name="288"><span class="lineNum">     288 </span>                :<span class="lineCov">        501 :                 make_label_edge (edge_cache, bb, insn, EDGE_ABNORMAL);</span></a>
+<a name="289"><span class="lineNum">     289 </span>                :            :             }</a>
+<a name="290"><span class="lineNum">     290 </span>                :            : </a>
+<a name="291"><span class="lineNum">     291 </span>                :            :           /* Returns create an exit out.  */</a>
+<a name="292"><span class="lineNum">     292 </span>        [<span class="branchCov" title="Branch 0 was taken 8849 times"> + </span><span class="branchCov" title="Branch 1 was taken 683924 times"> + </span>]:<span class="lineCov">     692773 :           else if (returnjump_p (insn))</span></a>
+<a name="293"><span class="lineNum">     293 </span>                :<span class="lineCov">       8849 :             cached_make_edge (edge_cache, bb, EXIT_BLOCK_PTR_FOR_FN (cfun), 0);</span></a>
+<a name="294"><span class="lineNum">     294 </span>                :            : </a>
+<a name="295"><span class="lineNum">     295 </span>                :            :           /* Recognize asm goto and do the right thing.  */</a>
+<a name="296"><span class="lineNum">     296 </span>        [<span class="branchCov" title="Branch 0 was taken 173 times"> + </span><span class="branchCov" title="Branch 1 was taken 683751 times"> + </span>]:<span class="lineCov">     683924 :           else if ((tmp = extract_asm_operands (PATTERN (insn))) != NULL)</span></a>
+<a name="297"><span class="lineNum">     297 </span>                :            :             {</a>
+<a name="298"><span class="lineNum">     298 </span>                :<span class="lineCov">        173 :               int i, n = ASM_OPERANDS_LABEL_LENGTH (tmp);</span></a>
+<a name="299"><span class="lineNum">     299 </span>        [<span class="branchCov" title="Branch 0 was taken 438 times"> + </span><span class="branchCov" title="Branch 1 was taken 173 times"> + </span>]:<span class="lineCov">        611 :               for (i = 0; i &lt; n; ++i)</span></a>
+<a name="300"><span class="lineNum">     300 </span>                :<span class="lineCov">        438 :                 make_label_edge (edge_cache, bb,</span></a>
+<a name="301"><span class="lineNum">     301 </span>                :<span class="lineCov">        438 :                                  XEXP (ASM_OPERANDS_LABEL (tmp, i), 0), 0);</span></a>
+<a name="302"><span class="lineNum">     302 </span>                :            :             }</a>
+<a name="303"><span class="lineNum">     303 </span>                :            : </a>
+<a name="304"><span class="lineNum">     304 </span>                :            :           /* Otherwise, we have a plain conditional or unconditional jump.  */</a>
+<a name="305"><span class="lineNum">     305 </span>                :            :           else</a>
+<a name="306"><span class="lineNum">     306 </span>                :            :             {</a>
+<a name="307"><span class="lineNum">     307 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 683751 times"> + </span>]:<span class="lineCov">     683751 :               gcc_assert (JUMP_LABEL (insn));</span></a>
+<a name="308"><span class="lineNum">     308 </span>                :<span class="lineCov">     683751 :               make_label_edge (edge_cache, bb, JUMP_LABEL (insn), 0);</span></a>
+<a name="309"><span class="lineNum">     309 </span>                :            :             }</a>
+<a name="310"><span class="lineNum">     310 </span>                :            :         }</a>
+<a name="311"><span class="lineNum">     311 </span>                :            : </a>
+<a name="312"><span class="lineNum">     312 </span>                :            :       /* If this is a sibling call insn, then this is in effect a combined call</a>
+<a name="313"><span class="lineNum">     313 </span>                :            :          and return, and so we need an edge to the exit block.  No need to</a>
+<a name="314"><span class="lineNum">     314 </span>                :            :          worry about EH edges, since we wouldn't have created the sibling call</a>
+<a name="315"><span class="lineNum">     315 </span>                :            :          in the first place.  */</a>
+<a name="316"><span class="lineNum">     316 </span>  [<span class="branchCov" title="Branch 0 was taken 72241 times"> + </span><span class="branchCov" title="Branch 1 was taken 948781 times"> + </span><span class="branchCov" title="Branch 2 was taken 11567 times"> + </span><span class="branchCov" title="Branch 3 was taken 60674 times"> + </span>]:<span class="lineCov">    1021020 :       if (code == CALL_INSN &amp;&amp; SIBLING_CALL_P (insn))</span></a>
+<a name="317"><span class="lineNum">     317 </span>                :<span class="lineCov">      11567 :         cached_make_edge (edge_cache, bb, EXIT_BLOCK_PTR_FOR_FN (cfun),</span></a>
+<a name="318"><span class="lineNum">     318 </span>                :            :                           EDGE_SIBCALL | EDGE_ABNORMAL);</a>
+<a name="319"><span class="lineNum">     319 </span>                :            : </a>
+<a name="320"><span class="lineNum">     320 </span>                :            :       /* If this is a CALL_INSN, then mark it as reaching the active EH</a>
+<a name="321"><span class="lineNum">     321 </span>                :            :          handler for this CALL_INSN.  If we're handling non-call</a>
+<a name="322"><span class="lineNum">     322 </span>                :            :          exceptions then any insn can reach any of the active handlers.</a>
+<a name="323"><span class="lineNum">     323 </span>                :            :          Also mark the CALL_INSN as reaching any nonlocal goto handler.  */</a>
+<a name="324"><span class="lineNum">     324 </span>  [<span class="branchCov" title="Branch 0 was taken 948781 times"> + </span><span class="branchCov" title="Branch 1 was taken 60674 times"> + </span><span class="branchCov" title="Branch 2 was taken 618 times"> + </span><span class="branchCov" title="Branch 3 was taken 948163 times"> + </span>]:<span class="lineCov">    1009460 :       else if (code == CALL_INSN || cfun-&gt;can_throw_non_call_exceptions)</span></a>
+<a name="325"><span class="lineNum">     325 </span>                :            :         {</a>
+<a name="326"><span class="lineNum">     326 </span>                :            :           /* Add any appropriate EH edges.  */</a>
+<a name="327"><span class="lineNum">     327 </span>                :<span class="lineCov">      61292 :           rtl_make_eh_edge (edge_cache, bb, insn);</span></a>
+<a name="328"><span class="lineNum">     328 </span>                :            : </a>
+<a name="329"><span class="lineNum">     329 </span>        [<span class="branchCov" title="Branch 0 was taken 60674 times"> + </span><span class="branchCov" title="Branch 1 was taken 618 times"> + </span>]:<span class="lineCov">      61292 :           if (code == CALL_INSN)</span></a>
+<a name="330"><span class="lineNum">     330 </span>                :            :             {</a>
+<a name="331"><span class="lineNum">     331 </span>        [<span class="branchCov" title="Branch 0 was taken 1534 times"> + </span><span class="branchCov" title="Branch 1 was taken 59140 times"> + </span>]:<span class="lineCov">      60674 :               if (can_nonlocal_goto (insn))</span></a>
+<a name="332"><span class="lineNum">     332 </span>                :            :                 {</a>
+<a name="333"><span class="lineNum">     333 </span>                :            :                   /* ??? This could be made smarter: in some cases it's</a>
+<a name="334"><span class="lineNum">     334 </span>                :            :                      possible to tell that certain calls will not do a</a>
+<a name="335"><span class="lineNum">     335 </span>                :            :                      nonlocal goto.  For example, if the nested functions</a>
+<a name="336"><span class="lineNum">     336 </span>                :            :                      that do the nonlocal gotos do not have their addresses</a>
+<a name="337"><span class="lineNum">     337 </span>                :            :                      taken, then only calls to those functions or to other</a>
+<a name="338"><span class="lineNum">     338 </span>                :            :                      nested functions that use them could possibly do</a>
+<a name="339"><span class="lineNum">     339 </span>                :            :                      nonlocal gotos.  */</a>
+<a name="340"><span class="lineNum">     340 </span>                :<span class="lineCov">       7250 :                   for (rtx_insn_list *x = nonlocal_goto_handler_labels;</span></a>
+<a name="341"><span class="lineNum">     341 </span>        [<span class="branchCov" title="Branch 0 was taken 5716 times"> + </span><span class="branchCov" title="Branch 1 was taken 1534 times"> + </span>]:<span class="lineCov">       7250 :                        x;</span></a>
+<a name="342"><span class="lineNum">     342 </span>                :<span class="lineCov">       5716 :                        x = x-&gt;next ())</span></a>
+<a name="343"><span class="lineNum">     343 </span>                :<span class="lineCov">       5716 :                     make_label_edge (edge_cache, bb, x-&gt;insn (),</span></a>
+<a name="344"><span class="lineNum">     344 </span>                :            :                                      EDGE_ABNORMAL | EDGE_ABNORMAL_CALL);</a>
+<a name="345"><span class="lineNum">     345 </span>                :            :                 }</a>
+<a name="346"><span class="lineNum">     346 </span>                :            : </a>
+<a name="347"><span class="lineNum">     347 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 60674 times"> + </span>]:<span class="lineCov">      60674 :               if (flag_tm)</span></a>
+<a name="348"><span class="lineNum">     348 </span>                :            :                 {</a>
+<a name="349"><span class="lineNum">     349 </span>                :            :                   rtx note;</a>
+<a name="350"><span class="lineNum">     350 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                   for (note = REG_NOTES (insn); note; note = XEXP (note, 1))</span></a>
+<a name="351"><span class="lineNum">     351 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                     if (REG_NOTE_KIND (note) == REG_TM)</span></a>
+<a name="352"><span class="lineNum">     352 </span>                :<span class="lineNoCov">          0 :                       make_label_edge (edge_cache, bb, XEXP (note, 0),</span></a>
+<a name="353"><span class="lineNum">     353 </span>                :            :                                        EDGE_ABNORMAL | EDGE_ABNORMAL_CALL);</a>
+<a name="354"><span class="lineNum">     354 </span>                :            :                 }</a>
+<a name="355"><span class="lineNum">     355 </span>                :            :             }</a>
+<a name="356"><span class="lineNum">     356 </span>                :            :         }</a>
+<a name="357"><span class="lineNum">     357 </span>                :            : </a>
+<a name="358"><span class="lineNum">     358 </span>                :            :       /* Find out if we can drop through to the next block.  */</a>
+<a name="359"><span class="lineNum">     359 </span>                :<span class="lineCov">    1021020 :       insn = NEXT_INSN (insn);</span></a>
+<a name="360"><span class="lineNum">     360 </span>                :<span class="lineCov">    1021020 :       e = find_edge (bb, EXIT_BLOCK_PTR_FOR_FN (cfun));</span></a>
+<a name="361"><span class="lineNum">     361 </span>  [<span class="branchCov" title="Branch 0 was taken 97868 times"> + </span><span class="branchCov" title="Branch 1 was taken 923154 times"> + </span><span class="branchCov" title="Branch 2 was taken 77452 times"> + </span><span class="branchCov" title="Branch 3 was taken 20416 times"> + </span>]:<span class="lineCov">    1021020 :       if (e &amp;&amp; e-&gt;flags &amp; EDGE_FALLTHRU)</span></a>
+<a name="362"><span class="lineNum">     362 </span>                :<span class="lineCov">      77452 :         insn = NULL;</span></a>
+<a name="363"><span class="lineNum">     363 </span>                :            : </a>
+<a name="364"><span class="lineNum">     364 </span>                :<span class="lineCov">          6 :       while (insn</span></a>
+<a name="365"><span class="lineNum">     365 </span>        [<span class="branchCov" title="Branch 0 was taken 453037 times"> + </span><span class="branchCov" title="Branch 1 was taken 490539 times"> + </span>]:<span class="lineCov">     943576 :              &amp;&amp; NOTE_P (insn)</span></a>
+<a name="366"><span class="lineNum">     366 </span>  [<span class="branchCov" title="Branch 0 was taken 943576 times"> + </span><span class="branchCov" title="Branch 1 was taken 77452 times"> + </span><span class="branchCov" title="Branch 2 was taken 6 times"> + </span><span class="branchCov" title="Branch 3 was taken 453031 times"> + </span>]:<span class="lineCov">    1474060 :              &amp;&amp; NOTE_KIND (insn) != NOTE_INSN_BASIC_BLOCK)</span></a>
+<a name="367"><span class="lineNum">     367 </span>                :<span class="lineCov">          6 :         insn = NEXT_INSN (insn);</span></a>
+<a name="368"><span class="lineNum">     368 </span>                :            : </a>
+<a name="369"><span class="lineNum">     369 </span>        [<span class="branchCov" title="Branch 0 was taken 77452 times"> + </span><span class="branchCov" title="Branch 1 was taken 943570 times"> + </span>]:<span class="lineCov">    1021020 :       if (!insn)</span></a>
+<a name="370"><span class="lineNum">     370 </span>                :<span class="lineCov">      77452 :         cached_make_edge (edge_cache, bb, EXIT_BLOCK_PTR_FOR_FN (cfun),</span></a>
+<a name="371"><span class="lineNum">     371 </span>                :            :                           EDGE_FALLTHRU);</a>
+<a name="372"><span class="lineNum">     372 </span>        [<span class="branchCov" title="Branch 0 was taken 930973 times"> + </span><span class="branchCov" title="Branch 1 was taken 12597 times"> + </span>]:<span class="lineCov">     943570 :       else if (bb-&gt;next_bb != EXIT_BLOCK_PTR_FOR_FN (cfun))</span></a>
+<a name="373"><span class="lineNum">     373 </span>                :            :         {</a>
+<a name="374"><span class="lineNum">     374 </span>        [<span class="branchCov" title="Branch 0 was taken 606708 times"> + </span><span class="branchCov" title="Branch 1 was taken 324265 times"> + </span>]:<span class="lineCov">     930973 :           if (insn == BB_HEAD (bb-&gt;next_bb))</span></a>
+<a name="375"><span class="lineNum">     375 </span>                :<span class="lineCov">     606708 :             cached_make_edge (edge_cache, bb, bb-&gt;next_bb, EDGE_FALLTHRU);</span></a>
+<a name="376"><span class="lineNum">     376 </span>                :            :         }</a>
+<a name="377"><span class="lineNum">     377 </span>                :            :     }</a>
+<a name="378"><span class="lineNum">     378 </span>                :            : </a>
+<a name="379"><span class="lineNum">     379 </span>        [<span class="branchCov" title="Branch 0 was taken 616 times"> + </span><span class="branchCov" title="Branch 1 was taken 135892 times"> + </span>]:<span class="lineCov">     136508 :   if (edge_cache)</span></a>
+<a name="380"><span class="lineNum">     380 </span>                :<span class="lineCov">        616 :     sbitmap_free (edge_cache);</span></a>
+<a name="381"><span class="lineNum">     381 </span>                :<span class="lineCov">     136508 : }</span></a>
+<a name="382"><span class="lineNum">     382 </span>                :            : </a>
+<a name="383"><span class="lineNum">     383 </span>                :            : static void</a>
+<a name="384"><span class="lineNum">     384 </span>                :<span class="lineCov">       9658 : mark_tablejump_edge (rtx label)</span></a>
+<a name="385"><span class="lineNum">     385 </span>                :            : {</a>
+<a name="386"><span class="lineNum">     386 </span>                :            :   basic_block bb;</a>
+<a name="387"><span class="lineNum">     387 </span>                :            : </a>
+<a name="388"><span class="lineNum">     388 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9658 times"> + </span>]:<span class="lineCov">       9658 :   gcc_assert (LABEL_P (label));</span></a>
+<a name="389"><span class="lineNum">     389 </span>                :            :   /* See comment in make_label_edge.  */</a>
+<a name="390"><span class="lineNum">     390 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9658 times"> + </span>]:<span class="lineCov">       9658 :   if (INSN_UID (label) == 0)</span></a>
+<a name="391"><span class="lineNum">     391 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="392"><span class="lineNum">     392 </span>                :<span class="lineCov">       9658 :   bb = BLOCK_FOR_INSN (label);</span></a>
+<a name="393"><span class="lineNum">     393 </span>                :<span class="lineCov">       9658 :   SET_STATE (bb, FULL_STATE (bb) | BLOCK_USED_BY_TABLEJUMP);</span></a>
+<a name="394"><span class="lineNum">     394 </span>                :            : }</a>
+<a name="395"><span class="lineNum">     395 </span>                :            : </a>
+<a name="396"><span class="lineNum">     396 </span>                :            : static void</a>
+<a name="397"><span class="lineNum">     397 </span>                :<span class="lineCov">        367 : purge_dead_tablejump_edges (basic_block bb, rtx_jump_table_data *table)</span></a>
+<a name="398"><span class="lineNum">     398 </span>                :            : {</a>
+<a name="399"><span class="lineNum">     399 </span>                :<span class="lineCov">        367 :   rtx_insn *insn = BB_END (bb);</span></a>
+<a name="400"><span class="lineNum">     400 </span>                :            :   rtx tmp;</a>
+<a name="401"><span class="lineNum">     401 </span>                :            :   rtvec vec;</a>
+<a name="402"><span class="lineNum">     402 </span>                :            :   int j;</a>
+<a name="403"><span class="lineNum">     403 </span>                :            :   edge_iterator ei;</a>
+<a name="404"><span class="lineNum">     404 </span>                :            :   edge e;</a>
+<a name="405"><span class="lineNum">     405 </span>                :            : </a>
+<a name="406"><span class="lineNum">     406 </span>                :<span class="lineCov">        367 :   vec = table-&gt;get_labels ();</span></a>
+<a name="407"><span class="lineNum">     407 </span>                :            : </a>
+<a name="408"><span class="lineNum">     408 </span>        [<span class="branchCov" title="Branch 0 was taken 9658 times"> + </span><span class="branchCov" title="Branch 1 was taken 367 times"> + </span>]:<span class="lineCov">      10025 :   for (j = GET_NUM_ELEM (vec) - 1; j &gt;= 0; --j)</span></a>
+<a name="409"><span class="lineNum">     409 </span>                :<span class="lineCov">       9658 :     mark_tablejump_edge (XEXP (RTVEC_ELT (vec, j), 0));</span></a>
+<a name="410"><span class="lineNum">     410 </span>                :            : </a>
+<a name="411"><span class="lineNum">     411 </span>                :            :   /* Some targets (eg, ARM) emit a conditional jump that also</a>
+<a name="412"><span class="lineNum">     412 </span>                :            :      contains the out-of-range target.  Scan for these and</a>
+<a name="413"><span class="lineNum">     413 </span>                :            :      add an edge if necessary.  */</a>
+<a name="414"><span class="lineNum">     414 </span>                :<span class="lineCov">        367 :   if ((tmp = single_set (insn)) != NULL</span></a>
+<a name="415"><span class="lineNum">     415 </span>        [<span class="branchCov" title="Branch 0 was taken 367 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        367 :        &amp;&amp; SET_DEST (tmp) == pc_rtx</span></a>
+<a name="416"><span class="lineNum">     416 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 367 times"> + </span>]:<span class="lineCov">        367 :        &amp;&amp; GET_CODE (SET_SRC (tmp)) == IF_THEN_ELSE</span></a>
+<a name="417"><span class="lineNum">     417 </span>  [<span class="branchCov" title="Branch 0 was taken 367 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">        734 :        &amp;&amp; GET_CODE (XEXP (SET_SRC (tmp), 2)) == LABEL_REF)</span></a>
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 367 times"> + </span>]
+<a name="418"><span class="lineNum">     418 </span>                :<span class="lineNoCov">          0 :     mark_tablejump_edge (label_ref_label (XEXP (SET_SRC (tmp), 2)));</span></a>
+<a name="419"><span class="lineNum">     419 </span>                :            : </a>
+<a name="420"><span class="lineNum">     420 </span>        [<span class="branchCov" title="Branch 0 was taken 6128 times"> + </span><span class="branchCov" title="Branch 1 was taken 367 times"> + </span>]:<span class="lineCov">       6495 :   for (ei = ei_start (bb-&gt;succs); (e = ei_safe_edge (ei)); )</span></a>
+<a name="421"><span class="lineNum">     421 </span>                :            :     {</a>
+<a name="422"><span class="lineNum">     422 </span>        [<span class="branchCov" title="Branch 0 was taken 5937 times"> + </span><span class="branchCov" title="Branch 1 was taken 191 times"> + </span>]:<span class="lineCov">       6128 :       if (FULL_STATE (e-&gt;dest) &amp; BLOCK_USED_BY_TABLEJUMP)</span></a>
+<a name="423"><span class="lineNum">     423 </span>                :<span class="lineCov">       5937 :         SET_STATE (e-&gt;dest, FULL_STATE (e-&gt;dest)</span></a>
+<a name="424"><span class="lineNum">     424 </span>                :            :                             &amp; ~(size_t) BLOCK_USED_BY_TABLEJUMP);</a>
+<a name="425"><span class="lineNum">     425 </span>        [<span class="branchCov" title="Branch 0 was taken 191 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        191 :       else if (!(e-&gt;flags &amp; (EDGE_ABNORMAL | EDGE_EH)))</span></a>
+<a name="426"><span class="lineNum">     426 </span>                :            :         {</a>
+<a name="427"><span class="lineNum">     427 </span>                :<span class="lineCov">        191 :           remove_edge (e);</span></a>
+<a name="428"><span class="lineNum">     428 </span>                :<span class="lineCov">        191 :           continue;</span></a>
+<a name="429"><span class="lineNum">     429 </span>                :            :         }</a>
+<a name="430"><span class="lineNum">     430 </span>                :<span class="lineCov">       5937 :       ei_next (&amp;ei);</span></a>
+<a name="431"><span class="lineNum">     431 </span>                :            :     }</a>
+<a name="432"><span class="lineNum">     432 </span>                :<span class="lineCov">        367 : }</span></a>
+<a name="433"><span class="lineNum">     433 </span>                :            : </a>
+<a name="434"><span class="lineNum">     434 </span>                :            : /* Scan basic block BB for possible BB boundaries inside the block</a>
+<a name="435"><span class="lineNum">     435 </span>                :            :    and create new basic blocks in the progress.  */</a>
+<a name="436"><span class="lineNum">     436 </span>                :            : </a>
+<a name="437"><span class="lineNum">     437 </span>                :            : static void</a>
+<a name="438"><span class="lineNum">     438 </span>                :<span class="lineCov">     987435 : find_bb_boundaries (basic_block bb)</span></a>
+<a name="439"><span class="lineNum">     439 </span>                :            : {</a>
+<a name="440"><span class="lineNum">     440 </span>                :<span class="lineCov">     987435 :   basic_block orig_bb = bb;</span></a>
+<a name="441"><span class="lineNum">     441 </span>                :<span class="lineCov">     987435 :   rtx_insn *insn = BB_HEAD (bb);</span></a>
+<a name="442"><span class="lineNum">     442 </span>                :<span class="lineCov">     987435 :   rtx_insn *end = BB_END (bb), *x;</span></a>
+<a name="443"><span class="lineNum">     443 </span>                :            :   rtx_jump_table_data *table;</a>
+<a name="444"><span class="lineNum">     444 </span>                :<span class="lineCov">     987435 :   rtx_insn *flow_transfer_insn = NULL;</span></a>
+<a name="445"><span class="lineNum">     445 </span>                :<span class="lineCov">     987435 :   rtx_insn *debug_insn = NULL;</span></a>
+<a name="446"><span class="lineNum">     446 </span>                :<span class="lineCov">     987435 :   edge fallthru = NULL;</span></a>
+<a name="447"><span class="lineNum">     447 </span>                :            :   bool skip_purge;</a>
+<a name="448"><span class="lineNum">     448 </span>                :            : </a>
+<a name="449"><span class="lineNum">     449 </span>        [<span class="branchCov" title="Branch 0 was taken 6095 times"> + </span><span class="branchCov" title="Branch 1 was taken 981340 times"> + </span>]:<span class="lineCov">     987435 :   if (insn == end)</span></a>
+<a name="450"><span class="lineNum">     450 </span>                :<span class="lineCov">       7052 :     return;</span></a>
+<a name="451"><span class="lineNum">     451 </span>                :            : </a>
+<a name="452"><span class="lineNum">     452 </span>  [<span class="branchCov" title="Branch 0 was taken 981340 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 11644 times"> + </span><span class="branchCov" title="Branch 3 was taken 969696 times"> + </span>]:<span class="lineCov">     981340 :   if (DEBUG_INSN_P (insn) || DEBUG_INSN_P (end))</span></a>
+<a name="453"><span class="lineNum">     453 </span>                :            :     {</a>
+<a name="454"><span class="lineNum">     454 </span>                :            :       /* Check whether, without debug insns, the insn==end test above</a>
+<a name="455"><span class="lineNum">     455 </span>                :            :          would have caused us to return immediately, and behave the</a>
+<a name="456"><span class="lineNum">     456 </span>                :            :          same way even with debug insns.  If we don't do this, debug</a>
+<a name="457"><span class="lineNum">     457 </span>                :            :          insns could cause us to purge dead edges at different times,</a>
+<a name="458"><span class="lineNum">     458 </span>                :            :          which could in turn change the cfg and affect codegen</a>
+<a name="459"><span class="lineNum">     459 </span>                :            :          decisions in subtle but undesirable ways.  */</a>
+<a name="460"><span class="lineNum">     460 </span>  [<span class="branchCov" title="Branch 0 was taken 11644 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 11644 times"> + </span>]:<span class="lineCov">      11644 :       while (insn != end &amp;&amp; DEBUG_INSN_P (insn))</span></a>
+<a name="461"><span class="lineNum">     461 </span>                :<span class="lineNoCov">          0 :         insn = NEXT_INSN (insn);</span></a>
+<a name="462"><span class="lineNum">     462 </span>                :<span class="lineCov">      11644 :       rtx_insn *e = end;</span></a>
+<a name="463"><span class="lineNum">     463 </span>  [<span class="branchCov" title="Branch 0 was taken 150182 times"> + </span><span class="branchCov" title="Branch 1 was taken 957 times"> + </span><span class="branchCov" title="Branch 2 was taken 139495 times"> + </span><span class="branchCov" title="Branch 3 was taken 10687 times"> + </span>]:<span class="lineCov">     151139 :       while (insn != e &amp;&amp; DEBUG_INSN_P (e))</span></a>
+<a name="464"><span class="lineNum">     464 </span>                :<span class="lineCov">     139495 :         e = PREV_INSN (e);</span></a>
+<a name="465"><span class="lineNum">     465 </span>        [<span class="branchCov" title="Branch 0 was taken 957 times"> + </span><span class="branchCov" title="Branch 1 was taken 10687 times"> + </span>]:<span class="lineCov">      11644 :       if (insn == e)</span></a>
+<a name="466"><span class="lineNum">     466 </span>                :            :         {</a>
+<a name="467"><span class="lineNum">     467 </span>                :            :           /* If there are debug insns after a single insn that is a</a>
+<a name="468"><span class="lineNum">     468 </span>                :            :              control flow insn in the block, we'd have left right</a>
+<a name="469"><span class="lineNum">     469 </span>                :            :              away, but we should clean up the debug insns after the</a>
+<a name="470"><span class="lineNum">     470 </span>                :            :              control flow insn, because they can't remain in the same</a>
+<a name="471"><span class="lineNum">     471 </span>                :            :              block.  So, do the debug insn cleaning up, but then bail</a>
+<a name="472"><span class="lineNum">     472 </span>                :            :              out without purging dead edges as we would if the debug</a>
+<a name="473"><span class="lineNum">     473 </span>                :            :              insns hadn't been there.  */</a>
+<a name="474"><span class="lineNum">     474 </span>  [<span class="branchCov" title="Branch 0 was taken 957 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 957 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">        957 :           if (e != end &amp;&amp; !DEBUG_INSN_P (e) &amp;&amp; control_flow_insn_p (e))</span></a>
+<span class="lineNum">         </span>   <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 957 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 957 times"> + </span>]
+<a name="475"><span class="lineNum">     475 </span>                :            :             {</a>
+<a name="476"><span class="lineNum">     476 </span>                :<span class="lineNoCov">          0 :               skip_purge = true;</span></a>
+<a name="477"><span class="lineNum">     477 </span>                :<span class="lineNoCov">          0 :               flow_transfer_insn = e;</span></a>
+<a name="478"><span class="lineNum">     478 </span>                :<span class="lineNoCov">          0 :               goto clean_up_debug_after_control_flow;</span></a>
+<a name="479"><span class="lineNum">     479 </span>                :            :             }</a>
+<a name="480"><span class="lineNum">     480 </span>                :<span class="lineCov">        957 :           return;</span></a>
+<a name="481"><span class="lineNum">     481 </span>                :            :         }</a>
+<a name="482"><span class="lineNum">     482 </span>                :            :     }</a>
+<a name="483"><span class="lineNum">     483 </span>                :            : </a>
+<a name="484"><span class="lineNum">     484 </span>        [<span class="branchCov" title="Branch 0 was taken 462948 times"> + </span><span class="branchCov" title="Branch 1 was taken 517435 times"> + </span>]:<span class="lineCov">     980383 :   if (LABEL_P (insn))</span></a>
+<a name="485"><span class="lineNum">     485 </span>                :<span class="lineCov">     462948 :     insn = NEXT_INSN (insn);</span></a>
+<a name="486"><span class="lineNum">     486 </span>                :            : </a>
+<a name="487"><span class="lineNum">     487 </span>                :            :   /* Scan insn chain and try to find new basic block boundaries.  */</a>
+<a name="488"><span class="lineNum">     488 </span>                :            :   while (1)</a>
+<a name="489"><span class="lineNum">     489 </span>                :            :     {</a>
+<a name="490"><span class="lineNum">     490 </span>                :<span class="lineCov">    8953890 :       enum rtx_code code = GET_CODE (insn);</span></a>
+<a name="491"><span class="lineNum">     491 </span>                :            : </a>
+<a name="492"><span class="lineNum">     492 </span>        [<span class="branchCov" title="Branch 0 was taken 2537760 times"> + </span><span class="branchCov" title="Branch 1 was taken 6416130 times"> + </span>]:<span class="lineCov">    8953890 :       if (code == DEBUG_INSN)</span></a>
+<a name="493"><span class="lineNum">     493 </span>                :            :         {</a>
+<a name="494"><span class="lineNum">     494 </span>  [<span class="branchCov" title="Branch 0 was taken 351 times"> + </span><span class="branchCov" title="Branch 1 was taken 2537410 times"> + </span><span class="branchCov" title="Branch 2 was taken 159 times"> + </span><span class="branchCov" title="Branch 3 was taken 192 times"> + </span>]:<span class="lineCov">    2537760 :           if (flow_transfer_insn &amp;&amp; !debug_insn)</span></a>
+<a name="495"><span class="lineNum">     495 </span>                :<span class="lineCov">        159 :             debug_insn = insn;</span></a>
+<a name="496"><span class="lineNum">     496 </span>                :            :         }</a>
+<a name="497"><span class="lineNum">     497 </span>                :            :       /* In case we've previously seen an insn that effects a control</a>
+<a name="498"><span class="lineNum">     498 </span>                :            :          flow transfer, split the block.  */</a>
+<a name="499"><span class="lineNum">     499 </span>        [<span class="branchCov" title="Branch 0 was taken 6425 times"> + </span><span class="branchCov" title="Branch 1 was taken 6366120 times"> + </span>]:<span class="lineCov">    6372540 :       else if ((flow_transfer_insn || code == CODE_LABEL)</span></a>
+<a name="500"><span class="lineNum">     500 </span>  [<span class="branchCov" title="Branch 0 was taken 6372540 times"> + </span><span class="branchCov" title="Branch 1 was taken 43587 times"> + </span><span class="branchCov" title="Branch 2 was taken 33587 times"> + </span><span class="branchCov" title="Branch 3 was taken 16425 times"> + </span> :<span class="lineCov">   12788700 :                &amp;&amp; inside_basic_block_p (insn))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 33587 times"> + </span><span class="branchCov" title="Branch 5 was taken 6382540 times"> + </span>]
+<a name="501"><span class="lineNum">     501 </span>                :            :         {</a>
+<a name="502"><span class="lineNum">     502 </span>                :<span class="lineCov">      33587 :           rtx_insn *prev = PREV_INSN (insn);</span></a>
+<a name="503"><span class="lineNum">     503 </span>                :            : </a>
+<a name="504"><span class="lineNum">     504 </span>                :            :           /* If the first non-debug inside_basic_block_p insn after a control</a>
+<a name="505"><span class="lineNum">     505 </span>                :            :              flow transfer is not a label, split the block before the debug</a>
+<a name="506"><span class="lineNum">     506 </span>                :            :              insn instead of before the non-debug insn, so that the debug</a>
+<a name="507"><span class="lineNum">     507 </span>                :            :              insns are not lost.  */</a>
+<a name="508"><span class="lineNum">     508 </span>  [<span class="branchCov" title="Branch 0 was taken 159 times"> + </span><span class="branchCov" title="Branch 1 was taken 33428 times"> + </span><span class="branchCov" title="Branch 2 was taken 159 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">      33587 :           if (debug_insn &amp;&amp; code != CODE_LABEL &amp;&amp; code != BARRIER)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 159 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<a name="509"><span class="lineNum">     509 </span>                :<span class="lineCov">        159 :             prev = PREV_INSN (debug_insn);</span></a>
+<a name="510"><span class="lineNum">     510 </span>                :<span class="lineCov">      33587 :           fallthru = split_block (bb, prev);</span></a>
+<a name="511"><span class="lineNum">     511 </span>        [<span class="branchCov" title="Branch 0 was taken 27162 times"> + </span><span class="branchCov" title="Branch 1 was taken 6425 times"> + </span>]:<span class="lineCov">      33587 :           if (flow_transfer_insn)</span></a>
+<a name="512"><span class="lineNum">     512 </span>                :            :             {</a>
+<a name="513"><span class="lineNum">     513 </span>                :<span class="lineCov">      27162 :               BB_END (bb) = flow_transfer_insn;</span></a>
+<a name="514"><span class="lineNum">     514 </span>                :            : </a>
+<a name="515"><span class="lineNum">     515 </span>                :            :               rtx_insn *next;</a>
+<a name="516"><span class="lineNum">     516 </span>                :            :               /* Clean up the bb field for the insns between the blocks.  */</a>
+<a name="517"><span class="lineNum">     517 </span>                :<span class="lineCov">      27162 :               for (x = NEXT_INSN (flow_transfer_insn);</span></a>
+<a name="518"><span class="lineNum">     518 </span>        [<span class="branchCov" title="Branch 0 was taken 6757 times"> + </span><span class="branchCov" title="Branch 1 was taken 27162 times"> + </span>]:<span class="lineCov">      33919 :                    x != BB_HEAD (fallthru-&gt;dest);</span></a>
+<a name="519"><span class="lineNum">     519 </span>                :<span class="lineCov">       6757 :                    x = next)</span></a>
+<a name="520"><span class="lineNum">     520 </span>                :            :                 {</a>
+<a name="521"><span class="lineNum">     521 </span>                :<span class="lineCov">       6757 :                   next = NEXT_INSN (x);</span></a>
+<a name="522"><span class="lineNum">     522 </span>                :            :                   /* Debug insns should not be in between basic blocks,</a>
+<a name="523"><span class="lineNum">     523 </span>                :            :                      drop them on the floor.  */</a>
+<a name="524"><span class="lineNum">     524 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6757 times"> + </span>]:<span class="lineCov">       6757 :                   if (DEBUG_INSN_P (x))</span></a>
+<a name="525"><span class="lineNum">     525 </span>                :<span class="lineNoCov">          0 :                     delete_insn (x);</span></a>
+<a name="526"><span class="lineNum">     526 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 6757 times"> + </span>]:<span class="lineCov">       6757 :                   else if (!BARRIER_P (x))</span></a>
+<a name="527"><span class="lineNum">     527 </span>                :<span class="lineNoCov">          0 :                     set_block_for_insn (x, NULL);</span></a>
+<a name="528"><span class="lineNum">     528 </span>                :            :                 }</a>
+<a name="529"><span class="lineNum">     529 </span>                :            :             }</a>
+<a name="530"><span class="lineNum">     530 </span>                :            : </a>
+<a name="531"><span class="lineNum">     531 </span>                :<span class="lineCov">      33587 :           bb = fallthru-&gt;dest;</span></a>
+<a name="532"><span class="lineNum">     532 </span>                :<span class="lineCov">      33587 :           remove_edge (fallthru);</span></a>
+<a name="533"><span class="lineNum">     533 </span>                :            :           /* BB is unreachable at this point - we need to determine its profile</a>
+<a name="534"><span class="lineNum">     534 </span>                :            :              once edges are built.  */</a>
+<a name="535"><span class="lineNum">     535 </span>                :<span class="lineCov">      33587 :           bb-&gt;count = profile_count::uninitialized ();</span></a>
+<a name="536"><span class="lineNum">     536 </span>                :<span class="lineCov">      33587 :           flow_transfer_insn = NULL;</span></a>
+<a name="537"><span class="lineNum">     537 </span>                :<span class="lineCov">      33587 :           debug_insn = NULL;</span></a>
+<a name="538"><span class="lineNum">     538 </span>  [<span class="branchCov" title="Branch 0 was taken 14189 times"> + </span><span class="branchCov" title="Branch 1 was taken 19398 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 14189 times"> + </span>]:<span class="lineCov">      33587 :           if (code == CODE_LABEL &amp;&amp; LABEL_ALT_ENTRY_P (insn))</span></a>
+<a name="539"><span class="lineNum">     539 </span>                :<span class="lineNoCov">          0 :             make_edge (ENTRY_BLOCK_PTR_FOR_FN (cfun), bb, 0);</span></a>
+<a name="540"><span class="lineNum">     540 </span>                :            :         }</a>
+<a name="541"><span class="lineNum">     541 </span>        [<span class="branchCov" title="Branch 0 was taken 16425 times"> + </span><span class="branchCov" title="Branch 1 was taken 6366120 times"> + </span>]:<span class="lineCov">    6382540 :       else if (code == BARRIER)</span></a>
+<a name="542"><span class="lineNum">     542 </span>                :            :         {</a>
+<a name="543"><span class="lineNum">     543 </span>                :            :           /* __builtin_unreachable () may cause a barrier to be emitted in</a>
+<a name="544"><span class="lineNum">     544 </span>                :            :              the middle of a BB.  We need to split it in the same manner as</a>
+<a name="545"><span class="lineNum">     545 </span>                :            :              if the barrier were preceded by a control_flow_insn_p insn.  */</a>
+<a name="546"><span class="lineNum">     546 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 16425 times"> + </span>]:<span class="lineCov">      16425 :           if (!flow_transfer_insn)</span></a>
+<a name="547"><span class="lineNum">     547 </span>                :<span class="lineNoCov">          0 :             flow_transfer_insn = prev_nonnote_nondebug_insn_bb (insn);</span></a>
+<a name="548"><span class="lineNum">     548 </span>                :<span class="lineCov">      16425 :           debug_insn = NULL;</span></a>
+<a name="549"><span class="lineNum">     549 </span>                :            :         }</a>
+<a name="550"><span class="lineNum">     550 </span>                :            : </a>
+<a name="551"><span class="lineNum">     551 </span>        [<span class="branchCov" title="Branch 0 was taken 748230 times"> + </span><span class="branchCov" title="Branch 1 was taken 8205660 times"> + </span>]:<span class="lineCov">    8953890 :       if (control_flow_insn_p (insn))</span></a>
+<a name="552"><span class="lineNum">     552 </span>                :<span class="lineCov">     748230 :         flow_transfer_insn = insn;</span></a>
+<a name="553"><span class="lineNum">     553 </span>        [<span class="branchCov" title="Branch 0 was taken 980383 times"> + </span><span class="branchCov" title="Branch 1 was taken 7973510 times"> + </span>]:<span class="lineCov">    8953890 :       if (insn == end)</span></a>
+<a name="554"><span class="lineNum">     554 </span>                :<span class="lineCov">     980383 :         break;</span></a>
+<a name="555"><span class="lineNum">     555 </span>                :<span class="lineCov">    7973510 :       insn = NEXT_INSN (insn);</span></a>
+<a name="556"><span class="lineNum">     556 </span>                :<span class="lineCov">    7973510 :     }</span></a>
+<a name="557"><span class="lineNum">     557 </span>                :            : </a>
+<a name="558"><span class="lineNum">     558 </span>                :            :   /* In case expander replaced normal insn by sequence terminating by</a>
+<a name="559"><span class="lineNum">     559 </span>                :            :      return and barrier, or possibly other sequence not behaving like</a>
+<a name="560"><span class="lineNum">     560 </span>                :            :      ordinary jump, we need to take care and move basic block boundary.  */</a>
+<a name="561"><span class="lineNum">     561 </span>  [<span class="branchCov" title="Branch 0 was taken 721068 times"> + </span><span class="branchCov" title="Branch 1 was taken 259315 times"> + </span><span class="branchCov" title="Branch 2 was taken 9668 times"> + </span><span class="branchCov" title="Branch 3 was taken 711400 times"> + </span>]:<span class="lineCov">     980383 :   if (flow_transfer_insn &amp;&amp; flow_transfer_insn != end)</span></a>
+<a name="562"><span class="lineNum">     562 </span>                :            :     {</a>
+<a name="563"><span class="lineNum">     563 </span>                :<span class="lineCov">       9668 :       skip_purge = false;</span></a>
+<a name="564"><span class="lineNum">     564 </span>                :            : </a>
+<a name="565"><span class="lineNum">     565 </span>                :<span class="lineCov">       9668 :     clean_up_debug_after_control_flow:</span></a>
+<a name="566"><span class="lineNum">     566 </span>                :<span class="lineCov">       9668 :       BB_END (bb) = flow_transfer_insn;</span></a>
+<a name="567"><span class="lineNum">     567 </span>                :            : </a>
+<a name="568"><span class="lineNum">     568 </span>                :            :       /* Clean up the bb field for the insns that do not belong to BB.  */</a>
+<a name="569"><span class="lineNum">     569 </span>                :            :       rtx_insn *next;</a>
+<a name="570"><span class="lineNum">     570 </span>                :<span class="lineCov">       9668 :       for (x = NEXT_INSN (flow_transfer_insn); ; x = next)</span></a>
+<a name="571"><span class="lineNum">     571 </span>                :            :         {</a>
+<a name="572"><span class="lineNum">     572 </span>                :<span class="lineCov">       9668 :           next = NEXT_INSN (x);</span></a>
+<a name="573"><span class="lineNum">     573 </span>                :            :           /* Debug insns should not be in between basic blocks,</a>
+<a name="574"><span class="lineNum">     574 </span>                :            :              drop them on the floor.  */</a>
+<a name="575"><span class="lineNum">     575 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9668 times"> + </span>]:<span class="lineCov">       9668 :           if (DEBUG_INSN_P (x))</span></a>
+<a name="576"><span class="lineNum">     576 </span>                :<span class="lineNoCov">          0 :             delete_insn (x);</span></a>
+<a name="577"><span class="lineNum">     577 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9668 times"> + </span>]:<span class="lineCov">       9668 :           else if (!BARRIER_P (x))</span></a>
+<a name="578"><span class="lineNum">     578 </span>                :<span class="lineNoCov">          0 :             set_block_for_insn (x, NULL);</span></a>
+<a name="579"><span class="lineNum">     579 </span>        [<span class="branchCov" title="Branch 0 was taken 9668 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       9668 :           if (x == end)</span></a>
+<a name="580"><span class="lineNum">     580 </span>                :<span class="lineCov">       9668 :             break;</span></a>
+<a name="581"><span class="lineNum">     581 </span>                :            :         }</a>
+<a name="582"><span class="lineNum">     582 </span>                :            : </a>
+<a name="583"><span class="lineNum">     583 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 9668 times"> + </span>]:<span class="lineCov">       9668 :       if (skip_purge)</span></a>
+<a name="584"><span class="lineNum">     584 </span>                :<span class="lineNoCov">          0 :         return;</span></a>
+<a name="585"><span class="lineNum">     585 </span>                :            :     }</a>
+<a name="586"><span class="lineNum">     586 </span>                :            : </a>
+<a name="587"><span class="lineNum">     587 </span>                :            :   /* We've possibly replaced the conditional jump by conditional jump</a>
+<a name="588"><span class="lineNum">     588 </span>                :            :      followed by cleanup at fallthru edge, so the outgoing edges may</a>
+<a name="589"><span class="lineNum">     589 </span>                :            :      be dead.  */</a>
+<a name="590"><span class="lineNum">     590 </span>                :<span class="lineCov">     980383 :   purge_dead_edges (bb);</span></a>
+<a name="591"><span class="lineNum">     591 </span>                :            : </a>
+<a name="592"><span class="lineNum">     592 </span>                :            :   /* purge_dead_edges doesn't handle tablejump's, but if we have split the</a>
+<a name="593"><span class="lineNum">     593 </span>                :            :      basic block, we might need to kill some edges.  */</a>
+<a name="594"><span class="lineNum">     594 </span>  [<span class="branchCov" title="Branch 0 was taken 14041 times"> + </span><span class="branchCov" title="Branch 1 was taken 966342 times"> + </span><span class="branchCov" title="Branch 2 was taken 367 times"> + </span><span class="branchCov" title="Branch 3 was taken 13674 times"> + </span> :<span class="lineCov">     980383 :   if (bb != orig_bb &amp;&amp; tablejump_p (BB_END (bb), NULL, &amp;table))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 367 times"> + </span><span class="branchCov" title="Branch 5 was taken 980016 times"> + </span>]
+<a name="595"><span class="lineNum">     595 </span>                :<span class="lineCov">        367 :     purge_dead_tablejump_edges (bb, table);</span></a>
+<a name="596"><span class="lineNum">     596 </span>                :            : }</a>
+<a name="597"><span class="lineNum">     597 </span>                :            : </a>
+<a name="598"><span class="lineNum">     598 </span>                :            : /*  Assume that frequency of basic block B is known.  Compute frequencies</a>
+<a name="599"><span class="lineNum">     599 </span>                :            :     and probabilities of outgoing edges.  */</a>
+<a name="600"><span class="lineNum">     600 </span>                :            : </a>
+<a name="601"><span class="lineNum">     601 </span>                :            : static void</a>
+<a name="602"><span class="lineNum">     602 </span>                :<span class="lineCov">      46124 : compute_outgoing_frequencies (basic_block b)</span></a>
+<a name="603"><span class="lineNum">     603 </span>                :            : {</a>
+<a name="604"><span class="lineNum">     604 </span>                :            :   edge e, f;</a>
+<a name="605"><span class="lineNum">     605 </span>                :            :   edge_iterator ei;</a>
+<a name="606"><span class="lineNum">     606 </span>                :            : </a>
+<a name="607"><span class="lineNum">     607 </span>        [<span class="branchCov" title="Branch 0 was taken 25894 times"> + </span><span class="branchCov" title="Branch 1 was taken 20230 times"> + </span>]:<span class="lineCov">      46124 :   if (EDGE_COUNT (b-&gt;succs) == 2)</span></a>
+<a name="608"><span class="lineNum">     608 </span>                :            :     {</a>
+<a name="609"><span class="lineNum">     609 </span>                :<span class="lineCov">      25894 :       rtx note = find_reg_note (BB_END (b), REG_BR_PROB, NULL);</span></a>
+<a name="610"><span class="lineNum">     610 </span>                :            :       int probability;</a>
+<a name="611"><span class="lineNum">     611 </span>                :            : </a>
+<a name="612"><span class="lineNum">     612 </span>        [<span class="branchCov" title="Branch 0 was taken 18435 times"> + </span><span class="branchCov" title="Branch 1 was taken 7459 times"> + </span>]:<span class="lineCov">      25894 :       if (note)</span></a>
+<a name="613"><span class="lineNum">     613 </span>                :            :         {</a>
+<a name="614"><span class="lineNum">     614 </span>                :<span class="lineCov">      18435 :           probability = XINT (note, 0);</span></a>
+<a name="615"><span class="lineNum">     615 </span>        [<span class="branchCov" title="Branch 0 was taken 2875 times"> + </span><span class="branchCov" title="Branch 1 was taken 15560 times"> + </span>]:<span class="lineCov">      18435 :           e = BRANCH_EDGE (b);</span></a>
+<a name="616"><span class="lineNum">     616 </span>                :            :           e-&gt;probability</a>
+<a name="617"><span class="lineNum">     617 </span>                :<span class="lineCov">      18435 :                  = profile_probability::from_reg_br_prob_note (probability);</span></a>
+<a name="618"><span class="lineNum">     618 </span>        [<span class="branchCov" title="Branch 0 was taken 2875 times"> + </span><span class="branchCov" title="Branch 1 was taken 15560 times"> + </span>]:<span class="lineCov">      18435 :           f = FALLTHRU_EDGE (b);</span></a>
+<a name="619"><span class="lineNum">     619 </span>                :<span class="lineCov">      18435 :           f-&gt;probability = e-&gt;probability.invert ();</span></a>
+<a name="620"><span class="lineNum">     620 </span>                :<span class="lineCov">      37262 :           return;</span></a>
+<a name="621"><span class="lineNum">     621 </span>                :            :         }</a>
+<a name="622"><span class="lineNum">     622 </span>                :            :       else</a>
+<a name="623"><span class="lineNum">     623 </span>                :            :         {</a>
+<a name="624"><span class="lineNum">     624 </span>                :<span class="lineCov">       7459 :           guess_outgoing_edge_probabilities (b);</span></a>
+<a name="625"><span class="lineNum">     625 </span>                :            :         }</a>
+<a name="626"><span class="lineNum">     626 </span>                :            :     }</a>
+<a name="627"><span class="lineNum">     627 </span>        [<span class="branchCov" title="Branch 0 was taken 18827 times"> + </span><span class="branchCov" title="Branch 1 was taken 1403 times"> + </span>]:<span class="lineCov">      20230 :   else if (single_succ_p (b))</span></a>
+<a name="628"><span class="lineNum">     628 </span>                :            :     {</a>
+<a name="629"><span class="lineNum">     629 </span>                :<span class="lineCov">      18827 :       e = single_succ_edge (b);</span></a>
+<a name="630"><span class="lineNum">     630 </span>                :<span class="lineCov">      18827 :       e-&gt;probability = profile_probability::always ();</span></a>
+<a name="631"><span class="lineNum">     631 </span>                :<span class="lineCov">      18827 :       return;</span></a>
+<a name="632"><span class="lineNum">     632 </span>                :            :     }</a>
+<a name="633"><span class="lineNum">     633 </span>                :            :   else</a>
+<a name="634"><span class="lineNum">     634 </span>                :            :     {</a>
+<a name="635"><span class="lineNum">     635 </span>                :            :       /* We rely on BBs with more than two successors to have sane probabilities</a>
+<a name="636"><span class="lineNum">     636 </span>                :            :          and do not guess them here. For BBs terminated by switch statements</a>
+<a name="637"><span class="lineNum">     637 </span>                :            :          expanded to jump-table jump, we have done the right thing during</a>
+<a name="638"><span class="lineNum">     638 </span>                :            :          expansion. For EH edges, we still guess the probabilities here.  */</a>
+<a name="639"><span class="lineNum">     639 </span>                :<span class="lineCov">       1403 :       bool complex_edge = false;</span></a>
+<a name="640"><span class="lineNum">     640 </span>        [<span class="branchCov" title="Branch 0 was taken 5892 times"> + </span><span class="branchCov" title="Branch 1 was taken 385 times"> + </span>]:<span class="lineCov">       6277 :       FOR_EACH_EDGE (e, ei, b-&gt;succs)</span></a>
+<a name="641"><span class="lineNum">     641 </span>        [<span class="branchCov" title="Branch 0 was taken 1018 times"> + </span><span class="branchCov" title="Branch 1 was taken 4874 times"> + </span>]:<span class="lineCov">       5892 :         if (e-&gt;flags &amp; EDGE_COMPLEX)</span></a>
+<a name="642"><span class="lineNum">     642 </span>                :            :           {</a>
+<a name="643"><span class="lineNum">     643 </span>                :<span class="lineCov">       1018 :             complex_edge = true;</span></a>
+<a name="644"><span class="lineNum">     644 </span>                :<span class="lineCov">       1018 :             break;</span></a>
+<a name="645"><span class="lineNum">     645 </span>                :            :           }</a>
+<a name="646"><span class="lineNum">     646 </span>        [<span class="branchCov" title="Branch 0 was taken 1018 times"> + </span><span class="branchCov" title="Branch 1 was taken 385 times"> + </span>]:<span class="lineCov">       1403 :       if (complex_edge)</span></a>
+<a name="647"><span class="lineNum">     647 </span>                :<span class="lineCov">       1018 :         guess_outgoing_edge_probabilities (b);</span></a>
+<a name="648"><span class="lineNum">     648 </span>                :            :     }</a>
+<a name="649"><span class="lineNum">     649 </span>                :            : }</a>
+<a name="650"><span class="lineNum">     650 </span>                :            : </a>
+<a name="651"><span class="lineNum">     651 </span>                :            : /* Assume that some pass has inserted labels or control flow</a>
+<a name="652"><span class="lineNum">     652 </span>                :            :    instructions within a basic block.  Split basic blocks as needed</a>
+<a name="653"><span class="lineNum">     653 </span>                :            :    and create edges.  */</a>
+<a name="654"><span class="lineNum">     654 </span>                :            : </a>
+<a name="655"><span class="lineNum">     655 </span>                :            : void</a>
+<a name="656"><span class="lineNum">     656 </span>                :<span class="lineCov">     136508 : find_many_sub_basic_blocks (sbitmap blocks)</span></a>
+<a name="657"><span class="lineNum">     657 </span>                :            : {</a>
+<a name="658"><span class="lineNum">     658 </span>                :            :   basic_block bb, min, max;</a>
+<a name="659"><span class="lineNum">     659 </span>                :<span class="lineCov">     136508 :   bool found = false;</span></a>
+<a name="660"><span class="lineNum">     660 </span>                :<span class="lineCov">     136508 :   auto_vec&lt;unsigned int&gt; n_succs;</span></a>
+<a name="661"><span class="lineNum">     661 </span>                :<span class="lineCov">     136508 :   n_succs.safe_grow_cleared (last_basic_block_for_fn (cfun), true);</span></a>
+<a name="662"><span class="lineNum">     662 </span>                :            : </a>
+<a name="663"><span class="lineNum">     663 </span>        [<span class="branchCov" title="Branch 0 was taken 2028820 times"> + </span><span class="branchCov" title="Branch 1 was taken 136508 times"> + </span>]:<span class="lineCov">    2165330 :   FOR_EACH_BB_FN (bb, cfun)</span></a>
+<a name="664"><span class="lineNum">     664 </span>        [<span class="branchCov" title="Branch 0 was taken 987435 times"> + </span><span class="branchCov" title="Branch 1 was taken 1041390 times"> + </span>]:<span class="lineCov">    2028820 :     SET_STATE (bb,</span></a>
+<a name="665"><span class="lineNum">     665 </span>                :            :                bitmap_bit_p (blocks, bb-&gt;index) ? BLOCK_TO_SPLIT : BLOCK_ORIGINAL);</a>
+<a name="666"><span class="lineNum">     666 </span>                :            : </a>
+<a name="667"><span class="lineNum">     667 </span>        [<span class="branchCov" title="Branch 0 was taken 2062410 times"> + </span><span class="branchCov" title="Branch 1 was taken 136508 times"> + </span>]:<span class="lineCov">    2198920 :   FOR_EACH_BB_FN (bb, cfun)</span></a>
+<a name="668"><span class="lineNum">     668 </span>        [<span class="branchCov" title="Branch 0 was taken 987435 times"> + </span><span class="branchCov" title="Branch 1 was taken 1074980 times"> + </span>]:<span class="lineCov">    2062410 :     if (STATE (bb) == BLOCK_TO_SPLIT)</span></a>
+<a name="669"><span class="lineNum">     669 </span>                :            :       {</a>
+<a name="670"><span class="lineNum">     670 </span>                :<span class="lineCov">     987435 :         int n = last_basic_block_for_fn (cfun);</span></a>
+<a name="671"><span class="lineNum">     671 </span>                :<span class="lineCov">     987435 :         unsigned int ns = EDGE_COUNT (bb-&gt;succs);</span></a>
+<a name="672"><span class="lineNum">     672 </span>                :            : </a>
+<a name="673"><span class="lineNum">     673 </span>                :<span class="lineCov">     987435 :         find_bb_boundaries (bb);</span></a>
+<a name="674"><span class="lineNum">     674 </span>  [<span class="branchCov" title="Branch 0 was taken 973394 times"> + </span><span class="branchCov" title="Branch 1 was taken 14041 times"> + </span><span class="branchCov" title="Branch 2 was taken 973394 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">     987435 :         if (n == last_basic_block_for_fn (cfun) &amp;&amp; ns == EDGE_COUNT (bb-&gt;succs))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 973394 times"> + </span><span class="branchCov" title="Branch 5 was taken 14041 times"> + </span>]
+<a name="675"><span class="lineNum">     675 </span>                :<span class="lineCov">     973394 :           n_succs[bb-&gt;index] = EDGE_COUNT (bb-&gt;succs);</span></a>
+<a name="676"><span class="lineNum">     676 </span>                :            :       }</a>
+<a name="677"><span class="lineNum">     677 </span>                :            : </a>
+<a name="678"><span class="lineNum">     678 </span>        [<span class="branchCov" title="Branch 0 was taken 253154 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">     253154 :   FOR_EACH_BB_FN (bb, cfun)</span></a>
+<a name="679"><span class="lineNum">     679 </span>        [<span class="branchCov" title="Branch 0 was taken 136508 times"> + </span><span class="branchCov" title="Branch 1 was taken 116646 times"> + </span>]:<span class="lineCov">     253154 :     if (STATE (bb) != BLOCK_ORIGINAL)</span></a>
+<a name="680"><span class="lineNum">     680 </span>                :            :       {</a>
+<a name="681"><span class="lineNum">     681 </span>                :<span class="lineCov">     136508 :         found = true;</span></a>
+<a name="682"><span class="lineNum">     682 </span>                :<span class="lineCov">     136508 :         break;</span></a>
+<a name="683"><span class="lineNum">     683 </span>                :            :       }</a>
+<a name="684"><span class="lineNum">     684 </span>                :            : </a>
+<a name="685"><span class="lineNum">     685 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 136508 times"> + </span>]:<span class="lineCov">     136508 :   if (!found)</span></a>
+<a name="686"><span class="lineNum">     686 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="687"><span class="lineNum">     687 </span>                :            : </a>
+<a name="688"><span class="lineNum">     688 </span>                :<span class="lineCov">     136508 :   min = max = bb;</span></a>
+<a name="689"><span class="lineNum">     689 </span>        [<span class="branchCov" title="Branch 0 was taken 1945760 times"> + </span><span class="branchCov" title="Branch 1 was taken 136508 times"> + </span>]:<span class="lineCov">    2082270 :   for (; bb != EXIT_BLOCK_PTR_FOR_FN (cfun); bb = bb-&gt;next_bb)</span></a>
+<a name="690"><span class="lineNum">     690 </span>        [<span class="branchCov" title="Branch 0 was taken 1021020 times"> + </span><span class="branchCov" title="Branch 1 was taken 924742 times"> + </span>]:<span class="lineCov">    1945760 :     if (STATE (bb) != BLOCK_ORIGINAL)</span></a>
+<a name="691"><span class="lineNum">     691 </span>                :<span class="lineCov">    1021020 :       max = bb;</span></a>
+<a name="692"><span class="lineNum">     692 </span>                :            : </a>
+<a name="693"><span class="lineNum">     693 </span>                :            :   /* Now re-scan and wire in all edges.  This expect simple (conditional)</a>
+<a name="694"><span class="lineNum">     694 </span>                :            :      jumps at the end of each new basic blocks.  */</a>
+<a name="695"><span class="lineNum">     695 </span>                :<span class="lineCov">     136508 :   make_edges (min, max, 1);</span></a>
+<a name="696"><span class="lineNum">     696 </span>                :            : </a>
+<a name="697"><span class="lineNum">     697 </span>                :            :   /* Update branch probabilities.  Expect only (un)conditional jumps</a>
+<a name="698"><span class="lineNum">     698 </span>                :            :      to be created with only the forward edges.  */</a>
+<a name="699"><span class="lineNum">     699 </span>        [<span class="branchCov" title="Branch 0 was taken 118209 times"> + </span><span class="branchCov" title="Branch 1 was taken 18299 times"> + </span>]:<span class="lineCov">     136508 :   if (profile_status_for_fn (cfun) != PROFILE_ABSENT)</span></a>
+<a name="700"><span class="lineNum">     700 </span>        [<span class="branchCov" title="Branch 0 was taken 1079550 times"> + </span><span class="branchCov" title="Branch 1 was taken 118209 times"> + </span>]:<span class="lineCov">    1197760 :     FOR_BB_BETWEEN (bb, min, max-&gt;next_bb, next_bb)</span></a>
+<a name="701"><span class="lineNum">     701 </span>                :            :       {</a>
+<a name="702"><span class="lineNum">     702 </span>                :            :         edge e;</a>
+<a name="703"><span class="lineNum">     703 </span>                :            :         edge_iterator ei;</a>
+<a name="704"><span class="lineNum">     704 </span>                :            : </a>
+<a name="705"><span class="lineNum">     705 </span>        [<span class="branchCov" title="Branch 0 was taken 174931 times"> + </span><span class="branchCov" title="Branch 1 was taken 904619 times"> + </span>]:<span class="lineCov">    1079550 :         if (STATE (bb) == BLOCK_ORIGINAL)</span></a>
+<a name="706"><span class="lineNum">     706 </span>                :<span class="lineCov">    1033430 :           continue;</span></a>
+<a name="707"><span class="lineNum">     707 </span>        [<span class="branchCov" title="Branch 0 was taken 32070 times"> + </span><span class="branchCov" title="Branch 1 was taken 872549 times"> + </span>]:<span class="lineCov">     904619 :         if (STATE (bb) == BLOCK_NEW)</span></a>
+<a name="708"><span class="lineNum">     708 </span>                :            :           {</a>
+<a name="709"><span class="lineNum">     709 </span>                :<span class="lineCov">      32070 :             bool initialized_src = false, uninitialized_src = false;</span></a>
+<a name="710"><span class="lineNum">     710 </span>                :<span class="lineCov">      32070 :             bb-&gt;count = profile_count::zero ();</span></a>
+<a name="711"><span class="lineNum">     711 </span>        [<span class="branchCov" title="Branch 0 was taken 43198 times"> + </span><span class="branchCov" title="Branch 1 was taken 32070 times"> + </span>]:<span class="lineCov">      75268 :             FOR_EACH_EDGE (e, ei, bb-&gt;preds)</span></a>
+<a name="712"><span class="lineNum">     712 </span>                :            :               {</a>
+<a name="713"><span class="lineNum">     713 </span>        [<span class="branchCov" title="Branch 0 was taken 43198 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      43198 :                 if (e-&gt;count ().initialized_p ())</span></a>
+<a name="714"><span class="lineNum">     714 </span>                :            :                   {</a>
+<a name="715"><span class="lineNum">     715 </span>                :<span class="lineCov">      43198 :                     bb-&gt;count += e-&gt;count ();</span></a>
+<a name="716"><span class="lineNum">     716 </span>                :<span class="lineCov">      43198 :                     initialized_src = true;</span></a>
+<a name="717"><span class="lineNum">     717 </span>                :            :                   }</a>
+<a name="718"><span class="lineNum">     718 </span>                :            :                 else</a>
+<a name="719"><span class="lineNum">     719 </span>                :<span class="lineNoCov">          0 :                   uninitialized_src = true;</span></a>
+<a name="720"><span class="lineNum">     720 </span>                :            :               }</a>
+<a name="721"><span class="lineNum">     721 </span>                :            :             /* When some edges are missing with read profile, this is</a>
+<a name="722"><span class="lineNum">     722 </span>                :            :                most likely because RTL expansion introduced loop.</a>
+<a name="723"><span class="lineNum">     723 </span>                :            :                When profile is guessed we may have BB that is reachable</a>
+<a name="724"><span class="lineNum">     724 </span>                :            :                from unlikely path as well as from normal path.</a>
+<a name="725"><span class="lineNum">     725 </span>                :            : </a>
+<a name="726"><span class="lineNum">     726 </span>                :            :                TODO: We should handle loops created during BB expansion</a>
+<a name="727"><span class="lineNum">     727 </span>                :            :                correctly here.  For now we assume all those loop to cycle</a>
+<a name="728"><span class="lineNum">     728 </span>                :            :                precisely once.  */</a>
+<a name="729"><span class="lineNum">     729 </span>        [<span class="branchCov" title="Branch 0 was taken 32070 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      32070 :             if (!initialized_src</span></a>
+<a name="730"><span class="lineNum">     730 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 32070 times"> + </span>]:<span class="lineCov">      32070 :                 || (uninitialized_src</span></a>
+<a name="731"><span class="lineNum">     731 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                      &amp;&amp; profile_status_for_fn (cfun) &lt; PROFILE_GUESSED))</span></a>
+<a name="732"><span class="lineNum">     732 </span>                :<span class="lineNoCov">          0 :               bb-&gt;count = profile_count::uninitialized ();</span></a>
+<a name="733"><span class="lineNum">     733 </span>                :            :           }</a>
+<a name="734"><span class="lineNum">     734 </span>                :            :         /* If nothing changed, there is no need to create new BBs.  */</a>
+<a name="735"><span class="lineNum">     735 </span>        [<span class="branchCov" title="Branch 0 was taken 858495 times"> + </span><span class="branchCov" title="Branch 1 was taken 14054 times"> + </span>]:<span class="lineCov">     872549 :         else if (EDGE_COUNT (bb-&gt;succs) == n_succs[bb-&gt;index])</span></a>
+<a name="736"><span class="lineNum">     736 </span>                :            :           {</a>
+<a name="737"><span class="lineNum">     737 </span>                :            :             /* In rare occassions RTL expansion might have mistakely assigned</a>
+<a name="738"><span class="lineNum">     738 </span>                :            :                a probabilities different from what is in CFG.  This happens</a>
+<a name="739"><span class="lineNum">     739 </span>                :            :                when we try to split branch to two but optimize out the</a>
+<a name="740"><span class="lineNum">     740 </span>                :            :                second branch during the way. See PR81030.  */</a>
+<a name="741"><span class="lineNum">     741 </span>        [<span class="branchCov" title="Branch 0 was taken 337979 times"> + </span><span class="branchCov" title="Branch 1 was taken 242136 times"> + </span>]:<span class="lineCov">     580115 :             if (JUMP_P (BB_END (bb)) &amp;&amp; any_condjump_p (BB_END (bb))</span></a>
+<a name="742"><span class="lineNum">     742 </span>  [<span class="branchCov" title="Branch 0 was taken 580115 times"> + </span><span class="branchCov" title="Branch 1 was taken 278380 times"> + </span><span class="branchCov" title="Branch 2 was taken 337979 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">    1438610 :                 &amp;&amp; EDGE_COUNT (bb-&gt;succs) &gt;= 2)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 337979 times"> + </span><span class="branchCov" title="Branch 5 was taken 520516 times"> + </span>]
+<a name="743"><span class="lineNum">     743 </span>                :<span class="lineCov">     337979 :               update_br_prob_note (bb);</span></a>
+<a name="744"><span class="lineNum">     744 </span>                :<span class="lineCov">     858495 :             continue;</span></a>
+<a name="745"><span class="lineNum">     745 </span>                :            :           }</a>
+<a name="746"><span class="lineNum">     746 </span>                :            : </a>
+<a name="747"><span class="lineNum">     747 </span>                :<span class="lineCov">      46124 :         compute_outgoing_frequencies (bb);</span></a>
+<a name="748"><span class="lineNum">     748 </span>                :            :       }</a>
+<a name="749"><span class="lineNum">     749 </span>                :            : </a>
+<a name="750"><span class="lineNum">     750 </span>        [<span class="branchCov" title="Branch 0 was taken 2062410 times"> + </span><span class="branchCov" title="Branch 1 was taken 136508 times"> + </span>]:<span class="lineCov">    2198920 :   FOR_EACH_BB_FN (bb, cfun)</span></a>
+<a name="751"><span class="lineNum">     751 </span>                :<span class="lineCov">    2062410 :     SET_STATE (bb, 0);</span></a>
+<a name="752"><span class="lineNum">     752 </span>                :            : }</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

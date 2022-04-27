@@ -1,0 +1,535 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/ipa-comdats.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - ipa-comdats.c<span style="font-size: 80%;"> (source / <a href="ipa-comdats.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">138</td>
+            <td class="headerCovTableEntry">146</td>
+            <td class="headerCovTableEntryHi">94.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">114</td>
+            <td class="headerCovTableEntry">128</td>
+            <td class="headerCovTableEntryMed">89.1 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Localize comdats.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 2014-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : </a>
+<a name="4"><span class="lineNum">       4 </span>                :            : This file is part of GCC.</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : the terms of the GNU General Public License as published by the Free</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : Software Foundation; either version 3, or (at your option) any later</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : version.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : </a>
+<a name="11"><span class="lineNum">      11 </span>                :            : GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : /* This is very simple pass that looks for static symbols that are used</a>
+<a name="21"><span class="lineNum">      21 </span>                :            :    exclusively by symbol within one comdat group.  In this case it makes</a>
+<a name="22"><span class="lineNum">      22 </span>                :            :    sense to bring the symbol itself into the group to avoid dead code</a>
+<a name="23"><span class="lineNum">      23 </span>                :            :    that would arrise when the comdat group from current unit is replaced</a>
+<a name="24"><span class="lineNum">      24 </span>                :            :    by a different copy.  Consider for example:</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : </a>
+<a name="26"><span class="lineNum">      26 </span>                :            :     static int q(void)</a>
+<a name="27"><span class="lineNum">      27 </span>                :            :     {</a>
+<a name="28"><span class="lineNum">      28 </span>                :            :       ....</a>
+<a name="29"><span class="lineNum">      29 </span>                :            :     }</a>
+<a name="30"><span class="lineNum">      30 </span>                :            :     inline int t(void)</a>
+<a name="31"><span class="lineNum">      31 </span>                :            :     {</a>
+<a name="32"><span class="lineNum">      32 </span>                :            :       return q();</a>
+<a name="33"><span class="lineNum">      33 </span>                :            :     }</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : </a>
+<a name="35"><span class="lineNum">      35 </span>                :            :    if Q is used only by T, it makes sense to put Q into T's comdat group.</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : </a>
+<a name="37"><span class="lineNum">      37 </span>                :            :    The pass solve simple dataflow across the callgraph trying to prove what</a>
+<a name="38"><span class="lineNum">      38 </span>                :            :    symbols are used exclusively from a given comdat group.</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : </a>
+<a name="40"><span class="lineNum">      40 </span>                :            :    The implementation maintains a queue linked by AUX pointer terminated by</a>
+<a name="41"><span class="lineNum">      41 </span>                :            :    pointer value 1. Lattice values are NULL for TOP, actual comdat group, or</a>
+<a name="42"><span class="lineNum">      42 </span>                :            :    ERROR_MARK_NODE for bottom.</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : </a>
+<a name="44"><span class="lineNum">      44 </span>                :            :    TODO: When symbol is used only by comdat symbols, but from different groups,</a>
+<a name="45"><span class="lineNum">      45 </span>                :            :    it would make sense to produce a new comdat group for it with anonymous name.</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : </a>
+<a name="47"><span class="lineNum">      47 </span>                :            :    TODO2: We can't mix variables and functions within one group.  Currently</a>
+<a name="48"><span class="lineNum">      48 </span>                :            :    we just give up on references of symbols of different types.  We also should</a>
+<a name="49"><span class="lineNum">      49 </span>                :            :    handle this by anonymous comdat group section.  */</a>
+<a name="50"><span class="lineNum">      50 </span>                :            : </a>
+<a name="51"><span class="lineNum">      51 </span>                :            : #include &quot;config.h&quot;</a>
+<a name="52"><span class="lineNum">      52 </span>                :            : #include &quot;system.h&quot;</a>
+<a name="53"><span class="lineNum">      53 </span>                :            : #include &quot;coretypes.h&quot;</a>
+<a name="54"><span class="lineNum">      54 </span>                :            : #include &quot;tm.h&quot;</a>
+<a name="55"><span class="lineNum">      55 </span>                :            : #include &quot;tree.h&quot;</a>
+<a name="56"><span class="lineNum">      56 </span>                :            : #include &quot;tree-pass.h&quot;</a>
+<a name="57"><span class="lineNum">      57 </span>                :            : #include &quot;cgraph.h&quot;</a>
+<a name="58"><span class="lineNum">      58 </span>                :            : </a>
+<a name="59"><span class="lineNum">      59 </span>                :            : /* Main dataflow loop propagating comdat groups across</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :    the symbol table.  All references to SYMBOL are examined</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :    and NEWGROUP is updated accordingly. MAP holds current lattice</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :    values for individual symbols.  */</a>
+<a name="63"><span class="lineNum">      63 </span>                :            : </a>
+<a name="64"><span class="lineNum">      64 </span>                :            : tree</a>
+<a name="65"><span class="lineNum">      65 </span>                :<span class="lineCov">       2916 : propagate_comdat_group (struct symtab_node *symbol,</span></a>
+<a name="66"><span class="lineNum">      66 </span>                :            :                         tree newgroup, hash_map&lt;symtab_node *, tree&gt; &amp;map)</a>
+<a name="67"><span class="lineNum">      67 </span>                :            : {</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :   int i;</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :   struct ipa_ref *ref;</a>
+<a name="70"><span class="lineNum">      70 </span>                :            : </a>
+<a name="71"><span class="lineNum">      71 </span>                :            :   /* Walk all references to SYMBOL, recursively dive into aliases.  */</a>
+<a name="72"><span class="lineNum">      72 </span>                :            : </a>
+<a name="73"><span class="lineNum">      73 </span>                :<span class="lineCov">       3453 :   for (i = 0;</span></a>
+<a name="74"><span class="lineNum">      74 </span>                :<span class="lineCov">       3453 :        symbol-&gt;iterate_referring (i, ref)</span></a>
+<a name="75"><span class="lineNum">      75 </span>  [<span class="branchCov" title="Branch 0 was taken 2079 times"> + </span><span class="branchCov" title="Branch 1 was taken 1374 times"> + </span><span class="branchCov" title="Branch 2 was taken 1927 times"> + </span><span class="branchCov" title="Branch 3 was taken 152 times"> + </span> :<span class="lineCov">       3453 :        &amp;&amp; newgroup != error_mark_node; i++)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 1927 times"> + </span><span class="branchCov" title="Branch 5 was taken 1526 times"> + </span>]
+<a name="76"><span class="lineNum">      76 </span>                :            :     {</a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineCov">       1927 :       struct symtab_node *symbol2 = ref-&gt;referring;</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :            : </a>
+<a name="79"><span class="lineNum">      79 </span>        [<span class="branchCov" title="Branch 0 was taken 169 times"> + </span><span class="branchCov" title="Branch 1 was taken 1758 times"> + </span>]:<span class="lineCov">       1927 :       if (ref-&gt;use == IPA_REF_ALIAS)</span></a>
+<a name="80"><span class="lineNum">      80 </span>                :            :         {</a>
+<a name="81"><span class="lineNum">      81 </span>                :<span class="lineCov">        169 :           newgroup = propagate_comdat_group (symbol2, newgroup, map);</span></a>
+<a name="82"><span class="lineNum">      82 </span>                :<span class="lineCov">        169 :           continue;</span></a>
+<a name="83"><span class="lineNum">      83 </span>                :            :         }</a>
+<a name="84"><span class="lineNum">      84 </span>                :            : </a>
+<a name="85"><span class="lineNum">      85 </span>                :            :       /* One COMDAT group cannot hold both variables and functions at</a>
+<a name="86"><span class="lineNum">      86 </span>                :            :          a same time.  For now we just go to BOTTOM, in future we may</a>
+<a name="87"><span class="lineNum">      87 </span>                :            :          invent special comdat groups for this case.  */</a>
+<a name="88"><span class="lineNum">      88 </span>                :            : </a>
+<a name="89"><span class="lineNum">      89 </span>        [<span class="branchCov" title="Branch 0 was taken 1390 times"> + </span><span class="branchCov" title="Branch 1 was taken 368 times"> + </span>]:<span class="lineCov">       1758 :       if (symbol-&gt;type != symbol2-&gt;type)</span></a>
+<a name="90"><span class="lineNum">      90 </span>                :            :         {</a>
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineCov">       1390 :           newgroup = error_mark_node;</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineCov">       1390 :           break;</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :            :         }</a>
+<a name="94"><span class="lineNum">      94 </span>                :            : </a>
+<a name="95"><span class="lineNum">      95 </span>                :            :       /* If we see inline clone, its comdat group actually</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :          corresponds to the comdat group of the function it is inlined</a>
+<a name="97"><span class="lineNum">      97 </span>                :            :          to.  */</a>
+<a name="98"><span class="lineNum">      98 </span>                :            : </a>
+<a name="99"><span class="lineNum">      99 </span>        [<span class="branchCov" title="Branch 0 was taken 224 times"> + </span><span class="branchCov" title="Branch 1 was taken 144 times"> + </span>]:<span class="lineCov">        368 :       if (cgraph_node * cn = dyn_cast &lt;cgraph_node *&gt; (symbol2))</span></a>
+<a name="100"><span class="lineNum">     100 </span>                :            :         {</a>
+<a name="101"><span class="lineNum">     101 </span>        [<span class="branchCov" title="Branch 0 was taken 41 times"> + </span><span class="branchCov" title="Branch 1 was taken 183 times"> + </span>]:<span class="lineCov">        224 :           if (cn-&gt;inlined_to)</span></a>
+<a name="102"><span class="lineNum">     102 </span>                :<span class="lineCov">         41 :             symbol2 = cn-&gt;inlined_to;</span></a>
+<a name="103"><span class="lineNum">     103 </span>                :            :         }</a>
+<a name="104"><span class="lineNum">     104 </span>                :            : </a>
+<a name="105"><span class="lineNum">     105 </span>                :            :       /* The actual merge operation.  */</a>
+<a name="106"><span class="lineNum">     106 </span>                :            : </a>
+<a name="107"><span class="lineNum">     107 </span>                :<span class="lineCov">        368 :       tree *val2 = map.get (symbol2);</span></a>
+<a name="108"><span class="lineNum">     108 </span>                :            : </a>
+<a name="109"><span class="lineNum">     109 </span>  [<span class="branchCov" title="Branch 0 was taken 261 times"> + </span><span class="branchCov" title="Branch 1 was taken 107 times"> + </span><span class="branchCov" title="Branch 2 was taken 261 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        368 :       if (val2 &amp;&amp; *val2 != newgroup)</span></a>
+<a name="110"><span class="lineNum">     110 </span>                :            :         {</a>
+<a name="111"><span class="lineNum">     111 </span>        [<span class="branchCov" title="Branch 0 was taken 257 times"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">        261 :           if (!newgroup)</span></a>
+<a name="112"><span class="lineNum">     112 </span>                :<span class="lineCov">        257 :             newgroup = *val2;</span></a>
+<a name="113"><span class="lineNum">     113 </span>                :            :           else</a>
+<a name="114"><span class="lineNum">     114 </span>                :<span class="lineCov">          4 :             newgroup = error_mark_node;</span></a>
+<a name="115"><span class="lineNum">     115 </span>                :            :         }</a>
+<a name="116"><span class="lineNum">     116 </span>                :            :     }</a>
+<a name="117"><span class="lineNum">     117 </span>                :            : </a>
+<a name="118"><span class="lineNum">     118 </span>                :            :   /* If we analyze function, walk also callers.  */</a>
+<a name="119"><span class="lineNum">     119 </span>                :            : </a>
+<a name="120"><span class="lineNum">     120 </span>                :<span class="lineCov">       2916 :   cgraph_node *cnode = dyn_cast &lt;cgraph_node *&gt; (symbol);</span></a>
+<a name="121"><span class="lineNum">     121 </span>                :            : </a>
+<a name="122"><span class="lineNum">     122 </span>        [<span class="branchCov" title="Branch 0 was taken 2310 times"> + </span><span class="branchCov" title="Branch 1 was taken 606 times"> + </span>]:<span class="lineCov">       2916 :   if (cnode)</span></a>
+<a name="123"><span class="lineNum">     123 </span>                :<span class="lineCov">       2310 :     for (struct cgraph_edge * edge = cnode-&gt;callers;</span></a>
+<a name="124"><span class="lineNum">     124 </span>  [<span class="branchCov" title="Branch 0 was taken 1808 times"> + </span><span class="branchCov" title="Branch 1 was taken 1981 times"> + </span><span class="branchCov" title="Branch 2 was taken 1479 times"> + </span><span class="branchCov" title="Branch 3 was taken 329 times"> + </span>]:<span class="lineCov">       3789 :          edge &amp;&amp; newgroup != error_mark_node; edge = edge-&gt;next_caller)</span></a>
+<a name="125"><span class="lineNum">     125 </span>                :            :       {</a>
+<a name="126"><span class="lineNum">     126 </span>                :<span class="lineCov">       1479 :         struct symtab_node *symbol2 = edge-&gt;caller;</span></a>
+<a name="127"><span class="lineNum">     127 </span>                :            : </a>
+<a name="128"><span class="lineNum">     128 </span>        [<span class="branchCov" title="Branch 0 was taken 1479 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1479 :         if (cgraph_node * cn = dyn_cast &lt;cgraph_node *&gt; (symbol2))</span></a>
+<a name="129"><span class="lineNum">     129 </span>                :            :           {</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :             /* Thunks cannot call across section boundary.  */</a>
+<a name="131"><span class="lineNum">     131 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 1479 times"> + </span>]:<span class="lineCov">       1479 :             if (cn-&gt;thunk)</span></a>
+<a name="132"><span class="lineNum">     132 </span>                :<span class="lineNoCov">          0 :               newgroup = propagate_comdat_group (symbol2, newgroup, map);</span></a>
+<a name="133"><span class="lineNum">     133 </span>                :            :             /* If we see inline clone, its comdat group actually</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :                corresponds to the comdat group of the function it</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :                is inlined to.  */</a>
+<a name="136"><span class="lineNum">     136 </span>        [<span class="branchCov" title="Branch 0 was taken 528 times"> + </span><span class="branchCov" title="Branch 1 was taken 951 times"> + </span>]:<span class="lineCov">       1479 :             if (cn-&gt;inlined_to)</span></a>
+<a name="137"><span class="lineNum">     137 </span>                :<span class="lineCov">        528 :               symbol2 = cn-&gt;inlined_to;</span></a>
+<a name="138"><span class="lineNum">     138 </span>                :            :           }</a>
+<a name="139"><span class="lineNum">     139 </span>                :            : </a>
+<a name="140"><span class="lineNum">     140 </span>                :            :         /* The actual merge operation.  */</a>
+<a name="141"><span class="lineNum">     141 </span>                :            : </a>
+<a name="142"><span class="lineNum">     142 </span>                :<span class="lineCov">       1479 :         tree *val2 = map.get (symbol2);</span></a>
+<a name="143"><span class="lineNum">     143 </span>                :            : </a>
+<a name="144"><span class="lineNum">     144 </span>  [<span class="branchCov" title="Branch 0 was taken 1064 times"> + </span><span class="branchCov" title="Branch 1 was taken 415 times"> + </span><span class="branchCov" title="Branch 2 was taken 1005 times"> + </span><span class="branchCov" title="Branch 3 was taken 59 times"> + </span>]:<span class="lineCov">       1479 :         if (val2 &amp;&amp; *val2 != newgroup)</span></a>
+<a name="145"><span class="lineNum">     145 </span>                :            :           {</a>
+<a name="146"><span class="lineNum">     146 </span>        [<span class="branchCov" title="Branch 0 was taken 974 times"> + </span><span class="branchCov" title="Branch 1 was taken 31 times"> + </span>]:<span class="lineCov">       1005 :             if (!newgroup)</span></a>
+<a name="147"><span class="lineNum">     147 </span>                :<span class="lineCov">        974 :               newgroup = *val2;</span></a>
+<a name="148"><span class="lineNum">     148 </span>                :            :             else</a>
+<a name="149"><span class="lineNum">     149 </span>                :<span class="lineCov">         31 :               newgroup = error_mark_node;</span></a>
+<a name="150"><span class="lineNum">     150 </span>                :            :           }</a>
+<a name="151"><span class="lineNum">     151 </span>                :            :       }</a>
+<a name="152"><span class="lineNum">     152 </span>                :<span class="lineCov">       2916 :   return newgroup;</span></a>
+<a name="153"><span class="lineNum">     153 </span>                :            : }</a>
+<a name="154"><span class="lineNum">     154 </span>                :            : </a>
+<a name="155"><span class="lineNum">     155 </span>                :            : </a>
+<a name="156"><span class="lineNum">     156 </span>                :            : /* Add all references of SYMBOL that are defined into queue started by FIRST</a>
+<a name="157"><span class="lineNum">     157 </span>                :            :    and linked by AUX pointer (unless they are already enqueued).</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :    Walk recursively inlined functions.  */</a>
+<a name="159"><span class="lineNum">     159 </span>                :            : </a>
+<a name="160"><span class="lineNum">     160 </span>                :            : void</a>
+<a name="161"><span class="lineNum">     161 </span>                :<span class="lineCov">       6749 : enqueue_references (symtab_node **first,</span></a>
+<a name="162"><span class="lineNum">     162 </span>                :            :                     symtab_node *symbol)</a>
+<a name="163"><span class="lineNum">     163 </span>                :            : {</a>
+<a name="164"><span class="lineNum">     164 </span>                :            :   int i;</a>
+<a name="165"><span class="lineNum">     165 </span>                :<span class="lineCov">       6749 :   struct ipa_ref *ref = NULL;</span></a>
+<a name="166"><span class="lineNum">     166 </span>                :            : </a>
+<a name="167"><span class="lineNum">     167 </span>        [<span class="branchCov" title="Branch 0 was taken 7503 times"> + </span><span class="branchCov" title="Branch 1 was taken 6749 times"> + </span>]:<span class="lineCov">      14252 :   for (i = 0; symbol-&gt;iterate_reference (i, ref); i++)</span></a>
+<a name="168"><span class="lineNum">     168 </span>                :            :     {</a>
+<a name="169"><span class="lineNum">     169 </span>                :<span class="lineCov">       7503 :       symtab_node *node = ref-&gt;referred-&gt;ultimate_alias_target ();</span></a>
+<a name="170"><span class="lineNum">     170 </span>                :            : </a>
+<a name="171"><span class="lineNum">     171 </span>                :            :       /* Always keep thunks in same sections as target function.  */</a>
+<a name="172"><span class="lineNum">     172 </span>        [<span class="branchCov" title="Branch 0 was taken 1839 times"> + </span><span class="branchCov" title="Branch 1 was taken 5664 times"> + </span>]:<span class="lineCov">       7503 :       if (is_a &lt;cgraph_node *&gt;(node))</span></a>
+<a name="173"><span class="lineNum">     173 </span>                :<span class="lineCov">       1839 :         node = dyn_cast &lt;cgraph_node *&gt; (node)-&gt;function_symbol ();</span></a>
+<a name="174"><span class="lineNum">     174 </span>  [<span class="branchCov" title="Branch 0 was taken 4158 times"> + </span><span class="branchCov" title="Branch 1 was taken 3345 times"> + </span><span class="branchCov" title="Branch 2 was taken 90 times"> + </span><span class="branchCov" title="Branch 3 was taken 4068 times"> + </span>]:<span class="lineCov">       7503 :       if (!node-&gt;aux &amp;&amp; node-&gt;definition)</span></a>
+<a name="175"><span class="lineNum">     175 </span>                :            :         {</a>
+<a name="176"><span class="lineNum">     176 </span>                :<span class="lineCov">         90 :            node-&gt;aux = *first;</span></a>
+<a name="177"><span class="lineNum">     177 </span>                :<span class="lineCov">         90 :            *first = node;</span></a>
+<a name="178"><span class="lineNum">     178 </span>                :            :         }</a>
+<a name="179"><span class="lineNum">     179 </span>                :            :     }</a>
+<a name="180"><span class="lineNum">     180 </span>                :            : </a>
+<a name="181"><span class="lineNum">     181 </span>        [<span class="branchCov" title="Branch 0 was taken 6186 times"> + </span><span class="branchCov" title="Branch 1 was taken 563 times"> + </span>]:<span class="lineCov">       6749 :   if (cgraph_node *cnode = dyn_cast &lt;cgraph_node *&gt; (symbol))</span></a>
+<a name="182"><span class="lineNum">     182 </span>                :            :     {</a>
+<a name="183"><span class="lineNum">     183 </span>                :            :       struct cgraph_edge *edge;</a>
+<a name="184"><span class="lineNum">     184 </span>                :            : </a>
+<a name="185"><span class="lineNum">     185 </span>        [<span class="branchCov" title="Branch 0 was taken 28302 times"> + </span><span class="branchCov" title="Branch 1 was taken 6186 times"> + </span>]:<span class="lineCov">      34488 :       for (edge = cnode-&gt;callees; edge; edge = edge-&gt;next_callee)</span></a>
+<a name="186"><span class="lineNum">     186 </span>        [<span class="branchCov" title="Branch 0 was taken 4128 times"> + </span><span class="branchCov" title="Branch 1 was taken 24174 times"> + </span>]:<span class="lineCov">      28302 :         if (!edge-&gt;inline_failed)</span></a>
+<a name="187"><span class="lineNum">     187 </span>                :<span class="lineCov">       4128 :           enqueue_references (first, edge-&gt;callee);</span></a>
+<a name="188"><span class="lineNum">     188 </span>                :            :         else</a>
+<a name="189"><span class="lineNum">     189 </span>                :            :           {</a>
+<a name="190"><span class="lineNum">     190 </span>                :<span class="lineCov">      24174 :             symtab_node *node = edge-&gt;callee-&gt;ultimate_alias_target ();</span></a>
+<a name="191"><span class="lineNum">     191 </span>                :            : </a>
+<a name="192"><span class="lineNum">     192 </span>                :            :             /* Always keep thunks in same sections as target function.  */</a>
+<a name="193"><span class="lineNum">     193 </span>        [<span class="branchCov" title="Branch 0 was taken 24174 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      24174 :             if (is_a &lt;cgraph_node *&gt;(node))</span></a>
+<a name="194"><span class="lineNum">     194 </span>                :<span class="lineCov">      24174 :               node = dyn_cast &lt;cgraph_node *&gt; (node)-&gt;function_symbol ();</span></a>
+<a name="195"><span class="lineNum">     195 </span>  [<span class="branchCov" title="Branch 0 was taken 22446 times"> + </span><span class="branchCov" title="Branch 1 was taken 1728 times"> + </span><span class="branchCov" title="Branch 2 was taken 35 times"> + </span><span class="branchCov" title="Branch 3 was taken 22411 times"> + </span>]:<span class="lineCov">      24174 :             if (!node-&gt;aux &amp;&amp; node-&gt;definition)</span></a>
+<a name="196"><span class="lineNum">     196 </span>                :            :               {</a>
+<a name="197"><span class="lineNum">     197 </span>                :<span class="lineCov">         35 :                  node-&gt;aux = *first;</span></a>
+<a name="198"><span class="lineNum">     198 </span>                :<span class="lineCov">         35 :                  *first = node;</span></a>
+<a name="199"><span class="lineNum">     199 </span>                :            :               }</a>
+<a name="200"><span class="lineNum">     200 </span>                :            :           }</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :     }</a>
+<a name="202"><span class="lineNum">     202 </span>                :<span class="lineCov">       6749 : }</span></a>
+<a name="203"><span class="lineNum">     203 </span>                :            : </a>
+<a name="204"><span class="lineNum">     204 </span>                :            : /* Set comdat group of SYMBOL to GROUP.</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :    Callback for for_node_and_aliases.  */</a>
+<a name="206"><span class="lineNum">     206 </span>                :            : </a>
+<a name="207"><span class="lineNum">     207 </span>                :            : bool</a>
+<a name="208"><span class="lineNum">     208 </span>                :<span class="lineCov">         16 : set_comdat_group (symtab_node *symbol,</span></a>
+<a name="209"><span class="lineNum">     209 </span>                :            :                   void *head_p)</a>
+<a name="210"><span class="lineNum">     210 </span>                :            : {</a>
+<a name="211"><span class="lineNum">     211 </span>                :<span class="lineCov">         16 :   symtab_node *head = (symtab_node *)head_p;</span></a>
+<a name="212"><span class="lineNum">     212 </span>                :            : </a>
+<a name="213"><span class="lineNum">     213 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">         16 :   gcc_assert (!symbol-&gt;get_comdat_group ());</span></a>
+<a name="214"><span class="lineNum">     214 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         16 :   if (symbol-&gt;real_symbol_p ())</span></a>
+<a name="215"><span class="lineNum">     215 </span>                :            :     {</a>
+<a name="216"><span class="lineNum">     216 </span>                :<span class="lineCov">         16 :       symbol-&gt;set_comdat_group (head-&gt;get_comdat_group ());</span></a>
+<a name="217"><span class="lineNum">     217 </span>                :<span class="lineCov">         16 :       symbol-&gt;add_to_same_comdat_group (head);</span></a>
+<a name="218"><span class="lineNum">     218 </span>                :            :     }</a>
+<a name="219"><span class="lineNum">     219 </span>                :<span class="lineCov">         16 :   return false;</span></a>
+<a name="220"><span class="lineNum">     220 </span>                :            : }</a>
+<a name="221"><span class="lineNum">     221 </span>                :            : </a>
+<a name="222"><span class="lineNum">     222 </span>                :            : /* Set comdat group of SYMBOL to GROUP.</a>
+<a name="223"><span class="lineNum">     223 </span>                :            :    Callback for for_node_thunks_and_aliases.  */</a>
+<a name="224"><span class="lineNum">     224 </span>                :            : </a>
+<a name="225"><span class="lineNum">     225 </span>                :            : bool</a>
+<a name="226"><span class="lineNum">     226 </span>                :<span class="lineCov">         16 : set_comdat_group_1 (cgraph_node *symbol,</span></a>
+<a name="227"><span class="lineNum">     227 </span>                :            :                     void *head_p)</a>
+<a name="228"><span class="lineNum">     228 </span>                :            : {</a>
+<a name="229"><span class="lineNum">     229 </span>                :<span class="lineCov">         16 :   return set_comdat_group (symbol, head_p);</span></a>
+<a name="230"><span class="lineNum">     230 </span>                :            : }</a>
+<a name="231"><span class="lineNum">     231 </span>                :            : </a>
+<a name="232"><span class="lineNum">     232 </span>                :            : /* The actual pass with the main dataflow loop.  */</a>
+<a name="233"><span class="lineNum">     233 </span>                :            : </a>
+<a name="234"><span class="lineNum">     234 </span>                :            : static unsigned int</a>
+<a name="235"><span class="lineNum">     235 </span>                :<span class="lineCov">      23891 : ipa_comdats (void)</span></a>
+<a name="236"><span class="lineNum">     236 </span>                :            : {</a>
+<a name="237"><span class="lineNum">     237 </span>                :<span class="lineCov">      47782 :   hash_map&lt;symtab_node *, tree&gt; map (251);</span></a>
+<a name="238"><span class="lineNum">     238 </span>                :<span class="lineCov">      47782 :   hash_map&lt;tree, symtab_node *&gt; comdat_head_map (251);</span></a>
+<a name="239"><span class="lineNum">     239 </span>                :            :   symtab_node *symbol;</a>
+<a name="240"><span class="lineNum">     240 </span>                :<span class="lineCov">      23891 :   bool comdat_group_seen = false;</span></a>
+<a name="241"><span class="lineNum">     241 </span>                :<span class="lineCov">      23891 :   symtab_node *first = (symtab_node *) (void *) 1;</span></a>
+<a name="242"><span class="lineNum">     242 </span>                :            :   tree group;</a>
+<a name="243"><span class="lineNum">     243 </span>                :            : </a>
+<a name="244"><span class="lineNum">     244 </span>                :            :   /* Start the dataflow by assigning comdat group to symbols that are in comdat</a>
+<a name="245"><span class="lineNum">     245 </span>                :            :      groups already.  All other externally visible symbols must stay, we use</a>
+<a name="246"><span class="lineNum">     246 </span>                :            :      ERROR_MARK_NODE as bottom for the propagation.  */</a>
+<a name="247"><span class="lineNum">     247 </span>                :            : </a>
+<a name="248"><span class="lineNum">     248 </span>        [<span class="branchCov" title="Branch 0 was taken 746923 times"> + </span><span class="branchCov" title="Branch 1 was taken 23891 times"> + </span>]:<span class="lineCov">     770814 :   FOR_EACH_DEFINED_SYMBOL (symbol)</span></a>
+<a name="249"><span class="lineNum">     249 </span>        [<span class="branchCov" title="Branch 0 was taken 706391 times"> + </span><span class="branchCov" title="Branch 1 was taken 40532 times"> + </span>]:<span class="lineCov">     746923 :     if (!symbol-&gt;real_symbol_p ())</span></a>
+<a name="250"><span class="lineNum">     250 </span>                :            :       ;</a>
+<a name="251"><span class="lineNum">     251 </span>        [<span class="branchCov" title="Branch 0 was taken 5647 times"> + </span><span class="branchCov" title="Branch 1 was taken 700744 times"> + </span>]:<span class="lineCov">     706391 :     else if ((group = symbol-&gt;get_comdat_group ()) != NULL)</span></a>
+<a name="252"><span class="lineNum">     252 </span>                :            :       {</a>
+<a name="253"><span class="lineNum">     253 </span>                :<span class="lineCov">       5647 :         map.put (symbol, group);</span></a>
+<a name="254"><span class="lineNum">     254 </span>                :<span class="lineCov">       5647 :         comdat_head_map.put (group, symbol);</span></a>
+<a name="255"><span class="lineNum">     255 </span>                :<span class="lineCov">       5647 :         comdat_group_seen = true;</span></a>
+<a name="256"><span class="lineNum">     256 </span>                :            : </a>
+<a name="257"><span class="lineNum">     257 </span>                :            :         /* Mark the symbol so we won't waste time visiting it for dataflow.  */</a>
+<a name="258"><span class="lineNum">     258 </span>                :<span class="lineCov">       5647 :         symbol-&gt;aux = (symtab_node *) (void *) 1;</span></a>
+<a name="259"><span class="lineNum">     259 </span>                :            :       }</a>
+<a name="260"><span class="lineNum">     260 </span>                :            :     /* See symbols that cannot be privatized to comdats; that is externally</a>
+<a name="261"><span class="lineNum">     261 </span>                :            :        visible symbols or otherwise used ones.  We also do not want to mangle</a>
+<a name="262"><span class="lineNum">     262 </span>                :            :        user section names.  */</a>
+<a name="263"><span class="lineNum">     263 </span>                :<span class="lineCov">     700744 :     else if (symbol-&gt;externally_visible</span></a>
+<a name="264"><span class="lineNum">     264 </span>        [<span class="branchCov" title="Branch 0 was taken 8095 times"> + </span><span class="branchCov" title="Branch 1 was taken 1356 times"> + </span>]:<span class="lineCov">       9451 :              || symbol-&gt;force_output</span></a>
+<a name="265"><span class="lineNum">     265 </span>        [<span class="branchCov" title="Branch 0 was taken 8095 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       8095 :              || symbol-&gt;used_from_other_partition</span></a>
+<a name="266"><span class="lineNum">     266 </span>        [<span class="branchCov" title="Branch 0 was taken 8028 times"> + </span><span class="branchCov" title="Branch 1 was taken 67 times"> + </span>]:<span class="lineCov">       8095 :              || TREE_THIS_VOLATILE (symbol-&gt;decl)</span></a>
+<a name="267"><span class="lineNum">     267 </span>        [<span class="branchCov" title="Branch 0 was taken 8002 times"> + </span><span class="branchCov" title="Branch 1 was taken 26 times"> + </span>]:<span class="lineCov">       8028 :              || symbol-&gt;get_section ()</span></a>
+<a name="268"><span class="lineNum">     268 </span>  [<span class="branchCov" title="Branch 0 was taken 9451 times"> + </span><span class="branchCov" title="Branch 1 was taken 691293 times"> + </span><span class="branchCov" title="Branch 2 was taken 3953 times"> + </span><span class="branchCov" title="Branch 3 was taken 4049 times"> + </span> :<span class="lineCov">     714148 :              || (TREE_CODE (symbol-&gt;decl) == FUNCTION_DECL</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 692779 times"> + </span><span class="branchCov" title="Branch 5 was taken 7965 times"> + </span>]
+<a name="269"><span class="lineNum">     269 </span>                :<span class="lineCov">       3953 :                  &amp;&amp; (DECL_STATIC_CONSTRUCTOR (symbol-&gt;decl)</span></a>
+<a name="270"><span class="lineNum">     270 </span>  [<span class="branchCov" title="Branch 0 was taken 3921 times"> + </span><span class="branchCov" title="Branch 1 was taken 32 times"> + </span><span class="branchCov" title="Branch 2 was taken 5 times"> + </span><span class="branchCov" title="Branch 3 was taken 3916 times"> + </span>]:<span class="lineCov">       3953 :                      || DECL_STATIC_DESTRUCTOR (symbol-&gt;decl))))</span></a>
+<a name="271"><span class="lineNum">     271 </span>                :            :       {</a>
+<a name="272"><span class="lineNum">     272 </span>                :<span class="lineCov">     692779 :         symtab_node *target = symbol-&gt;ultimate_alias_target ();</span></a>
+<a name="273"><span class="lineNum">     273 </span>                :            : </a>
+<a name="274"><span class="lineNum">     274 </span>                :            :         /* Always keep thunks in same sections as target function.  */</a>
+<a name="275"><span class="lineNum">     275 </span>        [<span class="branchCov" title="Branch 0 was taken 64157 times"> + </span><span class="branchCov" title="Branch 1 was taken 628622 times"> + </span>]:<span class="lineCov">     692779 :         if (is_a &lt;cgraph_node *&gt;(target))</span></a>
+<a name="276"><span class="lineNum">     276 </span>                :<span class="lineCov">      64157 :           target = dyn_cast &lt;cgraph_node *&gt; (target)-&gt;function_symbol ();</span></a>
+<a name="277"><span class="lineNum">     277 </span>                :<span class="lineCov">     692779 :         map.put (target, error_mark_node);</span></a>
+<a name="278"><span class="lineNum">     278 </span>                :            : </a>
+<a name="279"><span class="lineNum">     279 </span>                :            :         /* Mark the symbol so we won't waste time visiting it for dataflow.  */</a>
+<a name="280"><span class="lineNum">     280 </span>                :<span class="lineCov">     692779 :         symbol-&gt;aux = (symtab_node *) (void *) 1;</span></a>
+<a name="281"><span class="lineNum">     281 </span>                :            :       }</a>
+<a name="282"><span class="lineNum">     282 </span>                :            :     else</a>
+<a name="283"><span class="lineNum">     283 </span>                :            :       {</a>
+<a name="284"><span class="lineNum">     284 </span>                :            :         /* Enqueue symbol for dataflow.  */</a>
+<a name="285"><span class="lineNum">     285 </span>                :<span class="lineCov">       7965 :         symbol-&gt;aux = first;</span></a>
+<a name="286"><span class="lineNum">     286 </span>                :<span class="lineCov">       7965 :         first = symbol;</span></a>
+<a name="287"><span class="lineNum">     287 </span>                :            :       }</a>
+<a name="288"><span class="lineNum">     288 </span>                :            : </a>
+<a name="289"><span class="lineNum">     289 </span>        [<span class="branchCov" title="Branch 0 was taken 23668 times"> + </span><span class="branchCov" title="Branch 1 was taken 223 times"> + </span>]:<span class="lineCov">      23891 :   if (!comdat_group_seen)</span></a>
+<a name="290"><span class="lineNum">     290 </span>                :            :     {</a>
+<a name="291"><span class="lineNum">     291 </span>        [<span class="branchCov" title="Branch 0 was taken 698260 times"> + </span><span class="branchCov" title="Branch 1 was taken 23668 times"> + </span>]:<span class="lineCov">     721928 :       FOR_EACH_DEFINED_SYMBOL (symbol)</span></a>
+<a name="292"><span class="lineNum">     292 </span>                :<span class="lineCov">     698260 :         symbol-&gt;aux = NULL;</span></a>
+<a name="293"><span class="lineNum">     293 </span>                :<span class="lineCov">      23668 :       return 0;</span></a>
+<a name="294"><span class="lineNum">     294 </span>                :            :     }</a>
+<a name="295"><span class="lineNum">     295 </span>                :            : </a>
+<a name="296"><span class="lineNum">     296 </span>                :            :   /* The actual dataflow.  */</a>
+<a name="297"><span class="lineNum">     297 </span>                :            : </a>
+<a name="298"><span class="lineNum">     298 </span>        [<span class="branchCov" title="Branch 0 was taken 2747 times"> + </span><span class="branchCov" title="Branch 1 was taken 223 times"> + </span>]:<span class="lineCov">       2970 :   while (first != (void *) 1)</span></a>
+<a name="299"><span class="lineNum">     299 </span>                :            :     {</a>
+<a name="300"><span class="lineNum">     300 </span>                :<span class="lineCov">       2747 :       tree group = NULL;</span></a>
+<a name="301"><span class="lineNum">     301 </span>                :            :       tree newgroup, *val;</a>
+<a name="302"><span class="lineNum">     302 </span>                :            : </a>
+<a name="303"><span class="lineNum">     303 </span>                :<span class="lineCov">       2747 :       symbol = first;</span></a>
+<a name="304"><span class="lineNum">     304 </span>                :<span class="lineCov">       2747 :       first = (symtab_node *)first-&gt;aux;</span></a>
+<a name="305"><span class="lineNum">     305 </span>                :            : </a>
+<a name="306"><span class="lineNum">     306 </span>                :            :       /* Get current lattice value of SYMBOL.  */</a>
+<a name="307"><span class="lineNum">     307 </span>                :<span class="lineCov">       2747 :       val = map.get (symbol);</span></a>
+<a name="308"><span class="lineNum">     308 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2747 times"> + </span>]:<span class="lineCov">       2747 :       if (val)</span></a>
+<a name="309"><span class="lineNum">     309 </span>                :<span class="lineNoCov">          0 :         group = *val;</span></a>
+<a name="310"><span class="lineNum">     310 </span>                :            : </a>
+<a name="311"><span class="lineNum">     311 </span>                :            :       /* If it is bottom, there is nothing to do; do not clear AUX</a>
+<a name="312"><span class="lineNum">     312 </span>                :            :          so we won't re-queue the symbol.  */</a>
+<a name="313"><span class="lineNum">     313 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2747 times"> + </span>]:<span class="lineCov">       2747 :       if (group == error_mark_node)</span></a>
+<a name="314"><span class="lineNum">     314 </span>                :<span class="lineCov">        126 :         continue;</span></a>
+<a name="315"><span class="lineNum">     315 </span>                :            : </a>
+<a name="316"><span class="lineNum">     316 </span>                :<span class="lineCov">       2747 :       newgroup = propagate_comdat_group (symbol, group, map);</span></a>
+<a name="317"><span class="lineNum">     317 </span>                :            : </a>
+<a name="318"><span class="lineNum">     318 </span>                :            :       /* If nothing changed, proceed to next symbol.  */</a>
+<a name="319"><span class="lineNum">     319 </span>        [<span class="branchCov" title="Branch 0 was taken 126 times"> + </span><span class="branchCov" title="Branch 1 was taken 2621 times"> + </span>]:<span class="lineCov">       2747 :       if (newgroup == group)</span></a>
+<a name="320"><span class="lineNum">     320 </span>                :            :         {</a>
+<a name="321"><span class="lineNum">     321 </span>                :<span class="lineCov">        126 :           symbol-&gt;aux = NULL;</span></a>
+<a name="322"><span class="lineNum">     322 </span>                :<span class="lineCov">        126 :           continue;</span></a>
+<a name="323"><span class="lineNum">     323 </span>                :            :         }</a>
+<a name="324"><span class="lineNum">     324 </span>                :            : </a>
+<a name="325"><span class="lineNum">     325 </span>                :            :       /* Update lattice value and enqueue all references for re-visiting.  */</a>
+<a name="326"><span class="lineNum">     326 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2621 times"> + </span>]:<span class="lineCov">       2621 :       gcc_assert (newgroup);</span></a>
+<a name="327"><span class="lineNum">     327 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2621 times"> + </span>]:<span class="lineCov">       2621 :       if (val)</span></a>
+<a name="328"><span class="lineNum">     328 </span>                :<span class="lineNoCov">          0 :         *val = newgroup;</span></a>
+<a name="329"><span class="lineNum">     329 </span>                :            :       else</a>
+<a name="330"><span class="lineNum">     330 </span>                :<span class="lineCov">       2621 :         map.put (symbol, newgroup);</span></a>
+<a name="331"><span class="lineNum">     331 </span>                :<span class="lineCov">       2621 :       enqueue_references (&amp;first, symbol);</span></a>
+<a name="332"><span class="lineNum">     332 </span>                :            : </a>
+<a name="333"><span class="lineNum">     333 </span>                :            :       /* We may need to revisit the symbol unless it is BOTTOM.  */</a>
+<a name="334"><span class="lineNum">     334 </span>        [<span class="branchCov" title="Branch 0 was taken 18 times"> + </span><span class="branchCov" title="Branch 1 was taken 2603 times"> + </span>]:<span class="lineCov">       2621 :       if (newgroup != error_mark_node)</span></a>
+<a name="335"><span class="lineNum">     335 </span>                :<span class="lineCov">         18 :         symbol-&gt;aux = NULL;</span></a>
+<a name="336"><span class="lineNum">     336 </span>                :            :     }</a>
+<a name="337"><span class="lineNum">     337 </span>                :            : </a>
+<a name="338"><span class="lineNum">     338 </span>                :            :   /* Finally assign symbols to the sections.  */</a>
+<a name="339"><span class="lineNum">     339 </span>                :            : </a>
+<a name="340"><span class="lineNum">     340 </span>        [<span class="branchCov" title="Branch 0 was taken 48663 times"> + </span><span class="branchCov" title="Branch 1 was taken 223 times"> + </span>]:<span class="lineCov">      48886 :   FOR_EACH_DEFINED_SYMBOL (symbol)</span></a>
+<a name="341"><span class="lineNum">     341 </span>                :            :     {</a>
+<a name="342"><span class="lineNum">     342 </span>                :            :       struct cgraph_node *fun;</a>
+<a name="343"><span class="lineNum">     343 </span>                :<span class="lineCov">      48663 :       symbol-&gt;aux = NULL; </span></a>
+<a name="344"><span class="lineNum">     344 </span>                :<span class="lineCov">      48663 :       if (!symbol-&gt;get_comdat_group ()</span></a>
+<a name="345"><span class="lineNum">     345 </span>        [<span class="branchCov" title="Branch 0 was taken 38423 times"> + </span><span class="branchCov" title="Branch 1 was taken 2798 times"> + </span>]:<span class="lineCov">      41221 :           &amp;&amp; !symbol-&gt;alias</span></a>
+<a name="346"><span class="lineNum">     346 </span>        [<span class="branchCov" title="Branch 0 was taken 35675 times"> + </span><span class="branchCov" title="Branch 1 was taken 2748 times"> + </span>]:<span class="lineCov">      38423 :           &amp;&amp; (!(fun = dyn_cast &lt;cgraph_node *&gt; (symbol))</span></a>
+<a name="347"><span class="lineNum">     347 </span>        [<span class="branchCov" title="Branch 0 was taken 35673 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">      35675 :               || !fun-&gt;thunk)</span></a>
+<a name="348"><span class="lineNum">     348 </span>  [<span class="branchCov" title="Branch 0 was taken 41221 times"> + </span><span class="branchCov" title="Branch 1 was taken 7442 times"> + </span><span class="branchCov" title="Branch 2 was taken 12373 times"> + </span><span class="branchCov" title="Branch 3 was taken 26048 times"> + </span> :<span class="lineCov">      89884 :           &amp;&amp; symbol-&gt;real_symbol_p ())</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 12373 times"> + </span><span class="branchCov" title="Branch 5 was taken 36290 times"> + </span>]
+<a name="349"><span class="lineNum">     349 </span>                :            :         {</a>
+<a name="350"><span class="lineNum">     350 </span>                :<span class="lineCov">      12373 :           tree *val = map.get (symbol);</span></a>
+<a name="351"><span class="lineNum">     351 </span>                :            : </a>
+<a name="352"><span class="lineNum">     352 </span>                :            :           /* A NULL here means that SYMBOL is unreachable in the definition</a>
+<a name="353"><span class="lineNum">     353 </span>                :            :              of ipa-comdats. Either ipa-comdats is wrong about this or someone</a>
+<a name="354"><span class="lineNum">     354 </span>                :            :              forgot to cleanup and remove unreachable functions earlier.  */</a>
+<a name="355"><span class="lineNum">     355 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 12373 times"> + </span>]:<span class="lineCov">      12373 :           gcc_assert (val);</span></a>
+<a name="356"><span class="lineNum">     356 </span>                :            : </a>
+<a name="357"><span class="lineNum">     357 </span>                :<span class="lineCov">      12373 :           tree group = *val;</span></a>
+<a name="358"><span class="lineNum">     358 </span>                :            : </a>
+<a name="359"><span class="lineNum">     359 </span>        [<span class="branchCov" title="Branch 0 was taken 12357 times"> + </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">      12373 :           if (group == error_mark_node)</span></a>
+<a name="360"><span class="lineNum">     360 </span>                :<span class="lineCov">      12357 :             continue;</span></a>
+<a name="361"><span class="lineNum">     361 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 16 times"> + </span>]:<span class="lineCov">         16 :           if (dump_file)</span></a>
+<a name="362"><span class="lineNum">     362 </span>                :            :             {</a>
+<a name="363"><span class="lineNum">     363 </span>                :<span class="lineNoCov">          0 :               fprintf (dump_file, &quot;Localizing symbol\n&quot;);</span></a>
+<a name="364"><span class="lineNum">     364 </span>                :<span class="lineNoCov">          0 :               symbol-&gt;dump (dump_file);</span></a>
+<a name="365"><span class="lineNum">     365 </span>                :<span class="lineNoCov">          0 :               fprintf (dump_file, &quot;To group: %s\n&quot;, IDENTIFIER_POINTER (group));</span></a>
+<a name="366"><span class="lineNum">     366 </span>                :            :             }</a>
+<a name="367"><span class="lineNum">     367 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         16 :           if (is_a &lt;cgraph_node *&gt; (symbol))</span></a>
+<a name="368"><span class="lineNum">     368 </span>                :            :            dyn_cast &lt;cgraph_node *&gt;(symbol)-&gt;call_for_symbol_thunks_and_aliases</a>
+<a name="369"><span class="lineNum">     369 </span>                :<span class="lineCov">         32 :                   (set_comdat_group_1,</span></a>
+<a name="370"><span class="lineNum">     370 </span>                :<span class="lineCov">         16 :                    *comdat_head_map.get (group),</span></a>
+<a name="371"><span class="lineNum">     371 </span>                :            :                    true);</a>
+<a name="372"><span class="lineNum">     372 </span>                :            :           else</a>
+<a name="373"><span class="lineNum">     373 </span>                :            :            symbol-&gt;call_for_symbol_and_aliases</a>
+<a name="374"><span class="lineNum">     374 </span>                :<span class="lineNoCov">          0 :                   (set_comdat_group,</span></a>
+<a name="375"><span class="lineNum">     375 </span>                :<span class="lineNoCov">          0 :                    *comdat_head_map.get (group),</span></a>
+<a name="376"><span class="lineNum">     376 </span>                :            :                    true);</a>
+<a name="377"><span class="lineNum">     377 </span>                :            :         }</a>
+<a name="378"><span class="lineNum">     378 </span>                :            :     }</a>
+<a name="379"><span class="lineNum">     379 </span>                :            : </a>
+<a name="380"><span class="lineNum">     380 </span>                :            : #if 0</a>
+<a name="381"><span class="lineNum">     381 </span>                :            :   /* Recompute calls comdat local flag.  This need to be done after all changes</a>
+<a name="382"><span class="lineNum">     382 </span>                :            :      are made.  */</a>
+<a name="383"><span class="lineNum">     383 </span>                :            :   cgraph_node *function;</a>
+<a name="384"><span class="lineNum">     384 </span>                :            :   FOR_EACH_DEFINED_FUNCTION (function)</a>
+<a name="385"><span class="lineNum">     385 </span>                :            :     if (function-&gt;get_comdat_group ())</a>
+<a name="386"><span class="lineNum">     386 </span>                :            :       function-&gt;calls_comdat_local = function-&gt;check_calls_comdat_local_p ();</a>
+<a name="387"><span class="lineNum">     387 </span>                :            : #endif</a>
+<a name="388"><span class="lineNum">     388 </span>                :<span class="lineCov">        223 :   return 0;</span></a>
+<a name="389"><span class="lineNum">     389 </span>                :            : }</a>
+<a name="390"><span class="lineNum">     390 </span>                :            : </a>
+<a name="391"><span class="lineNum">     391 </span>                :            : namespace {</a>
+<a name="392"><span class="lineNum">     392 </span>                :            : </a>
+<a name="393"><span class="lineNum">     393 </span>                :            : const pass_data pass_data_ipa_comdats =</a>
+<a name="394"><span class="lineNum">     394 </span>                :            : {</a>
+<a name="395"><span class="lineNum">     395 </span>                :            :   IPA_PASS, /* type */</a>
+<a name="396"><span class="lineNum">     396 </span>                :            :   &quot;comdats&quot;, /* name */</a>
+<a name="397"><span class="lineNum">     397 </span>                :            :   OPTGROUP_NONE, /* optinfo_flags */</a>
+<a name="398"><span class="lineNum">     398 </span>                :            :   TV_IPA_COMDATS, /* tv_id */</a>
+<a name="399"><span class="lineNum">     399 </span>                :            :   0, /* properties_required */</a>
+<a name="400"><span class="lineNum">     400 </span>                :            :   0, /* properties_provided */</a>
+<a name="401"><span class="lineNum">     401 </span>                :            :   0, /* properties_destroyed */</a>
+<a name="402"><span class="lineNum">     402 </span>                :            :   0, /* todo_flags_start */</a>
+<a name="403"><span class="lineNum">     403 </span>                :            :   0, /* todo_flags_finish */</a>
+<a name="404"><span class="lineNum">     404 </span>                :            : };</a>
+<a name="405"><span class="lineNum">     405 </span>                :            : </a>
+<a name="406"><span class="lineNum">     406 </span>                :            : class pass_ipa_comdats : public ipa_opt_pass_d</a>
+<a name="407"><span class="lineNum">     407 </span>                :            : {</a>
+<a name="408"><span class="lineNum">     408 </span>                :            : public:</a>
+<a name="409"><span class="lineNum">     409 </span>                :<span class="lineCov">      28040 :   pass_ipa_comdats (gcc::context *ctxt)</span></a>
+<a name="410"><span class="lineNum">     410 </span>                :<span class="lineCov">      28040 :     : ipa_opt_pass_d (pass_data_ipa_comdats, ctxt,</span></a>
+<a name="411"><span class="lineNum">     411 </span>                :            :                       NULL, /* generate_summary */</a>
+<a name="412"><span class="lineNum">     412 </span>                :            :                       NULL, /* write_summary */</a>
+<a name="413"><span class="lineNum">     413 </span>                :            :                       NULL, /* read_summary */</a>
+<a name="414"><span class="lineNum">     414 </span>                :            :                       NULL, /* write_optimization_summary */</a>
+<a name="415"><span class="lineNum">     415 </span>                :            :                       NULL, /* read_optimization_summary */</a>
+<a name="416"><span class="lineNum">     416 </span>                :            :                       NULL, /* stmt_fixup */</a>
+<a name="417"><span class="lineNum">     417 </span>                :            :                       0, /* function_transform_todo_flags_start */</a>
+<a name="418"><span class="lineNum">     418 </span>                :            :                       NULL, /* function_transform */</a>
+<a name="419"><span class="lineNum">     419 </span>                :<span class="lineCov">      28040 :                       NULL) /* variable_transform */</span></a>
+<a name="420"><span class="lineNum">     420 </span>                :<span class="lineCov">      28040 :   {}</span></a>
+<a name="421"><span class="lineNum">     421 </span>                :            : </a>
+<a name="422"><span class="lineNum">     422 </span>                :            :   /* opt_pass methods: */</a>
+<a name="423"><span class="lineNum">     423 </span>                :            :   virtual bool gate (function *);</a>
+<a name="424"><span class="lineNum">     424 </span>                :<span class="lineCov">      23891 :   virtual unsigned int execute (function *) { return ipa_comdats (); }</span></a>
+<a name="425"><span class="lineNum">     425 </span>                :            : </a>
+<a name="426"><span class="lineNum">     426 </span>                :            : }; // class pass_ipa_comdats</a>
+<a name="427"><span class="lineNum">     427 </span>                :            : </a>
+<a name="428"><span class="lineNum">     428 </span>                :            : bool</a>
+<a name="429"><span class="lineNum">     429 </span>                :<span class="lineCov">      56570 : pass_ipa_comdats::gate (function *)</span></a>
+<a name="430"><span class="lineNum">     430 </span>                :            : {</a>
+<a name="431"><span class="lineNum">     431 </span>                :<span class="lineCov">      56570 :   return HAVE_COMDAT_GROUP;</span></a>
+<a name="432"><span class="lineNum">     432 </span>                :            : }</a>
+<a name="433"><span class="lineNum">     433 </span>                :            : </a>
+<a name="434"><span class="lineNum">     434 </span>                :            : } // anon namespace</a>
+<a name="435"><span class="lineNum">     435 </span>                :            : </a>
+<a name="436"><span class="lineNum">     436 </span>                :            : ipa_opt_pass_d *</a>
+<a name="437"><span class="lineNum">     437 </span>                :<span class="lineCov">      28040 : make_pass_ipa_comdats (gcc::context *ctxt)</span></a>
+<a name="438"><span class="lineNum">     438 </span>                :            : {</a>
+<a name="439"><span class="lineNum">     439 </span>                :<span class="lineCov">      28040 :   return new pass_ipa_comdats (ctxt);</span></a>
+<a name="440"><span class="lineNum">     440 </span>                :            : }</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

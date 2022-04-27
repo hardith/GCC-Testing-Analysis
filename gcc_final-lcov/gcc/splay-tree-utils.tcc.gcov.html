@@ -1,0 +1,1055 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/splay-tree-utils.tcc</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - splay-tree-utils.tcc<span style="font-size: 80%;"> (source / <a href="splay-tree-utils.tcc.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">221</td>
+            <td class="headerCovTableEntry">335</td>
+            <td class="headerCovTableEntryLo">66.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">47</td>
+            <td class="headerCovTableEntry">81</td>
+            <td class="headerCovTableEntryLo">58.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">76</td>
+            <td class="headerCovTableEntry">126</td>
+            <td class="headerCovTableEntryLo">60.3 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Splay tree utilities                                             -*- C++ -*-</a>
+<a name="2"><span class="lineNum">       2 </span>                :            : // Copyright (C) 2020-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : //</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : // This file is part of GCC.</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : //</a>
+<a name="6"><span class="lineNum">       6 </span>                :            : // GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : // the terms of the GNU General Public License as published by the Free</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : // Software Foundation; either version 3, or (at your option) any later</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : // version.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : //</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : // GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : // WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : // FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : // for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : //</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : // You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : // along with GCC; see the file COPYING3.  If not see</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : // &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : // INDEX is either 0 or 1.  If it is 0, return NODE's left child,</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : // otherwise return NODE's right child.</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : inline typename base_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="24"><span class="lineNum">      24 </span>                :<span class="lineCov">    5868377 : base_splay_tree&lt;Accessors&gt;::get_child (node_type node, unsigned int index)</span></a>
+<a name="25"><span class="lineNum">      25 </span>                :            : {</a>
+<a name="26"><span class="lineNum">      26 </span>                :<span class="lineCov">    5868377 :   return Accessors::child (node, index);</span></a>
+<a name="27"><span class="lineNum">      27 </span>                :            : }</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : </a>
+<a name="29"><span class="lineNum">      29 </span>                :            : // INDEX is either 0 or 1.  If it is 0, change NODE's left child to CHILD,</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : // otherwise change NODE's right child to CHILD.  If CHILD has a parent</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : // field, record that its parent is now NODE.</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : inline void</a>
+<a name="34"><span class="lineNum">      34 </span>                :<span class="lineCov">    4654367 : base_splay_tree&lt;Accessors&gt;::set_child (node_type node, unsigned int index,</span></a>
+<a name="35"><span class="lineNum">      35 </span>                :            :                                        node_type child)</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : {</a>
+<a name="37"><span class="lineNum">      37 </span>                :<span class="lineCov">    4654367 :   Accessors::child (node, index) = child;</span></a>
+<a name="38"><span class="lineNum">      38 </span>        [<span class="branchCov" title="Branch 0 was taken 2781096 times"> + </span><span class="branchCov" title="Branch 1 was taken 1873271 times"> + </span>]:<span class="lineCov">    4654367 :   if (child)</span></a>
+<a name="39"><span class="lineNum">      39 </span>                :<span class="lineCov">    2781096 :     set_parent (child, node);</span></a>
+<a name="40"><span class="lineNum">      40 </span>                :<span class="lineCov">    4654367 : }</span></a>
+<a name="41"><span class="lineNum">      41 </span>                :            : </a>
+<a name="42"><span class="lineNum">      42 </span>                :            : // Rotate the tree to promote child number INDEX of NODE, so that that</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : // child becomes a parent of NODE.  Return the promoted node.</a>
+<a name="44"><span class="lineNum">      44 </span>                :            : //</a>
+<a name="45"><span class="lineNum">      45 </span>                :            : // The caller has the responsibility of assigning a correct parent</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : // to the returned node.</a>
+<a name="47"><span class="lineNum">      47 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="48"><span class="lineNum">      48 </span>                :            : inline typename base_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="49"><span class="lineNum">      49 </span>                :<span class="lineCov">      14039 : base_splay_tree&lt;Accessors&gt;::promote_child (node_type node, unsigned int index)</span></a>
+<a name="50"><span class="lineNum">      50 </span>                :            : {</a>
+<a name="51"><span class="lineNum">      51 </span>                :<span class="lineCov">      14039 :   node_type promoted = get_child (node, index);</span></a>
+<a name="52"><span class="lineNum">      52 </span>                :<span class="lineCov">      14039 :   set_child (node, index, get_child (promoted, 1 - index));</span></a>
+<a name="53"><span class="lineNum">      53 </span>                :<span class="lineCov">      14039 :   set_child (promoted, 1 - index, node);</span></a>
+<a name="54"><span class="lineNum">      54 </span>                :<span class="lineCov">      14039 :   return promoted;</span></a>
+<a name="55"><span class="lineNum">      55 </span>                :            : }</a>
+<a name="56"><span class="lineNum">      56 </span>                :            : </a>
+<a name="57"><span class="lineNum">      57 </span>                :            : // Treat child number INDEX of NODE as being CHILD and rotate the tree</a>
+<a name="58"><span class="lineNum">      58 </span>                :            : // so that CHILD becomes a parent of NODE.</a>
+<a name="59"><span class="lineNum">      59 </span>                :            : //</a>
+<a name="60"><span class="lineNum">      60 </span>                :            : // The caller has the responsibility of assigning a correct parent to CHILD.</a>
+<a name="61"><span class="lineNum">      61 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="62"><span class="lineNum">      62 </span>                :            : inline void</a>
+<a name="63"><span class="lineNum">      63 </span>                :<span class="lineCov">     654493 : base_splay_tree&lt;Accessors&gt;::promote_child (node_type node, unsigned int index,</span></a>
+<a name="64"><span class="lineNum">      64 </span>                :            :                                            node_type child)</a>
+<a name="65"><span class="lineNum">      65 </span>                :            : {</a>
+<a name="66"><span class="lineNum">      66 </span>                :<span class="lineCov">     654493 :   set_child (node, index, get_child (child, 1 - index));</span></a>
+<a name="67"><span class="lineNum">      67 </span>                :<span class="lineCov">     654493 :   set_child (child, 1 - index, node);</span></a>
+<a name="68"><span class="lineNum">      68 </span>                :<span class="lineCov">     654493 : }</span></a>
+<a name="69"><span class="lineNum">      69 </span>                :            : </a>
+<a name="70"><span class="lineNum">      70 </span>                :            : // Print NODE to PP, using PRINTER (PP, N) to print the contents of node N.</a>
+<a name="71"><span class="lineNum">      71 </span>                :            : // Prefix each new line with INDENT_STRING.  CODE is 'T' if NODE is the root</a>
+<a name="72"><span class="lineNum">      72 </span>                :            : // node, 'L' if NODE is the left child of its parent, or 'R' if NODE is the</a>
+<a name="73"><span class="lineNum">      73 </span>                :            : // right child of its parent.</a>
+<a name="74"><span class="lineNum">      74 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="75"><span class="lineNum">      75 </span>                :            : template&lt;typename Printer&gt;</a>
+<a name="76"><span class="lineNum">      76 </span>                :            : void</a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineNoCov">          0 : base_splay_tree&lt;Accessors&gt;::print (pretty_printer *pp, node_type node,</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :            :                                    Printer printer, char code,</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :                                    vec&lt;char&gt; &amp;indent_string)</a>
+<a name="80"><span class="lineNum">      80 </span>                :            : {</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :   // In the comments below, PREFIX refers to the incoming contents</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :   // of INDENT_STRING.</a>
+<a name="83"><span class="lineNum">      83 </span>                :<span class="lineNoCov">          0 :   node_type left = get_child (node, 0);</span></a>
+<a name="84"><span class="lineNum">      84 </span>                :<span class="lineNoCov">          0 :   node_type right = get_child (node, 1);</span></a>
+<a name="85"><span class="lineNum">      85 </span>                :            : </a>
+<a name="86"><span class="lineNum">      86 </span>                :<span class="lineNoCov">          0 :   auto orig_indent_len = indent_string.length ();</span></a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineNoCov">          0 :   indent_string.safe_grow (orig_indent_len + 3);</span></a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineNoCov">          0 :   char *extra_indent = indent_string.address () + orig_indent_len;</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :            : </a>
+<a name="90"><span class="lineNum">      90 </span>                :            :   // Print [T], [L], or [R].</a>
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineNoCov">          0 :   extra_indent[0] = '[';</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineNoCov">          0 :   extra_indent[1] = code;</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :<span class="lineNoCov">          0 :   extra_indent[2] = ']';</span></a>
+<a name="94"><span class="lineNum">      94 </span>                :<span class="lineNoCov">          0 :   pp_append_text (pp, extra_indent, indent_string.end ());</span></a>
+<a name="95"><span class="lineNum">      95 </span>                :<span class="lineNoCov">          0 :   pp_space (pp);</span></a>
+<a name="96"><span class="lineNum">      96 </span>                :            : </a>
+<a name="97"><span class="lineNum">      97 </span>                :            :   // Print the node itself, using PREFIX + &quot; | &quot; or PREFIX + &quot;   &quot; to indent</a>
+<a name="98"><span class="lineNum">      98 </span>                :            :   // new lines under the &quot;[_]&quot; that we just printed.</a>
+<a name="99"><span class="lineNum">      99 </span>                :<span class="lineNoCov">          0 :   extra_indent[0] = ' ';</span></a>
+<a name="100"><span class="lineNum">     100 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :   extra_indent[1] = (left || right ? '|' : ' ');</span></a>
+<a name="101"><span class="lineNum">     101 </span>                :<span class="lineNoCov">          0 :   extra_indent[2] = ' ';</span></a>
+<a name="102"><span class="lineNum">     102 </span>                :            :   {</a>
+<a name="103"><span class="lineNum">     103 </span>                :<span class="lineNoCov">          0 :     pretty_printer sub_pp;</span></a>
+<a name="104"><span class="lineNum">     104 </span>                :<span class="lineNoCov">          0 :     printer (&amp;sub_pp, node);</span></a>
+<a name="105"><span class="lineNum">     105 </span>                :<span class="lineNoCov">          0 :     const char *text = pp_formatted_text (&amp;sub_pp);</span></a>
+<a name="106"><span class="lineNum">     106 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :     while (const char *end = strchr (text, '\n'))</span></a>
+<a name="107"><span class="lineNum">     107 </span>                :            :       {</a>
+<a name="108"><span class="lineNum">     108 </span>                :<span class="lineNoCov">          0 :         pp_append_text (pp, text, end);</span></a>
+<a name="109"><span class="lineNum">     109 </span>                :<span class="lineNoCov">          0 :         pp_newline_and_indent (pp, 0);</span></a>
+<a name="110"><span class="lineNum">     110 </span>                :<span class="lineNoCov">          0 :         pp_append_text (pp, indent_string.begin (), indent_string.end ());</span></a>
+<a name="111"><span class="lineNum">     111 </span>                :<span class="lineNoCov">          0 :         text = end + 1;</span></a>
+<a name="112"><span class="lineNum">     112 </span>                :            :       }</a>
+<a name="113"><span class="lineNum">     113 </span>                :<span class="lineNoCov">          0 :     pp_string (pp, text);</span></a>
+<a name="114"><span class="lineNum">     114 </span>                :            :   }</a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (left)</span></a>
+<a name="117"><span class="lineNum">     117 </span>                :            :     {</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :       // Print PREFIX + &quot; +-&quot; for the first line of the left subtree,</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :       // to be followed by &quot;[L]&quot;.</a>
+<a name="120"><span class="lineNum">     120 </span>                :<span class="lineNoCov">          0 :       extra_indent[1] = '+';</span></a>
+<a name="121"><span class="lineNum">     121 </span>                :<span class="lineNoCov">          0 :       extra_indent[2] = '-';</span></a>
+<a name="122"><span class="lineNum">     122 </span>                :<span class="lineNoCov">          0 :       pp_newline_and_indent (pp, 0);</span></a>
+<a name="123"><span class="lineNum">     123 </span>                :<span class="lineNoCov">          0 :       pp_append_text (pp, indent_string.begin (), indent_string.end ());</span></a>
+<a name="124"><span class="lineNum">     124 </span>                :            : </a>
+<a name="125"><span class="lineNum">     125 </span>                :            :       // Print the left subtree, using PREFIX + &quot; | &quot; or PREFIX + &quot;   &quot;</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :       // to indent under the PREFIX + &quot; +-&quot; that we just printed.</a>
+<a name="127"><span class="lineNum">     127 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       extra_indent[1] = right ? '|' : ' ';</span></a>
+<a name="128"><span class="lineNum">     128 </span>                :<span class="lineNoCov">          0 :       extra_indent[2] = ' ';</span></a>
+<a name="129"><span class="lineNum">     129 </span>                :<span class="lineNoCov">          0 :       print (pp, left, printer, 'L', indent_string);</span></a>
+<a name="130"><span class="lineNum">     130 </span>                :<span class="lineNoCov">          0 :       extra_indent = indent_string.address () + orig_indent_len;</span></a>
+<a name="131"><span class="lineNum">     131 </span>                :            : </a>
+<a name="132"><span class="lineNum">     132 </span>                :            :       // If LEFT is not a leaf and we also have a right subtree, use a</a>
+<a name="133"><span class="lineNum">     133 </span>                :            :       // PREFIX + &quot; |&quot; line to separate them.</a>
+<a name="134"><span class="lineNum">     134 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       if (right &amp;&amp; (get_child (left, 0) || get_child (left, 1)))</span></a>
+<span class="lineNum">         </span>   <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<a name="135"><span class="lineNum">     135 </span>                :            :         {</a>
+<a name="136"><span class="lineNum">     136 </span>                :<span class="lineNoCov">          0 :           pp_newline_and_indent (pp, 0);</span></a>
+<a name="137"><span class="lineNum">     137 </span>                :<span class="lineNoCov">          0 :           pp_append_text (pp, indent_string.begin (), &amp;extra_indent[2]);</span></a>
+<a name="138"><span class="lineNum">     138 </span>                :            :         }</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :     }</a>
+<a name="140"><span class="lineNum">     140 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (right)</span></a>
+<a name="141"><span class="lineNum">     141 </span>                :            :     {</a>
+<a name="142"><span class="lineNum">     142 </span>                :            :       // Print PREFIX + &quot; +-&quot; for the first line of the right subtree,</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :       // to be followed by &quot;[R]&quot;.</a>
+<a name="144"><span class="lineNum">     144 </span>                :<span class="lineNoCov">          0 :       extra_indent[1] = '+';</span></a>
+<a name="145"><span class="lineNum">     145 </span>                :<span class="lineNoCov">          0 :       extra_indent[2] = '-';</span></a>
+<a name="146"><span class="lineNum">     146 </span>                :<span class="lineNoCov">          0 :       pp_newline_and_indent (pp, 0);</span></a>
+<a name="147"><span class="lineNum">     147 </span>                :<span class="lineNoCov">          0 :       pp_append_text (pp, indent_string.begin (), indent_string.end ());</span></a>
+<a name="148"><span class="lineNum">     148 </span>                :            : </a>
+<a name="149"><span class="lineNum">     149 </span>                :            :       // Print the right subtree, using PREFIX + &quot;   &quot; to indent under the</a>
+<a name="150"><span class="lineNum">     150 </span>                :            :       // PREFIX + &quot; +-&quot; that we just printed.</a>
+<a name="151"><span class="lineNum">     151 </span>                :<span class="lineNoCov">          0 :       extra_indent[1] = ' ';</span></a>
+<a name="152"><span class="lineNum">     152 </span>                :<span class="lineNoCov">          0 :       extra_indent[2] = ' ';</span></a>
+<a name="153"><span class="lineNum">     153 </span>                :<span class="lineNoCov">          0 :       print (pp, right, printer, 'R', indent_string);</span></a>
+<a name="154"><span class="lineNum">     154 </span>                :            :     }</a>
+<a name="155"><span class="lineNum">     155 </span>                :<span class="lineNoCov">          0 :   indent_string.truncate (orig_indent_len);</span></a>
+<a name="156"><span class="lineNum">     156 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="157"><span class="lineNum">     157 </span>                :            : </a>
+<a name="158"><span class="lineNum">     158 </span>                :            : // See the comment above the declaration.</a>
+<a name="159"><span class="lineNum">     159 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="160"><span class="lineNum">     160 </span>                :            : template&lt;typename Printer&gt;</a>
+<a name="161"><span class="lineNum">     161 </span>                :            : void</a>
+<a name="162"><span class="lineNum">     162 </span>                :<span class="lineNoCov">          0 : base_splay_tree&lt;Accessors&gt;::print (pretty_printer *pp, node_type node,</span></a>
+<a name="163"><span class="lineNum">     163 </span>                :            :                                    Printer printer)</a>
+<a name="164"><span class="lineNum">     164 </span>                :            : {</a>
+<a name="165"><span class="lineNum">     165 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!node)</span></a>
+<a name="166"><span class="lineNum">     166 </span>                :            :     {</a>
+<a name="167"><span class="lineNum">     167 </span>                :<span class="lineNoCov">          0 :       pp_string (pp, &quot;null&quot;);</span></a>
+<a name="168"><span class="lineNum">     168 </span>                :<span class="lineNoCov">          0 :       return;</span></a>
+<a name="169"><span class="lineNum">     169 </span>                :            :     }</a>
+<a name="170"><span class="lineNum">     170 </span>                :<span class="lineNoCov">          0 :   auto_vec&lt;char, 64&gt; indent_string;</span></a>
+<a name="171"><span class="lineNum">     171 </span>                :<span class="lineNoCov">          0 :   print (pp, node, printer, 'T', indent_string);</span></a>
+<a name="172"><span class="lineNum">     172 </span>                :            : }</a>
+<a name="173"><span class="lineNum">     173 </span>                :            : </a>
+<a name="174"><span class="lineNum">     174 </span>                :            : // If N is 1, splay the last (rightmost) node reachable from START</a>
+<a name="175"><span class="lineNum">     175 </span>                :            : // to the position that START current holds and return the splayed node.</a>
+<a name="176"><span class="lineNum">     176 </span>                :            : // START is not itself the last node.</a>
+<a name="177"><span class="lineNum">     177 </span>                :            : //</a>
+<a name="178"><span class="lineNum">     178 </span>                :            : // If N is 0, splay the first (leftmost) node reachable from START</a>
+<a name="179"><span class="lineNum">     179 </span>                :            : // to the position that START current holds and return the splayed node.</a>
+<a name="180"><span class="lineNum">     180 </span>                :            : // START is not itself the first node.</a>
+<a name="181"><span class="lineNum">     181 </span>                :            : //</a>
+<a name="182"><span class="lineNum">     182 </span>                :            : // The caller has the responsibility of updating the parent of the</a>
+<a name="183"><span class="lineNum">     183 </span>                :            : // returned node.</a>
+<a name="184"><span class="lineNum">     184 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="185"><span class="lineNum">     185 </span>                :            : template&lt;unsigned int N&gt;</a>
+<a name="186"><span class="lineNum">     186 </span>                :            : typename base_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="187"><span class="lineNum">     187 </span>                :<span class="lineCov">      14039 : base_splay_tree&lt;Accessors&gt;::splay_limit (node_type start)</span></a>
+<a name="188"><span class="lineNum">     188 </span>                :            : {</a>
+<a name="189"><span class="lineNum">     189 </span>                :            :   // This essentially follows the simpilfied top-down method described</a>
+<a name="190"><span class="lineNum">     190 </span>                :            :   // in Sleator and Tarjan's &quot;Self-adjusting Binary Search Trees&quot;, but</a>
+<a name="191"><span class="lineNum">     191 </span>                :            :   // specialized for the case in which the comparison result is fixed.</a>
+<a name="192"><span class="lineNum">     192 </span>                :            :   // The first iteration is peeled to avoid the need for stack temporaries.</a>
+<a name="193"><span class="lineNum">     193 </span>                :            :   //</a>
+<a name="194"><span class="lineNum">     194 </span>                :            :   // The comments and names reflect the behavior for N == 1, but the</a>
+<a name="195"><span class="lineNum">     195 </span>                :            :   // N == 0 case behaves analogously.</a>
+<a name="196"><span class="lineNum">     196 </span>                :            : </a>
+<a name="197"><span class="lineNum">     197 </span>                :            :   // Rotate the tree to promote the right child of START to the root.</a>
+<a name="198"><span class="lineNum">     198 </span>                :<span class="lineCov">      14039 :   node_type node = promote_child (start, N);</span></a>
+<a name="199"><span class="lineNum">     199 </span>        [<span class="branchCov" title="Branch 0 was taken 5264 times"> + </span><span class="branchCov" title="Branch 1 was taken 8775 times"> + </span>]:<span class="lineCov">      14039 :   if (node_type right = get_child (node, N))</span></a>
+<a name="200"><span class="lineNum">     200 </span>                :            :     {</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :       // Perform the link left step, which for this first iteration</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :       // means making NODE the root of the left tree.</a>
+<a name="203"><span class="lineNum">     203 </span>                :            :       //</a>
+<a name="204"><span class="lineNum">     204 </span>                :            :       // NODE will become left child of the final node.  For a right</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :       // spine starting at NODE of the form:</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :       //</a>
+<a name="207"><span class="lineNum">     207 </span>                :            :       //  1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 -&gt; 6 -&gt; 7 -&gt; ... -&gt; N</a>
+<a name="208"><span class="lineNum">     208 </span>                :            :       //  |    |    |    |    |    |    |           |</a>
+<a name="209"><span class="lineNum">     209 </span>                :            :       //  V    V    V    V    V    V    V           V</a>
+<a name="210"><span class="lineNum">     210 </span>                :            :       //  A    B    C    D    E    F    G           NL</a>
+<a name="211"><span class="lineNum">     211 </span>                :            :       //</a>
+<a name="212"><span class="lineNum">     212 </span>                :            :       // the next step is to create a subtree of N whose right spine contains</a>
+<a name="213"><span class="lineNum">     213 </span>                :            :       // the odd-numbered nodes, as follows:</a>
+<a name="214"><span class="lineNum">     214 </span>                :            :       //</a>
+<a name="215"><span class="lineNum">     215 </span>                :            :       //  N</a>
+<a name="216"><span class="lineNum">     216 </span>                :            :       //  |</a>
+<a name="217"><span class="lineNum">     217 </span>                :            :       //  V</a>
+<a name="218"><span class="lineNum">     218 </span>                :            :       //  1 ------&gt; 3 ------&gt; 5 ------&gt; 7 -&gt; .... -&gt; NL</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :       //  |         |         |         |</a>
+<a name="220"><span class="lineNum">     220 </span>                :            :       //  V         V         V         V</a>
+<a name="221"><span class="lineNum">     221 </span>                :            :       //  A         2 -&gt; C    4 -&gt; E    6 -&gt; G</a>
+<a name="222"><span class="lineNum">     222 </span>                :            :       //            |         |         |</a>
+<a name="223"><span class="lineNum">     223 </span>                :            :       //            V         V         V</a>
+<a name="224"><span class="lineNum">     224 </span>                :            :       //            B         D         F</a>
+<a name="225"><span class="lineNum">     225 </span>                :            :       //</a>
+<a name="226"><span class="lineNum">     226 </span>                :            :       // First record 1 as the left child of the final root (N) and move</a>
+<a name="227"><span class="lineNum">     227 </span>                :            :       // on to node 2.</a>
+<a name="228"><span class="lineNum">     228 </span>                :<span class="lineCov">       5264 :       node_type final_child = node;</span></a>
+<a name="229"><span class="lineNum">     229 </span>                :<span class="lineCov">       5264 :       node_type new_spine_end = node;</span></a>
+<a name="230"><span class="lineNum">     230 </span>                :<span class="lineCov">       5264 :       node = right;</span></a>
+<a name="231"><span class="lineNum">     231 </span>        [<span class="branchCov" title="Branch 0 was taken 3840 times"> + </span><span class="branchCov" title="Branch 1 was taken 5264 times"> + </span>]:<span class="lineCov">       9104 :       while (node_type right = get_child (node, N))</span></a>
+<a name="232"><span class="lineNum">     232 </span>                :            :         {</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :           // Perform another rotate left step.</a>
+<a name="234"><span class="lineNum">     234 </span>                :            :           //</a>
+<a name="235"><span class="lineNum">     235 </span>                :            :           // We've built the tree rooted at 1 in the diagram above up to,</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :           // but not including, an even-numbered node NODE on the original</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :           // right spine.  Rotate the tree at NODE to promote the following</a>
+<a name="238"><span class="lineNum">     238 </span>                :            :           // odd-numbered node.</a>
+<a name="239"><span class="lineNum">     239 </span>                :<span class="lineCov">       3840 :           promote_child (node, N, right);</span></a>
+<a name="240"><span class="lineNum">     240 </span>                :<span class="lineCov">       3840 :           node = right;</span></a>
+<a name="241"><span class="lineNum">     241 </span>        [<span class="branchCov" title="Branch 0 was taken 2731 times"> + </span><span class="branchCov" title="Branch 1 was taken 1109 times"> + </span>]:<span class="lineCov">       3840 :           if (node_type right = get_child (node, N))</span></a>
+<a name="242"><span class="lineNum">     242 </span>                :            :             {</a>
+<a name="243"><span class="lineNum">     243 </span>                :            :               // Perform another link left step.</a>
+<a name="244"><span class="lineNum">     244 </span>                :            :               //</a>
+<a name="245"><span class="lineNum">     245 </span>                :            :               // Add the promoted odd-numbered node to the right spine of the</a>
+<a name="246"><span class="lineNum">     246 </span>                :            :               // tree rooted at 1 and move on to the next even-numbered node.</a>
+<a name="247"><span class="lineNum">     247 </span>                :<span class="lineCov">       2731 :               set_child (new_spine_end, N, node);</span></a>
+<a name="248"><span class="lineNum">     248 </span>                :<span class="lineCov">       2731 :               new_spine_end = node;</span></a>
+<a name="249"><span class="lineNum">     249 </span>                :<span class="lineCov">       2731 :               node = right;</span></a>
+<a name="250"><span class="lineNum">     250 </span>                :            :             }</a>
+<a name="251"><span class="lineNum">     251 </span>                :            :         }</a>
+<a name="252"><span class="lineNum">     252 </span>                :            :       // Perform the assembly step.</a>
+<a name="253"><span class="lineNum">     253 </span>                :            :       //</a>
+<a name="254"><span class="lineNum">     254 </span>                :            :       // Add NL to the new spine and make N the new root.</a>
+<a name="255"><span class="lineNum">     255 </span>                :<span class="lineCov">       5264 :       set_child (new_spine_end, N, get_child (node, 1 - N));</span></a>
+<a name="256"><span class="lineNum">     256 </span>                :<span class="lineCov">       5264 :       set_child (node, 1 - N, final_child);</span></a>
+<a name="257"><span class="lineNum">     257 </span>                :            :     }</a>
+<a name="258"><span class="lineNum">     258 </span>                :<span class="lineCov">      14039 :   return node;</span></a>
+<a name="259"><span class="lineNum">     259 </span>                :            : }</a>
+<a name="260"><span class="lineNum">     260 </span>                :            : </a>
+<a name="261"><span class="lineNum">     261 </span>                :            : // Remove NODE from its position in the splay tree.  If NODE has at least</a>
+<a name="262"><span class="lineNum">     262 </span>                :            : // one child node, return the node that should now hold NODE's position in</a>
+<a name="263"><span class="lineNum">     263 </span>                :            : // the splay tree.  If NODE has no children, return null.</a>
+<a name="264"><span class="lineNum">     264 </span>                :            : //</a>
+<a name="265"><span class="lineNum">     265 </span>                :            : // The caller has the responsibility of updating the parent of the</a>
+<a name="266"><span class="lineNum">     266 </span>                :            : // returned node.</a>
+<a name="267"><span class="lineNum">     267 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="268"><span class="lineNum">     268 </span>                :            : inline typename base_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="269"><span class="lineNum">     269 </span>                :<span class="lineCov">      34155 : base_splay_tree&lt;Accessors&gt;::remove_node_internal (node_type node)</span></a>
+<a name="270"><span class="lineNum">     270 </span>                :            : {</a>
+<a name="271"><span class="lineNum">     271 </span>                :<span class="lineCov">      34155 :   node_type left = get_child (node, 0);</span></a>
+<a name="272"><span class="lineNum">     272 </span>                :<span class="lineCov">      34155 :   node_type right = get_child (node, 1);</span></a>
+<a name="273"><span class="lineNum">     273 </span>        [<span class="branchCov" title="Branch 0 was taken 12162 times"> + </span><span class="branchCov" title="Branch 1 was taken 21993 times"> + </span>]:<span class="lineCov">      34155 :   if (!left)</span></a>
+<a name="274"><span class="lineNum">     274 </span>                :<span class="lineCov">      12162 :     return right;</span></a>
+<a name="275"><span class="lineNum">     275 </span>                :            : </a>
+<a name="276"><span class="lineNum">     276 </span>        [<span class="branchCov" title="Branch 0 was taken 4382 times"> + </span><span class="branchCov" title="Branch 1 was taken 17611 times"> + </span>]:<span class="lineCov">      21993 :   if (!right)</span></a>
+<a name="277"><span class="lineNum">     277 </span>                :<span class="lineCov">       4382 :     return left;</span></a>
+<a name="278"><span class="lineNum">     278 </span>                :            : </a>
+<a name="279"><span class="lineNum">     279 </span>        [<span class="branchCov" title="Branch 0 was taken 3336 times"> + </span><span class="branchCov" title="Branch 1 was taken 14275 times"> + </span>]:<span class="lineCov">      17611 :   if (get_child (left, 1))</span></a>
+<a name="280"><span class="lineNum">     280 </span>                :            :     {</a>
+<a name="281"><span class="lineNum">     281 </span>                :<span class="lineCov">       3336 :       left = splay_limit&lt;1&gt; (left);</span></a>
+<a name="282"><span class="lineNum">     282 </span>                :            :       gcc_checking_assert (!get_child (left, 1));</a>
+<a name="283"><span class="lineNum">     283 </span>                :            :     }</a>
+<a name="284"><span class="lineNum">     284 </span>                :<span class="lineCov">      17611 :   set_child (left, 1, right);</span></a>
+<a name="285"><span class="lineNum">     285 </span>                :<span class="lineCov">      17611 :   return left;</span></a>
+<a name="286"><span class="lineNum">     286 </span>                :            : }</a>
+<a name="287"><span class="lineNum">     287 </span>                :            : </a>
+<a name="288"><span class="lineNum">     288 </span>                :            : // See the comment above the declaration.</a>
+<a name="289"><span class="lineNum">     289 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="290"><span class="lineNum">     290 </span>                :            : inline void</a>
+<a name="291"><span class="lineNum">     291 </span>                :<span class="lineCov">    1064694 : base_splay_tree&lt;Accessors&gt;::insert_child (node_type node, unsigned int index,</span></a>
+<a name="292"><span class="lineNum">     292 </span>                :            :                                           node_type child)</a>
+<a name="293"><span class="lineNum">     293 </span>                :            : {</a>
+<a name="294"><span class="lineNum">     294 </span>                :            :   gcc_checking_assert (!get_child (child, 0) &amp;&amp; !get_child (child, 1));</a>
+<a name="295"><span class="lineNum">     295 </span>                :<span class="lineCov">    1064694 :   set_child (child, index, get_child (node, index));</span></a>
+<a name="296"><span class="lineNum">     296 </span>                :<span class="lineCov">    1064694 :   set_child (node, index, child);</span></a>
+<a name="297"><span class="lineNum">     297 </span>                :<span class="lineCov">    1064694 : }</span></a>
+<a name="298"><span class="lineNum">     298 </span>                :            : </a>
+<a name="299"><span class="lineNum">     299 </span>                :            : // Implement splay_next_node if N == 1 and splay_prev_node if N == 0.</a>
+<a name="300"><span class="lineNum">     300 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="301"><span class="lineNum">     301 </span>                :            : template&lt;unsigned int N&gt;</a>
+<a name="302"><span class="lineNum">     302 </span>                :            : bool</a>
+<a name="303"><span class="lineNum">     303 </span>                :<span class="lineCov">     862398 : rooted_splay_tree&lt;Accessors&gt;::splay_neighbor ()</span></a>
+<a name="304"><span class="lineNum">     304 </span>                :            : {</a>
+<a name="305"><span class="lineNum">     305 </span>                :<span class="lineCov">     862398 :   node_type node = m_root;</span></a>
+<a name="306"><span class="lineNum">     306 </span>                :<span class="lineCov">     862398 :   node_type new_root = get_child (node, N);</span></a>
+<a name="307"><span class="lineNum">     307 </span>        [<span class="branchCov" title="Branch 0 was taken 506824 times"> + </span><span class="branchCov" title="Branch 1 was taken 355574 times"> + </span>]:<span class="lineCov">     862398 :   if (!new_root)</span></a>
+<a name="308"><span class="lineNum">     308 </span>                :<span class="lineCov">     506824 :     return false;</span></a>
+<a name="309"><span class="lineNum">     309 </span>                :            : </a>
+<a name="310"><span class="lineNum">     310 </span>        [<span class="branchCov" title="Branch 0 was taken 10660 times"> + </span><span class="branchCov" title="Branch 1 was taken 344914 times"> + </span>]:<span class="lineCov">     355574 :   if (get_child (new_root, 1 - N))</span></a>
+<a name="311"><span class="lineNum">     311 </span>                :            :     {</a>
+<a name="312"><span class="lineNum">     312 </span>                :            :       // NEW_ROOT is not itself the required node, so splay the required</a>
+<a name="313"><span class="lineNum">     313 </span>                :            :       // node into its place.</a>
+<a name="314"><span class="lineNum">     314 </span>                :<span class="lineCov">      10660 :       new_root = parent::template splay_limit&lt;1 - N&gt; (new_root);</span></a>
+<a name="315"><span class="lineNum">     315 </span>                :            :       gcc_checking_assert (!get_child (new_root, 1 - N));</a>
+<a name="316"><span class="lineNum">     316 </span>                :<span class="lineCov">      10660 :       set_child (node, N, node_type ());</span></a>
+<a name="317"><span class="lineNum">     317 </span>                :<span class="lineCov">      10660 :       set_child (new_root, 1 - N, node);</span></a>
+<a name="318"><span class="lineNum">     318 </span>                :            :     }</a>
+<a name="319"><span class="lineNum">     319 </span>                :            :   else</a>
+<a name="320"><span class="lineNum">     320 </span>                :<span class="lineCov">     344914 :     promote_child (node, N, new_root);</span></a>
+<a name="321"><span class="lineNum">     321 </span>                :<span class="lineCov">     355574 :   set_parent (new_root, node_type ());</span></a>
+<a name="322"><span class="lineNum">     322 </span>                :<span class="lineCov">     355574 :   m_root = new_root;</span></a>
+<a name="323"><span class="lineNum">     323 </span>                :<span class="lineCov">     355574 :   return true;</span></a>
+<a name="324"><span class="lineNum">     324 </span>                :            : }</a>
+<a name="325"><span class="lineNum">     325 </span>                :            : </a>
+<a name="326"><span class="lineNum">     326 </span>                :            : // See the comment above the declaration.</a>
+<a name="327"><span class="lineNum">     327 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="328"><span class="lineNum">     328 </span>                :            : template&lt;typename Comparator&gt;</a>
+<a name="329"><span class="lineNum">     329 </span>                :            : bool</a>
+<a name="330"><span class="lineNum">     330 </span>                :            : rooted_splay_tree&lt;Accessors&gt;::insert (node_type new_node, Comparator compare)</a>
+<a name="331"><span class="lineNum">     331 </span>                :            : {</a>
+<a name="332"><span class="lineNum">     332 </span>                :            :   gcc_checking_assert (!get_child (new_node, 0) &amp;&amp; !get_child (new_node, 1));</a>
+<a name="333"><span class="lineNum">     333 </span>                :            :   if (!m_root)</a>
+<a name="334"><span class="lineNum">     334 </span>                :            :     {</a>
+<a name="335"><span class="lineNum">     335 </span>                :            :       m_root = new_node;</a>
+<a name="336"><span class="lineNum">     336 </span>                :            :       return true;</a>
+<a name="337"><span class="lineNum">     337 </span>                :            :     }</a>
+<a name="338"><span class="lineNum">     338 </span>                :            : </a>
+<a name="339"><span class="lineNum">     339 </span>                :            :   int comparison = lookup (compare);</a>
+<a name="340"><span class="lineNum">     340 </span>                :            :   if (comparison == 0)</a>
+<a name="341"><span class="lineNum">     341 </span>                :            :     return false;</a>
+<a name="342"><span class="lineNum">     342 </span>                :            : </a>
+<a name="343"><span class="lineNum">     343 </span>                :            :   // Insert NEW_NODE before M_ROOT if COMPARISON &lt; 0 and after M_ROOT</a>
+<a name="344"><span class="lineNum">     344 </span>                :            :   // otherwise.</a>
+<a name="345"><span class="lineNum">     345 </span>                :            :   set_child (new_node, comparison &lt; 0, m_root);</a>
+<a name="346"><span class="lineNum">     346 </span>                :            :   set_child (new_node, comparison &gt; 0, get_child (m_root, comparison &gt; 0));</a>
+<a name="347"><span class="lineNum">     347 </span>                :            :   set_child (m_root, comparison &gt; 0, nullptr);</a>
+<a name="348"><span class="lineNum">     348 </span>                :            :   m_root = new_node;</a>
+<a name="349"><span class="lineNum">     349 </span>                :            :   return true;</a>
+<a name="350"><span class="lineNum">     350 </span>                :            : }</a>
+<a name="351"><span class="lineNum">     351 </span>                :            : </a>
+<a name="352"><span class="lineNum">     352 </span>                :            : // See the comment above the declaration.</a>
+<a name="353"><span class="lineNum">     353 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="354"><span class="lineNum">     354 </span>                :            : inline void</a>
+<a name="355"><span class="lineNum">     355 </span>                :<span class="lineCov">     518609 : rooted_splay_tree&lt;Accessors&gt;::insert_max_node (node_type new_node)</span></a>
+<a name="356"><span class="lineNum">     356 </span>                :            : {</a>
+<a name="357"><span class="lineNum">     357 </span>                :            :   gcc_checking_assert (!get_child (new_node, 0) &amp;&amp; !get_child (new_node, 1));</a>
+<a name="358"><span class="lineNum">     358 </span>                :<span class="lineCov">     518609 :   set_child (new_node, 0, m_root);</span></a>
+<a name="359"><span class="lineNum">     359 </span>                :<span class="lineCov">     518609 :   m_root = new_node;</span></a>
+<a name="360"><span class="lineNum">     360 </span>                :<span class="lineCov">     518609 : }</span></a>
+<a name="361"><span class="lineNum">     361 </span>                :            : </a>
+<a name="362"><span class="lineNum">     362 </span>                :            : // See the comment above the declaration.</a>
+<a name="363"><span class="lineNum">     363 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="364"><span class="lineNum">     364 </span>                :            : inline void</a>
+<a name="365"><span class="lineNum">     365 </span>                :<span class="lineNoCov">          0 : rooted_splay_tree&lt;Accessors&gt;::splice_next_tree (rooted_splay_tree next_tree)</span></a>
+<a name="366"><span class="lineNum">     366 </span>                :            : {</a>
+<a name="367"><span class="lineNum">     367 </span>                :<span class="lineNoCov">          0 :   splay_max_node ();</span></a>
+<a name="368"><span class="lineNum">     368 </span>                :<span class="lineNoCov">          0 :   set_child (m_root, 1, next_tree.m_root);</span></a>
+<a name="369"><span class="lineNum">     369 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="370"><span class="lineNum">     370 </span>                :            : </a>
+<a name="371"><span class="lineNum">     371 </span>                :            : // See the comment above the declaration.</a>
+<a name="372"><span class="lineNum">     372 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="373"><span class="lineNum">     373 </span>                :            : inline void</a>
+<a name="374"><span class="lineNum">     374 </span>                :            : rooted_splay_tree&lt;Accessors&gt;::replace_max_node_at_root (node_type new_node)</a>
+<a name="375"><span class="lineNum">     375 </span>                :            : {</a>
+<a name="376"><span class="lineNum">     376 </span>                :            :   node_type old_node = m_root;</a>
+<a name="377"><span class="lineNum">     377 </span>                :            :   gcc_checking_assert (!get_child (new_node, 0)</a>
+<a name="378"><span class="lineNum">     378 </span>                :            :                        &amp;&amp; !get_child (new_node, 1)</a>
+<a name="379"><span class="lineNum">     379 </span>                :            :                        &amp;&amp; !get_child (old_node, 1));</a>
+<a name="380"><span class="lineNum">     380 </span>                :            :   set_child (new_node, 0, get_child (old_node, 0));</a>
+<a name="381"><span class="lineNum">     381 </span>                :            :   // Clear the links from OLD_NODE.  Its parent and right child are</a>
+<a name="382"><span class="lineNum">     382 </span>                :            :   // already node_type ().</a>
+<a name="383"><span class="lineNum">     383 </span>                :            :   set_child (old_node, 0, node_type ());</a>
+<a name="384"><span class="lineNum">     384 </span>                :            :   m_root = new_node;</a>
+<a name="385"><span class="lineNum">     385 </span>                :            : }</a>
+<a name="386"><span class="lineNum">     386 </span>                :            : </a>
+<a name="387"><span class="lineNum">     387 </span>                :            : // See the comment above the declaration.</a>
+<a name="388"><span class="lineNum">     388 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="389"><span class="lineNum">     389 </span>                :            : inline void</a>
+<a name="390"><span class="lineNum">     390 </span>                :<span class="lineCov">      20012 : rooted_splay_tree&lt;Accessors&gt;::remove_root ()</span></a>
+<a name="391"><span class="lineNum">     391 </span>                :            : {</a>
+<a name="392"><span class="lineNum">     392 </span>                :<span class="lineCov">      20012 :   node_type node = m_root;</span></a>
+<a name="393"><span class="lineNum">     393 </span>                :<span class="lineCov">      20012 :   m_root = parent::remove_node_internal (node);</span></a>
+<a name="394"><span class="lineNum">     394 </span>        [<span class="branchCov" title="Branch 0 was taken 20000 times"> + </span><span class="branchCov" title="Branch 1 was taken 12 times"> + </span>]:<span class="lineCov">      20012 :   if (m_root)</span></a>
+<a name="395"><span class="lineNum">     395 </span>                :<span class="lineCov">      20000 :     set_parent (m_root, node_type ());</span></a>
+<a name="396"><span class="lineNum">     396 </span>                :            :   // Clear the links from NODE.  Its parent is already node_type ().</a>
+<a name="397"><span class="lineNum">     397 </span>                :<span class="lineCov">      20012 :   set_child (node, 0, node_type ());</span></a>
+<a name="398"><span class="lineNum">     398 </span>                :<span class="lineCov">      20012 :   set_child (node, 1, node_type ());</span></a>
+<a name="399"><span class="lineNum">     399 </span>                :<span class="lineCov">      20012 : }</span></a>
+<a name="400"><span class="lineNum">     400 </span>                :            : </a>
+<a name="401"><span class="lineNum">     401 </span>                :            : // See the comment above the declaration.</a>
+<a name="402"><span class="lineNum">     402 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="403"><span class="lineNum">     403 </span>                :            : inline rooted_splay_tree&lt;Accessors&gt;</a>
+<a name="404"><span class="lineNum">     404 </span>                :<span class="lineNoCov">          0 : rooted_splay_tree&lt;Accessors&gt;::split_before_root ()</span></a>
+<a name="405"><span class="lineNum">     405 </span>                :            : {</a>
+<a name="406"><span class="lineNum">     406 </span>                :<span class="lineNoCov">          0 :   node_type new_root = get_child (m_root, 0);</span></a>
+<a name="407"><span class="lineNum">     407 </span>                :<span class="lineNoCov">          0 :   set_child (m_root, 0, node_type ());</span></a>
+<a name="408"><span class="lineNum">     408 </span>                :<span class="lineNoCov">          0 :   set_parent (new_root, node_type ());</span></a>
+<a name="409"><span class="lineNum">     409 </span>                :<span class="lineNoCov">          0 :   return new_root;</span></a>
+<a name="410"><span class="lineNum">     410 </span>                :            : }</a>
+<a name="411"><span class="lineNum">     411 </span>                :            : </a>
+<a name="412"><span class="lineNum">     412 </span>                :            : // See the comment above the declaration.</a>
+<a name="413"><span class="lineNum">     413 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="414"><span class="lineNum">     414 </span>                :            : inline rooted_splay_tree&lt;Accessors&gt;</a>
+<a name="415"><span class="lineNum">     415 </span>                :<span class="lineNoCov">          0 : rooted_splay_tree&lt;Accessors&gt;::split_after_root ()</span></a>
+<a name="416"><span class="lineNum">     416 </span>                :            : {</a>
+<a name="417"><span class="lineNum">     417 </span>                :<span class="lineNoCov">          0 :   node_type new_root = get_child (m_root, 1);</span></a>
+<a name="418"><span class="lineNum">     418 </span>                :<span class="lineNoCov">          0 :   set_child (m_root, 1, node_type ());</span></a>
+<a name="419"><span class="lineNum">     419 </span>                :<span class="lineNoCov">          0 :   set_parent (new_root, node_type ());</span></a>
+<a name="420"><span class="lineNum">     420 </span>                :<span class="lineNoCov">          0 :   return new_root;</span></a>
+<a name="421"><span class="lineNum">     421 </span>                :            : }</a>
+<a name="422"><span class="lineNum">     422 </span>                :            : </a>
+<a name="423"><span class="lineNum">     423 </span>                :            : // See the comment above the declaration.</a>
+<a name="424"><span class="lineNum">     424 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="425"><span class="lineNum">     425 </span>                :            : inline bool</a>
+<a name="426"><span class="lineNum">     426 </span>                :<span class="lineCov">     241189 : rooted_splay_tree&lt;Accessors&gt;::splay_prev_node ()</span></a>
+<a name="427"><span class="lineNum">     427 </span>                :            : {</a>
+<a name="428"><span class="lineNum">     428 </span>                :<span class="lineCov">     241189 :   return splay_neighbor&lt;0&gt; ();</span></a>
+<a name="429"><span class="lineNum">     429 </span>                :            : }</a>
+<a name="430"><span class="lineNum">     430 </span>                :            : </a>
+<a name="431"><span class="lineNum">     431 </span>                :            : // See the comment above the declaration.</a>
+<a name="432"><span class="lineNum">     432 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="433"><span class="lineNum">     433 </span>                :            : inline bool</a>
+<a name="434"><span class="lineNum">     434 </span>                :<span class="lineCov">     621209 : rooted_splay_tree&lt;Accessors&gt;::splay_next_node ()</span></a>
+<a name="435"><span class="lineNum">     435 </span>                :            : {</a>
+<a name="436"><span class="lineNum">     436 </span>                :<span class="lineCov">     621209 :   return splay_neighbor&lt;1&gt; ();</span></a>
+<a name="437"><span class="lineNum">     437 </span>                :            : }</a>
+<a name="438"><span class="lineNum">     438 </span>                :            : </a>
+<a name="439"><span class="lineNum">     439 </span>                :            : // See the comment above the declaration.</a>
+<a name="440"><span class="lineNum">     440 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="441"><span class="lineNum">     441 </span>                :            : inline void</a>
+<a name="442"><span class="lineNum">     442 </span>                :<span class="lineNoCov">          0 : rooted_splay_tree&lt;Accessors&gt;::splay_min_node ()</span></a>
+<a name="443"><span class="lineNum">     443 </span>                :            : {</a>
+<a name="444"><span class="lineNum">     444 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :   if (m_root &amp;&amp; get_child (m_root, 0))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="445"><span class="lineNum">     445 </span>                :            :     {</a>
+<a name="446"><span class="lineNum">     446 </span>                :<span class="lineNoCov">          0 :       m_root = parent::template splay_limit&lt;0&gt; (m_root);</span></a>
+<a name="447"><span class="lineNum">     447 </span>                :<span class="lineNoCov">          0 :       set_parent (m_root, node_type ());</span></a>
+<a name="448"><span class="lineNum">     448 </span>                :            :     }</a>
+<a name="449"><span class="lineNum">     449 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="450"><span class="lineNum">     450 </span>                :            : </a>
+<a name="451"><span class="lineNum">     451 </span>                :            : // See the comment above the declaration.</a>
+<a name="452"><span class="lineNum">     452 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="453"><span class="lineNum">     453 </span>                :            : inline void</a>
+<a name="454"><span class="lineNum">     454 </span>                :<span class="lineCov">         89 : rooted_splay_tree&lt;Accessors&gt;::splay_max_node ()</span></a>
+<a name="455"><span class="lineNum">     455 </span>                :            : {</a>
+<a name="456"><span class="lineNum">     456 </span>  [<span class="branchCov" title="Branch 0 was taken 89 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 43 times"> + </span><span class="branchCov" title="Branch 3 was taken 46 times"> + </span> :<span class="lineCov">         89 :   if (m_root &amp;&amp; get_child (m_root, 1))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 43 times"> + </span><span class="branchCov" title="Branch 5 was taken 46 times"> + </span>]
+<a name="457"><span class="lineNum">     457 </span>                :            :     {</a>
+<a name="458"><span class="lineNum">     458 </span>                :<span class="lineCov">         43 :       m_root = parent::template splay_limit&lt;1&gt; (m_root);</span></a>
+<a name="459"><span class="lineNum">     459 </span>                :<span class="lineCov">         43 :       set_parent (m_root, node_type ());</span></a>
+<a name="460"><span class="lineNum">     460 </span>                :            :     }</a>
+<a name="461"><span class="lineNum">     461 </span>                :<span class="lineCov">         89 : }</span></a>
+<a name="462"><span class="lineNum">     462 </span>                :            : </a>
+<a name="463"><span class="lineNum">     463 </span>                :            : // See the comment above the declaration.</a>
+<a name="464"><span class="lineNum">     464 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="465"><span class="lineNum">     465 </span>                :            : inline typename rooted_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="466"><span class="lineNum">     466 </span>                :            : rooted_splay_tree&lt;Accessors&gt;::min_node ()</a>
+<a name="467"><span class="lineNum">     467 </span>                :            : {</a>
+<a name="468"><span class="lineNum">     468 </span>                :            :   splay_min_node ();</a>
+<a name="469"><span class="lineNum">     469 </span>                :            :   return m_root;</a>
+<a name="470"><span class="lineNum">     470 </span>                :            : }</a>
+<a name="471"><span class="lineNum">     471 </span>                :            : </a>
+<a name="472"><span class="lineNum">     472 </span>                :            : // See the comment above the declaration.</a>
+<a name="473"><span class="lineNum">     473 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="474"><span class="lineNum">     474 </span>                :            : inline typename rooted_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="475"><span class="lineNum">     475 </span>                :            : rooted_splay_tree&lt;Accessors&gt;::max_node ()</a>
+<a name="476"><span class="lineNum">     476 </span>                :            : {</a>
+<a name="477"><span class="lineNum">     477 </span>                :            :   splay_max_node ();</a>
+<a name="478"><span class="lineNum">     478 </span>                :            :   return m_root;</a>
+<a name="479"><span class="lineNum">     479 </span>                :            : }</a>
+<a name="480"><span class="lineNum">     480 </span>                :            : </a>
+<a name="481"><span class="lineNum">     481 </span>                :            : // See the comment above the declaration.</a>
+<a name="482"><span class="lineNum">     482 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="483"><span class="lineNum">     483 </span>                :            : template&lt;typename Comparator&gt;</a>
+<a name="484"><span class="lineNum">     484 </span>                :            : auto</a>
+<a name="485"><span class="lineNum">     485 </span>                :<span class="lineCov">    1147328 : rooted_splay_tree&lt;Accessors&gt;::lookup (Comparator compare)</span></a>
+<a name="486"><span class="lineNum">     486 </span>                :            :   -&gt; decltype (compare (m_root))</a>
+<a name="487"><span class="lineNum">     487 </span>                :            : {</a>
+<a name="488"><span class="lineNum">     488 </span>                :            :   // This essentially follows the simpilfied top-down method described</a>
+<a name="489"><span class="lineNum">     489 </span>                :            :   // in Sleator and Tarjan's &quot;Self-adjusting Binary Search Trees&quot;, but</a>
+<a name="490"><span class="lineNum">     490 </span>                :            :   // with the complication that the comparisons are done only once.</a>
+<a name="491"><span class="lineNum">     491 </span>                :            :   using result_type = decltype (compare (m_root));</a>
+<a name="492"><span class="lineNum">     492 </span>                :            : </a>
+<a name="493"><span class="lineNum">     493 </span>                :            :   // The roots of the left and right trees.</a>
+<a name="494"><span class="lineNum">     494 </span>                :<span class="lineCov">    1147328 :   node_type link_left_root = node_type ();</span></a>
+<a name="495"><span class="lineNum">     495 </span>                :<span class="lineCov">    1147328 :   node_type link_right_root = node_type ();</span></a>
+<a name="496"><span class="lineNum">     496 </span>                :            : </a>
+<a name="497"><span class="lineNum">     497 </span>                :            :   // Where to add new nodes to the left and right trees.</a>
+<a name="498"><span class="lineNum">     498 </span>                :<span class="lineCov">    1147328 :   node_type *link_left_ptr = &amp;link_left_root;</span></a>
+<a name="499"><span class="lineNum">     499 </span>                :<span class="lineCov">    1147328 :   node_type *link_right_ptr = &amp;link_right_root;</span></a>
+<a name="500"><span class="lineNum">     500 </span>                :            : </a>
+<a name="501"><span class="lineNum">     501 </span>                :            :   // The nodes that contain *LINK_LEFT_PTR and *LINK_RIGHT_PTR,</a>
+<a name="502"><span class="lineNum">     502 </span>                :            :   // once they no longer point to the roots above.</a>
+<a name="503"><span class="lineNum">     503 </span>                :<span class="lineCov">    1147328 :   node_type link_left_parent = node_type ();</span></a>
+<a name="504"><span class="lineNum">     504 </span>                :<span class="lineCov">    1147328 :   node_type link_right_parent = node_type ();</span></a>
+<a name="505"><span class="lineNum">     505 </span>                :            : </a>
+<a name="506"><span class="lineNum">     506 </span>                :<span class="lineCov">    1712945 :   auto link_left = [&amp;](node_type node)</span></a>
+<a name="507"><span class="lineNum">     507 </span>                :            :     {</a>
+<a name="508"><span class="lineNum">     508 </span>                :<span class="lineCov">     188537 :       *link_left_ptr = node;</span></a>
+<a name="509"><span class="lineNum">     509 </span>                :<span class="lineCov">     188537 :       link_left_ptr = &amp;Accessors::child (node, 1);</span></a>
+<a name="510"><span class="lineNum">     510 </span>                :<span class="lineCov">     188537 :       set_parent (node, link_left_parent);</span></a>
+<a name="511"><span class="lineNum">     511 </span>                :<span class="lineCov">     188537 :       link_left_parent = node;</span></a>
+<a name="512"><span class="lineNum">     512 </span>                :            :     };</a>
+<a name="513"><span class="lineNum">     513 </span>                :            : </a>
+<a name="514"><span class="lineNum">     514 </span>                :<span class="lineCov">    2429901 :   auto link_right = [&amp;](node_type node)</span></a>
+<a name="515"><span class="lineNum">     515 </span>                :            :     {</a>
+<a name="516"><span class="lineNum">     516 </span>                :<span class="lineCov">     427524 :       *link_right_ptr = node;</span></a>
+<a name="517"><span class="lineNum">     517 </span>                :<span class="lineCov">     427524 :       link_right_ptr = &amp;Accessors::child (node, 0);</span></a>
+<a name="518"><span class="lineNum">     518 </span>                :<span class="lineCov">     427524 :       set_parent (node, link_right_parent);</span></a>
+<a name="519"><span class="lineNum">     519 </span>                :<span class="lineCov">     427524 :       link_right_parent = node;</span></a>
+<a name="520"><span class="lineNum">     520 </span>                :            :     };</a>
+<a name="521"><span class="lineNum">     521 </span>                :            : </a>
+<a name="522"><span class="lineNum">     522 </span>                :<span class="lineCov">    1147328 :   node_type node = m_root;</span></a>
+<a name="523"><span class="lineNum">     523 </span>                :<span class="lineCov">    1147328 :   node_type parent = node_type ();</span></a>
+<a name="524"><span class="lineNum">     524 </span>                :            :   result_type result;</a>
+<a name="525"><span class="lineNum">     525 </span>                :<span class="lineCov">    1147328 :   result_type old_result = 0;</span></a>
+<a name="526"><span class="lineNum">     526 </span>                :<span class="lineCov">     785176 :   while (1)</span></a>
+<a name="527"><span class="lineNum">     527 </span>                :            :     {</a>
+<a name="528"><span class="lineNum">     528 </span>                :            :       // OLD_RESULT is 0 if NODE is the root of the middle tree.</a>
+<a name="529"><span class="lineNum">     529 </span>                :            :       // Otherwise, PARENT is the root of the middle tree and OLD_RESULT</a>
+<a name="530"><span class="lineNum">     530 </span>                :            :       // is how it compared.</a>
+<a name="531"><span class="lineNum">     531 </span>                :            :       //</a>
+<a name="532"><span class="lineNum">     532 </span>                :            :       // Results are:</a>
+<a name="533"><span class="lineNum">     533 </span>                :            :       // &lt; 0 if we want something smaller.</a>
+<a name="534"><span class="lineNum">     534 </span>                :            :       // = 0 if we found the right node.</a>
+<a name="535"><span class="lineNum">     535 </span>                :            :       // &gt; 0 if we want something bigger.</a>
+<a name="536"><span class="lineNum">     536 </span>                :<span class="lineCov">    1932505 :       result = compare (node);</span></a>
+<a name="537"><span class="lineNum">     537 </span>        [<span class="branchCov" title="Branch 0 was taken 446786 times"> + </span><span class="branchCov" title="Branch 1 was taken 1485723 times"> + </span>]:<span class="lineCov">    1932505 :       if (old_result &lt; 0)</span></a>
+<a name="538"><span class="lineNum">     538 </span>                :            :         {</a>
+<a name="539"><span class="lineNum">     539 </span>        [<span class="branchCov" title="Branch 0 was taken 127855 times"> + </span><span class="branchCov" title="Branch 1 was taken 318931 times"> + </span>]:<span class="lineCov">     446786 :           if (result &lt; 0)</span></a>
+<a name="540"><span class="lineNum">     540 </span>                :            :             {</a>
+<a name="541"><span class="lineNum">     541 </span>                :            :               // SEARCH &lt; NODE &lt; PARENT</a>
+<a name="542"><span class="lineNum">     542 </span>                :            :               //</a>
+<a name="543"><span class="lineNum">     543 </span>                :            :               // Promote NODE (rotate right).</a>
+<a name="544"><span class="lineNum">     544 </span>                :<span class="lineCov">     127855 :               promote_child (parent, 0, node);</span></a>
+<a name="545"><span class="lineNum">     545 </span>                :<span class="lineCov">     127855 :               node_type next = get_child (node, 0);</span></a>
+<a name="546"><span class="lineNum">     546 </span>        [<span class="branchCov" title="Branch 0 was taken 18983 times"> + </span><span class="branchCov" title="Branch 1 was taken 108872 times"> + </span>]:<span class="lineCov">     127855 :               if (!next)</span></a>
+<a name="547"><span class="lineNum">     547 </span>                :<span class="lineCov">      18983 :                 break;</span></a>
+<a name="548"><span class="lineNum">     548 </span>                :            : </a>
+<a name="549"><span class="lineNum">     549 </span>                :<span class="lineCov">     108872 :               link_right (node);</span></a>
+<a name="550"><span class="lineNum">     550 </span>                :            : </a>
+<a name="551"><span class="lineNum">     551 </span>                :            :               // NEXT is now the root of the middle tree.</a>
+<a name="552"><span class="lineNum">     552 </span>                :<span class="lineCov">     108872 :               node = next;</span></a>
+<a name="553"><span class="lineNum">     553 </span>                :<span class="lineCov">     108872 :               old_result = 0;</span></a>
+<a name="554"><span class="lineNum">     554 </span>                :<span class="lineCov">     108872 :               continue;</span></a>
+<a name="555"><span class="lineNum">     555 </span>                :            :             }</a>
+<a name="556"><span class="lineNum">     556 </span>                :            : </a>
+<a name="557"><span class="lineNum">     557 </span>                :            :           // SEARCH &gt;= NODE, NODE &lt; PARENT</a>
+<a name="558"><span class="lineNum">     558 </span>                :<span class="lineCov">     318931 :           link_right (parent);</span></a>
+<a name="559"><span class="lineNum">     559 </span>                :            :         }</a>
+<a name="560"><span class="lineNum">     560 </span>        [<span class="branchCov" title="Branch 0 was taken 198312 times"> + </span><span class="branchCov" title="Branch 1 was taken 1287405 times"> + </span>]:<span class="lineCov">    1485723 :       else if (old_result &gt; 0)</span></a>
+<a name="561"><span class="lineNum">     561 </span>                :            :         {</a>
+<a name="562"><span class="lineNum">     562 </span>        [<span class="branchCov" title="Branch 0 was taken 40855 times"> + </span><span class="branchCov" title="Branch 1 was taken 157457 times"> + </span>]:<span class="lineCov">     198312 :           if (result &gt; 0)</span></a>
+<a name="563"><span class="lineNum">     563 </span>                :            :             {</a>
+<a name="564"><span class="lineNum">     564 </span>                :            :               // SEARCH &gt; NODE &gt; PARENT</a>
+<a name="565"><span class="lineNum">     565 </span>                :            :               //</a>
+<a name="566"><span class="lineNum">     566 </span>                :            :               // Promote NODE (rotate left).</a>
+<a name="567"><span class="lineNum">     567 </span>                :<span class="lineCov">      40855 :               promote_child (parent, 1, node);</span></a>
+<a name="568"><span class="lineNum">     568 </span>                :<span class="lineCov">      40855 :               node_type next = get_child (node, 1);</span></a>
+<a name="569"><span class="lineNum">     569 </span>        [<span class="branchCov" title="Branch 0 was taken 9649 times"> + </span><span class="branchCov" title="Branch 1 was taken 31206 times"> + </span>]:<span class="lineCov">      40855 :               if (!next)</span></a>
+<a name="570"><span class="lineNum">     570 </span>                :<span class="lineCov">       9649 :                 break;</span></a>
+<a name="571"><span class="lineNum">     571 </span>                :            : </a>
+<a name="572"><span class="lineNum">     572 </span>                :<span class="lineCov">      31206 :               link_left (node);</span></a>
+<a name="573"><span class="lineNum">     573 </span>                :            : </a>
+<a name="574"><span class="lineNum">     574 </span>                :            :               // NEXT is now the root of the middle tree.</a>
+<a name="575"><span class="lineNum">     575 </span>                :<span class="lineCov">      31206 :               node = next;</span></a>
+<a name="576"><span class="lineNum">     576 </span>                :<span class="lineCov">      31206 :               old_result = 0;</span></a>
+<a name="577"><span class="lineNum">     577 </span>                :<span class="lineCov">      31206 :               continue;</span></a>
+<a name="578"><span class="lineNum">     578 </span>                :            :             }</a>
+<a name="579"><span class="lineNum">     579 </span>                :            : </a>
+<a name="580"><span class="lineNum">     580 </span>                :            :           // SEARCH &lt;= NODE, NODE &gt; PARENT</a>
+<a name="581"><span class="lineNum">     581 </span>                :<span class="lineCov">     157457 :           link_left (parent);</span></a>
+<a name="582"><span class="lineNum">     582 </span>                :            :         }</a>
+<a name="583"><span class="lineNum">     583 </span>                :            : </a>
+<a name="584"><span class="lineNum">     584 </span>                :            :       // Microoptimization to allow NODE to be read even if RESULT == 0.</a>
+<a name="585"><span class="lineNum">     585 </span>                :<span class="lineCov">    1763798 :       node_type next = get_child (node, result &gt;= 0);</span></a>
+<a name="586"><span class="lineNum">     586 </span>  [<span class="branchCov" title="Branch 0 was taken 988388 times"> + </span><span class="branchCov" title="Branch 1 was taken 775409 times"> + </span><span class="branchCov" title="Branch 2 was taken 645098 times"> + </span><span class="branchCov" title="Branch 3 was taken 343290 times"> + </span>]:<span class="lineCov">    1763798 :       if (result == 0 || !next)</span></a>
+<a name="587"><span class="lineNum">     587 </span>                :            :         break;</a>
+<a name="588"><span class="lineNum">     588 </span>                :            : </a>
+<a name="589"><span class="lineNum">     589 </span>                :            :       // NODE is now the root of the tree.</a>
+<a name="590"><span class="lineNum">     590 </span>                :<span class="lineCov">     645098 :       parent = node;</span></a>
+<a name="591"><span class="lineNum">     591 </span>                :<span class="lineCov">     645098 :       node = next;</span></a>
+<a name="592"><span class="lineNum">     592 </span>                :<span class="lineCov">     645098 :       old_result = result;</span></a>
+<a name="593"><span class="lineNum">     593 </span>                :            :     }</a>
+<a name="594"><span class="lineNum">     594 </span>                :            : </a>
+<a name="595"><span class="lineNum">     595 </span>                :<span class="lineCov">    1147328 :   node_type new_left = link_left_root;</span></a>
+<a name="596"><span class="lineNum">     596 </span>                :<span class="lineCov">    1147328 :   node_type new_right = link_right_root;</span></a>
+<a name="597"><span class="lineNum">     597 </span>                :            : </a>
+<a name="598"><span class="lineNum">     598 </span>        [<span class="branchCov" title="Branch 0 was taken 169049 times"> + </span><span class="branchCov" title="Branch 1 was taken 978282 times"> + </span>]:<span class="lineCov">    1147328 :   if (new_left)</span></a>
+<a name="599"><span class="lineNum">     599 </span>                :            :     {</a>
+<a name="600"><span class="lineNum">     600 </span>                :<span class="lineCov">     169049 :       node_type old_left = get_child (node, 0);</span></a>
+<a name="601"><span class="lineNum">     601 </span>                :<span class="lineCov">     169049 :       *link_left_ptr = old_left;</span></a>
+<a name="602"><span class="lineNum">     602 </span>        [<span class="branchCov" title="Branch 0 was taken 2001 times"> + </span><span class="branchCov" title="Branch 1 was taken 167048 times"> + </span>]:<span class="lineCov">     169049 :       if (old_left)</span></a>
+<a name="603"><span class="lineNum">     603 </span>                :<span class="lineCov">       2001 :         set_parent (old_left, link_left_parent);</span></a>
+<a name="604"><span class="lineNum">     604 </span>                :<span class="lineCov">     169049 :       set_child (node, 0, new_left);</span></a>
+<a name="605"><span class="lineNum">     605 </span>                :            :     }</a>
+<a name="606"><span class="lineNum">     606 </span>                :            : </a>
+<a name="607"><span class="lineNum">     607 </span>        [<span class="branchCov" title="Branch 0 was taken 341663 times"> + </span><span class="branchCov" title="Branch 1 was taken 805542 times"> + </span>]:<span class="lineCov">    1147208 :   if (new_right)</span></a>
+<a name="608"><span class="lineNum">     608 </span>                :            :     {</a>
+<a name="609"><span class="lineNum">     609 </span>                :<span class="lineCov">     341663 :       node_type old_right = get_child (node, 1);</span></a>
+<a name="610"><span class="lineNum">     610 </span>                :<span class="lineCov">     341663 :       *link_right_ptr = old_right;</span></a>
+<a name="611"><span class="lineNum">     611 </span>        [<span class="branchCov" title="Branch 0 was taken 7166 times"> + </span><span class="branchCov" title="Branch 1 was taken 334497 times"> + </span>]:<span class="lineCov">     341663 :       if (old_right)</span></a>
+<a name="612"><span class="lineNum">     612 </span>                :<span class="lineCov">       7166 :         set_parent (old_right, link_right_parent);</span></a>
+<a name="613"><span class="lineNum">     613 </span>                :<span class="lineCov">     341663 :       set_child (node, 1, new_right);</span></a>
+<a name="614"><span class="lineNum">     614 </span>                :            :     }</a>
+<a name="615"><span class="lineNum">     615 </span>                :            : </a>
+<a name="616"><span class="lineNum">     616 </span>                :<span class="lineCov">    1147208 :   set_parent (node, node_type ());</span></a>
+<a name="617"><span class="lineNum">     617 </span>                :<span class="lineCov">    1146628 :   m_root = node;</span></a>
+<a name="618"><span class="lineNum">     618 </span>                :<span class="lineCov">    1146628 :   return result;</span></a>
+<a name="619"><span class="lineNum">     619 </span>                :            : }</a>
+<a name="620"><span class="lineNum">     620 </span>                :            : </a>
+<a name="621"><span class="lineNum">     621 </span>                :            : // See the comment above the declaration.</a>
+<a name="622"><span class="lineNum">     622 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="623"><span class="lineNum">     623 </span>                :            : template&lt;typename LeftPredicate, typename RightPredicate&gt;</a>
+<a name="624"><span class="lineNum">     624 </span>                :            : int</a>
+<a name="625"><span class="lineNum">     625 </span>                :<span class="lineCov">      24113 : rooted_splay_tree&lt;Accessors&gt;::lookup (LeftPredicate want_something_smaller,</span></a>
+<a name="626"><span class="lineNum">     626 </span>                :            :                                       RightPredicate want_something_bigger)</a>
+<a name="627"><span class="lineNum">     627 </span>                :            : {</a>
+<a name="628"><span class="lineNum">     628 </span>                :            :   // This essentially follows the simpilfied top-down method described</a>
+<a name="629"><span class="lineNum">     629 </span>                :            :   // in Sleator and Tarjan's &quot;Self-adjusting Binary Search Trees&quot;</a>
+<a name="630"><span class="lineNum">     630 </span>                :            :   // (and follows it more closely than the single-comparator version above).</a>
+<a name="631"><span class="lineNum">     631 </span>                :            : </a>
+<a name="632"><span class="lineNum">     632 </span>                :            :   // The roots of the left and right trees.</a>
+<a name="633"><span class="lineNum">     633 </span>                :<span class="lineCov">      24113 :   node_type link_left_root = node_type ();</span></a>
+<a name="634"><span class="lineNum">     634 </span>                :<span class="lineCov">      24113 :   node_type link_right_root = node_type ();</span></a>
+<a name="635"><span class="lineNum">     635 </span>                :            : </a>
+<a name="636"><span class="lineNum">     636 </span>                :            :   // Where to add new nodes to the left and right trees.</a>
+<a name="637"><span class="lineNum">     637 </span>                :<span class="lineCov">      24113 :   node_type *link_left_ptr = &amp;link_left_root;</span></a>
+<a name="638"><span class="lineNum">     638 </span>                :<span class="lineCov">      24113 :   node_type *link_right_ptr = &amp;link_right_root;</span></a>
+<a name="639"><span class="lineNum">     639 </span>                :            : </a>
+<a name="640"><span class="lineNum">     640 </span>                :            :   // The nodes that contain *LINK_LEFT_PTR and *LINK_RIGHT_PTR,</a>
+<a name="641"><span class="lineNum">     641 </span>                :            :   // once they no longer point to the roots above.</a>
+<a name="642"><span class="lineNum">     642 </span>                :<span class="lineCov">      24113 :   node_type link_left_parent = node_type ();</span></a>
+<a name="643"><span class="lineNum">     643 </span>                :<span class="lineCov">      24113 :   node_type link_right_parent = node_type ();</span></a>
+<a name="644"><span class="lineNum">     644 </span>                :            : </a>
+<a name="645"><span class="lineNum">     645 </span>                :<span class="lineCov">      24113 :   node_type node = m_root;</span></a>
+<a name="646"><span class="lineNum">     646 </span>                :            :   int result;</a>
+<a name="647"><span class="lineNum">     647 </span>                :<span class="lineCov">     159113 :   for (;;)</span></a>
+<a name="648"><span class="lineNum">     648 </span>                :            :     {</a>
+<a name="649"><span class="lineNum">     649 </span>                :            :       // NODE is the root of the middle tree.</a>
+<a name="650"><span class="lineNum">     650 </span>        [<span class="branchCov" title="Branch 0 was taken 146170 times"> + </span><span class="branchCov" title="Branch 1 was taken 37056 times"> + </span>]:<span class="lineCov">     183226 :       if (want_something_smaller (node))</span></a>
+<a name="651"><span class="lineNum">     651 </span>                :            :         {</a>
+<a name="652"><span class="lineNum">     652 </span>                :<span class="lineCov">     146170 :           result = -1;</span></a>
+<a name="653"><span class="lineNum">     653 </span>                :<span class="lineCov">     146170 :           node_type next = get_child (node, 0);</span></a>
+<a name="654"><span class="lineNum">     654 </span>        [<span class="branchCov" title="Branch 0 was taken 3370 times"> + </span><span class="branchCov" title="Branch 1 was taken 142800 times"> + </span>]:<span class="lineCov">     146170 :           if (!next)</span></a>
+<a name="655"><span class="lineNum">     655 </span>                :<span class="lineCov">       3370 :             break;</span></a>
+<a name="656"><span class="lineNum">     656 </span>                :            : </a>
+<a name="657"><span class="lineNum">     657 </span>        [<span class="branchCov" title="Branch 0 was taken 132097 times"> + </span><span class="branchCov" title="Branch 1 was taken 10703 times"> + </span>]:<span class="lineCov">     142800 :           if (want_something_smaller (next))</span></a>
+<a name="658"><span class="lineNum">     658 </span>                :            :             {</a>
+<a name="659"><span class="lineNum">     659 </span>                :            :               // Promote NODE (rotate right).</a>
+<a name="660"><span class="lineNum">     660 </span>                :<span class="lineCov">     132097 :               promote_child (node, 0, next);</span></a>
+<a name="661"><span class="lineNum">     661 </span>                :<span class="lineCov">     132097 :               node = next;</span></a>
+<a name="662"><span class="lineNum">     662 </span>                :<span class="lineCov">     132097 :               next = get_child (node, 0);</span></a>
+<a name="663"><span class="lineNum">     663 </span>        [<span class="branchCov" title="Branch 0 was taken 1915 times"> + </span><span class="branchCov" title="Branch 1 was taken 130182 times"> + </span>]:<span class="lineCov">     132097 :               if (!next)</span></a>
+<a name="664"><span class="lineNum">     664 </span>                :<span class="lineCov">       1915 :                 break;</span></a>
+<a name="665"><span class="lineNum">     665 </span>                :            :             }</a>
+<a name="666"><span class="lineNum">     666 </span>                :            : </a>
+<a name="667"><span class="lineNum">     667 </span>                :            :           // Add NODE to the right tree (link right).</a>
+<a name="668"><span class="lineNum">     668 </span>                :<span class="lineCov">     140885 :           *link_right_ptr = node;</span></a>
+<a name="669"><span class="lineNum">     669 </span>                :<span class="lineCov">     140885 :           link_right_ptr = &amp;Accessors::child (node, 0);</span></a>
+<a name="670"><span class="lineNum">     670 </span>                :<span class="lineCov">     140885 :           set_parent (node, link_right_parent);</span></a>
+<a name="671"><span class="lineNum">     671 </span>                :<span class="lineCov">     140885 :           link_right_parent = node;</span></a>
+<a name="672"><span class="lineNum">     672 </span>                :            : </a>
+<a name="673"><span class="lineNum">     673 </span>                :<span class="lineCov">     140885 :           node = next;</span></a>
+<a name="674"><span class="lineNum">     674 </span>                :            :         }</a>
+<a name="675"><span class="lineNum">     675 </span>        [<span class="branchCov" title="Branch 0 was taken 24474 times"> + </span><span class="branchCov" title="Branch 1 was taken 12582 times"> + </span>]:<span class="lineCov">      37056 :       else if (want_something_bigger (node))</span></a>
+<a name="676"><span class="lineNum">     676 </span>                :            :         {</a>
+<a name="677"><span class="lineNum">     677 </span>                :<span class="lineCov">      24474 :           result = 1;</span></a>
+<a name="678"><span class="lineNum">     678 </span>                :<span class="lineCov">      24474 :           node_type next = get_child (node, 1);</span></a>
+<a name="679"><span class="lineNum">     679 </span>        [<span class="branchCov" title="Branch 0 was taken 5602 times"> + </span><span class="branchCov" title="Branch 1 was taken 18872 times"> + </span>]:<span class="lineCov">      24474 :           if (!next)</span></a>
+<a name="680"><span class="lineNum">     680 </span>                :<span class="lineCov">       5602 :             break;</span></a>
+<a name="681"><span class="lineNum">     681 </span>                :            : </a>
+<a name="682"><span class="lineNum">     682 </span>        [<span class="branchCov" title="Branch 0 was taken 4609 times"> + </span><span class="branchCov" title="Branch 1 was taken 14263 times"> + </span>]:<span class="lineCov">      18872 :           if (want_something_bigger (next))</span></a>
+<a name="683"><span class="lineNum">     683 </span>                :            :             {</a>
+<a name="684"><span class="lineNum">     684 </span>                :            :               // Promote NODE (rotate left).</a>
+<a name="685"><span class="lineNum">     685 </span>                :<span class="lineCov">       4609 :               promote_child (node, 1, next);</span></a>
+<a name="686"><span class="lineNum">     686 </span>                :<span class="lineCov">       4609 :               node = next;</span></a>
+<a name="687"><span class="lineNum">     687 </span>                :<span class="lineCov">       4609 :               next = get_child (node, 1);</span></a>
+<a name="688"><span class="lineNum">     688 </span>        [<span class="branchCov" title="Branch 0 was taken 644 times"> + </span><span class="branchCov" title="Branch 1 was taken 3965 times"> + </span>]:<span class="lineCov">       4609 :               if (!next)</span></a>
+<a name="689"><span class="lineNum">     689 </span>                :<span class="lineCov">        644 :                 break;</span></a>
+<a name="690"><span class="lineNum">     690 </span>                :            :             }</a>
+<a name="691"><span class="lineNum">     691 </span>                :            : </a>
+<a name="692"><span class="lineNum">     692 </span>                :            :           // Add NODE to the left tree (link left).</a>
+<a name="693"><span class="lineNum">     693 </span>                :<span class="lineCov">      18228 :           *link_left_ptr = node;</span></a>
+<a name="694"><span class="lineNum">     694 </span>                :<span class="lineCov">      18228 :           link_left_ptr = &amp;Accessors::child (node, 1);</span></a>
+<a name="695"><span class="lineNum">     695 </span>                :<span class="lineCov">      18228 :           set_parent (node, link_left_parent);</span></a>
+<a name="696"><span class="lineNum">     696 </span>                :<span class="lineCov">      18228 :           link_left_parent = node;</span></a>
+<a name="697"><span class="lineNum">     697 </span>                :            : </a>
+<a name="698"><span class="lineNum">     698 </span>                :<span class="lineCov">      18228 :           node = next;</span></a>
+<a name="699"><span class="lineNum">     699 </span>                :            :         }</a>
+<a name="700"><span class="lineNum">     700 </span>                :            :       else</a>
+<a name="701"><span class="lineNum">     701 </span>                :            :         {</a>
+<a name="702"><span class="lineNum">     702 </span>                :<span class="lineCov">      12582 :           result = 0;</span></a>
+<a name="703"><span class="lineNum">     703 </span>                :<span class="lineCov">      12582 :           break;</span></a>
+<a name="704"><span class="lineNum">     704 </span>                :            :         }</a>
+<a name="705"><span class="lineNum">     705 </span>                :            :     }</a>
+<a name="706"><span class="lineNum">     706 </span>                :            : </a>
+<a name="707"><span class="lineNum">     707 </span>                :<span class="lineCov">      24113 :   node_type new_left = link_left_root;</span></a>
+<a name="708"><span class="lineNum">     708 </span>                :<span class="lineCov">      24113 :   node_type new_right = link_right_root;</span></a>
+<a name="709"><span class="lineNum">     709 </span>                :            : </a>
+<a name="710"><span class="lineNum">     710 </span>        [<span class="branchCov" title="Branch 0 was taken 12518 times"> + </span><span class="branchCov" title="Branch 1 was taken 11595 times"> + </span>]:<span class="lineCov">      24113 :   if (new_left)</span></a>
+<a name="711"><span class="lineNum">     711 </span>                :            :     {</a>
+<a name="712"><span class="lineNum">     712 </span>                :<span class="lineCov">      12518 :       node_type old_left = get_child (node, 0);</span></a>
+<a name="713"><span class="lineNum">     713 </span>                :<span class="lineCov">      12518 :       *link_left_ptr = old_left;</span></a>
+<a name="714"><span class="lineNum">     714 </span>        [<span class="branchCov" title="Branch 0 was taken 3427 times"> + </span><span class="branchCov" title="Branch 1 was taken 9091 times"> + </span>]:<span class="lineCov">      12518 :       if (old_left)</span></a>
+<a name="715"><span class="lineNum">     715 </span>                :<span class="lineCov">       3427 :         set_parent (old_left, link_left_parent);</span></a>
+<a name="716"><span class="lineNum">     716 </span>                :<span class="lineCov">      12518 :       set_child (node, 0, new_left);</span></a>
+<a name="717"><span class="lineNum">     717 </span>                :            :     }</a>
+<a name="718"><span class="lineNum">     718 </span>                :            : </a>
+<a name="719"><span class="lineNum">     719 </span>        [<span class="branchCov" title="Branch 0 was taken 17315 times"> + </span><span class="branchCov" title="Branch 1 was taken 6798 times"> + </span>]:<span class="lineCov">      24113 :   if (new_right)</span></a>
+<a name="720"><span class="lineNum">     720 </span>                :            :     {</a>
+<a name="721"><span class="lineNum">     721 </span>                :<span class="lineCov">      17315 :       node_type old_right = get_child (node, 1);</span></a>
+<a name="722"><span class="lineNum">     722 </span>                :<span class="lineCov">      17315 :       *link_right_ptr = old_right;</span></a>
+<a name="723"><span class="lineNum">     723 </span>        [<span class="branchCov" title="Branch 0 was taken 4120 times"> + </span><span class="branchCov" title="Branch 1 was taken 13195 times"> + </span>]:<span class="lineCov">      17315 :       if (old_right)</span></a>
+<a name="724"><span class="lineNum">     724 </span>                :<span class="lineCov">       4120 :         set_parent (old_right, link_right_parent);</span></a>
+<a name="725"><span class="lineNum">     725 </span>                :<span class="lineCov">      17315 :       set_child (node, 1, new_right);</span></a>
+<a name="726"><span class="lineNum">     726 </span>                :            :     }</a>
+<a name="727"><span class="lineNum">     727 </span>                :            : </a>
+<a name="728"><span class="lineNum">     728 </span>                :<span class="lineCov">      24113 :   set_parent (node, node_type ());</span></a>
+<a name="729"><span class="lineNum">     729 </span>                :<span class="lineCov">      24113 :   m_root = node;</span></a>
+<a name="730"><span class="lineNum">     730 </span>                :<span class="lineCov">      24113 :   return result;</span></a>
+<a name="731"><span class="lineNum">     731 </span>                :            : }</a>
+<a name="732"><span class="lineNum">     732 </span>                :            : </a>
+<a name="733"><span class="lineNum">     733 </span>                :            : // See the comment above the declaration.</a>
+<a name="734"><span class="lineNum">     734 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="735"><span class="lineNum">     735 </span>                :            : template&lt;typename Printer&gt;</a>
+<a name="736"><span class="lineNum">     736 </span>                :            : inline void</a>
+<a name="737"><span class="lineNum">     737 </span>                :<span class="lineNoCov">          0 : rooted_splay_tree&lt;Accessors&gt;::print (pretty_printer *pp, Printer printer) const</span></a>
+<a name="738"><span class="lineNum">     738 </span>                :            : {</a>
+<a name="739"><span class="lineNum">     739 </span>                :<span class="lineNoCov">          0 :   print (pp, m_root, printer);</span></a>
+<a name="740"><span class="lineNum">     740 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="741"><span class="lineNum">     741 </span>                :            : </a>
+<a name="742"><span class="lineNum">     742 </span>                :            : // Return NODE's current parent.</a>
+<a name="743"><span class="lineNum">     743 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="744"><span class="lineNum">     744 </span>                :            : inline typename rootless_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="745"><span class="lineNum">     745 </span>                :<span class="lineCov">      14143 : rootless_splay_tree&lt;Accessors&gt;::get_parent (node_type node)</span></a>
+<a name="746"><span class="lineNum">     746 </span>                :            : {</a>
+<a name="747"><span class="lineNum">     747 </span>                :<span class="lineCov">      14143 :   return Accessors::parent (node);</span></a>
+<a name="748"><span class="lineNum">     748 </span>                :            : }</a>
+<a name="749"><span class="lineNum">     749 </span>                :            : </a>
+<a name="750"><span class="lineNum">     750 </span>                :            : // CHILD is known to be a child of PARENT.  Return which index it has.</a>
+<a name="751"><span class="lineNum">     751 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="752"><span class="lineNum">     752 </span>                :            : inline unsigned int</a>
+<a name="753"><span class="lineNum">     753 </span>                :<span class="lineCov">       8856 : rootless_splay_tree&lt;Accessors&gt;::child_index (node_type parent, node_type child)</span></a>
+<a name="754"><span class="lineNum">     754 </span>                :            : {</a>
+<a name="755"><span class="lineNum">     755 </span>                :<span class="lineCov">       8856 :   return get_child (parent, 1) == child;</span></a>
+<a name="756"><span class="lineNum">     756 </span>                :            : }</a>
+<a name="757"><span class="lineNum">     757 </span>                :            : </a>
+<a name="758"><span class="lineNum">     758 </span>                :            : // If N == 1, implement splay_known_max_node, otherwise implement</a>
+<a name="759"><span class="lineNum">     759 </span>                :            : // splay_known_min_node.</a>
+<a name="760"><span class="lineNum">     760 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="761"><span class="lineNum">     761 </span>                :            : template&lt;unsigned int N&gt;</a>
+<a name="762"><span class="lineNum">     762 </span>                :            : inline void</a>
+<a name="763"><span class="lineNum">     763 </span>                :            : rootless_splay_tree&lt;Accessors&gt;::splay_known_limit (node_type node)</a>
+<a name="764"><span class="lineNum">     764 </span>                :            : {</a>
+<a name="765"><span class="lineNum">     765 </span>                :            :   node_type child = node;</a>
+<a name="766"><span class="lineNum">     766 </span>                :            :   node_type parent = get_parent (child);</a>
+<a name="767"><span class="lineNum">     767 </span>                :            :   if (!parent)</a>
+<a name="768"><span class="lineNum">     768 </span>                :            :     return;</a>
+<a name="769"><span class="lineNum">     769 </span>                :            : </a>
+<a name="770"><span class="lineNum">     770 </span>                :            :   do</a>
+<a name="771"><span class="lineNum">     771 </span>                :            :     // At this point, NODE conceptually replaces CHILD as a child of</a>
+<a name="772"><span class="lineNum">     772 </span>                :            :     // PARENT, but we haven't yet updated PARENT accordingly.</a>
+<a name="773"><span class="lineNum">     773 </span>                :            :     if (node_type grandparent = get_parent (parent))</a>
+<a name="774"><span class="lineNum">     774 </span>                :            :       {</a>
+<a name="775"><span class="lineNum">     775 </span>                :            :         node_type greatgrandparent = get_parent (grandparent);</a>
+<a name="776"><span class="lineNum">     776 </span>                :            :         promote_child (grandparent, N, parent);</a>
+<a name="777"><span class="lineNum">     777 </span>                :            :         promote_child (parent, N, node);</a>
+<a name="778"><span class="lineNum">     778 </span>                :            :         child = grandparent;</a>
+<a name="779"><span class="lineNum">     779 </span>                :            :         parent = greatgrandparent;</a>
+<a name="780"><span class="lineNum">     780 </span>                :            :       }</a>
+<a name="781"><span class="lineNum">     781 </span>                :            :     else</a>
+<a name="782"><span class="lineNum">     782 </span>                :            :       {</a>
+<a name="783"><span class="lineNum">     783 </span>                :            :         promote_child (parent, N, node);</a>
+<a name="784"><span class="lineNum">     784 </span>                :            :         break;</a>
+<a name="785"><span class="lineNum">     785 </span>                :            :       }</a>
+<a name="786"><span class="lineNum">     786 </span>                :            :   while (parent);</a>
+<a name="787"><span class="lineNum">     787 </span>                :            :   set_parent (node, node_type ());</a>
+<a name="788"><span class="lineNum">     788 </span>                :            : }</a>
+<a name="789"><span class="lineNum">     789 </span>                :            : </a>
+<a name="790"><span class="lineNum">     790 </span>                :            : // See the comment above the declaration.</a>
+<a name="791"><span class="lineNum">     791 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="792"><span class="lineNum">     792 </span>                :            : typename rootless_splay_tree&lt;Accessors&gt;::node_type</a>
+<a name="793"><span class="lineNum">     793 </span>                :<span class="lineCov">      14143 : rootless_splay_tree&lt;Accessors&gt;::remove_node (node_type node)</span></a>
+<a name="794"><span class="lineNum">     794 </span>                :            : {</a>
+<a name="795"><span class="lineNum">     795 </span>                :<span class="lineCov">      14143 :   node_type replacement = parent::remove_node_internal (node);</span></a>
+<a name="796"><span class="lineNum">     796 </span>        [<span class="branchCov" title="Branch 0 was taken 8856 times"> + </span><span class="branchCov" title="Branch 1 was taken 5287 times"> + </span>]:<span class="lineCov">      14143 :   if (node_type parent = get_parent (node))</span></a>
+<a name="797"><span class="lineNum">     797 </span>                :<span class="lineCov">       8856 :     set_child (parent, child_index (parent, node), replacement);</span></a>
+<a name="798"><span class="lineNum">     798 </span>        [<span class="branchCov" title="Branch 0 was taken 5287 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       5287 :   else if (replacement)</span></a>
+<a name="799"><span class="lineNum">     799 </span>                :<span class="lineCov">       5287 :     set_parent (replacement, node_type ());</span></a>
+<a name="800"><span class="lineNum">     800 </span>                :            :   // Clear the links from NODE.</a>
+<a name="801"><span class="lineNum">     801 </span>                :<span class="lineCov">      14143 :   set_parent (node, node_type ());</span></a>
+<a name="802"><span class="lineNum">     802 </span>                :<span class="lineCov">      14143 :   set_child (node, 0, node_type ());</span></a>
+<a name="803"><span class="lineNum">     803 </span>                :<span class="lineCov">      14143 :   set_child (node, 1, node_type ());</span></a>
+<a name="804"><span class="lineNum">     804 </span>                :<span class="lineCov">      14143 :   return replacement;</span></a>
+<a name="805"><span class="lineNum">     805 </span>                :            : }</a>
+<a name="806"><span class="lineNum">     806 </span>                :            : </a>
+<a name="807"><span class="lineNum">     807 </span>                :            : // See the comment above the declaration.</a>
+<a name="808"><span class="lineNum">     808 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="809"><span class="lineNum">     809 </span>                :            : void</a>
+<a name="810"><span class="lineNum">     810 </span>                :            : rootless_splay_tree&lt;Accessors&gt;::splay (node_type node)</a>
+<a name="811"><span class="lineNum">     811 </span>                :            : {</a>
+<a name="812"><span class="lineNum">     812 </span>                :            :   node_type child = node;</a>
+<a name="813"><span class="lineNum">     813 </span>                :            :   node_type parent = get_parent (child);</a>
+<a name="814"><span class="lineNum">     814 </span>                :            :   if (!parent)</a>
+<a name="815"><span class="lineNum">     815 </span>                :            :     return;</a>
+<a name="816"><span class="lineNum">     816 </span>                :            : </a>
+<a name="817"><span class="lineNum">     817 </span>                :            :   do</a>
+<a name="818"><span class="lineNum">     818 </span>                :            :     {</a>
+<a name="819"><span class="lineNum">     819 </span>                :            :       // At this point, NODE conceptually replaces CHILD as a child of</a>
+<a name="820"><span class="lineNum">     820 </span>                :            :       // PARENT, but we haven't yet updated PARENT accordingly.</a>
+<a name="821"><span class="lineNum">     821 </span>                :            :       unsigned int index = child_index (parent, child);</a>
+<a name="822"><span class="lineNum">     822 </span>                :            :       if (node_type grandparent = get_parent (parent))</a>
+<a name="823"><span class="lineNum">     823 </span>                :            :         {</a>
+<a name="824"><span class="lineNum">     824 </span>                :            :           node_type greatgrandparent = get_parent (grandparent);</a>
+<a name="825"><span class="lineNum">     825 </span>                :            :           unsigned int parent_index = child_index (grandparent, parent);</a>
+<a name="826"><span class="lineNum">     826 </span>                :            :           if (index == parent_index)</a>
+<a name="827"><span class="lineNum">     827 </span>                :            :             {</a>
+<a name="828"><span class="lineNum">     828 </span>                :            :               promote_child (grandparent, parent_index, parent);</a>
+<a name="829"><span class="lineNum">     829 </span>                :            :               promote_child (parent, index, node);</a>
+<a name="830"><span class="lineNum">     830 </span>                :            :             }</a>
+<a name="831"><span class="lineNum">     831 </span>                :            :           else</a>
+<a name="832"><span class="lineNum">     832 </span>                :            :             {</a>
+<a name="833"><span class="lineNum">     833 </span>                :            :               promote_child (parent, index, node);</a>
+<a name="834"><span class="lineNum">     834 </span>                :            :               promote_child (grandparent, parent_index, node);</a>
+<a name="835"><span class="lineNum">     835 </span>                :            :             }</a>
+<a name="836"><span class="lineNum">     836 </span>                :            :           child = grandparent;</a>
+<a name="837"><span class="lineNum">     837 </span>                :            :           parent = greatgrandparent;</a>
+<a name="838"><span class="lineNum">     838 </span>                :            :         }</a>
+<a name="839"><span class="lineNum">     839 </span>                :            :       else</a>
+<a name="840"><span class="lineNum">     840 </span>                :            :         {</a>
+<a name="841"><span class="lineNum">     841 </span>                :            :           promote_child (parent, index, node);</a>
+<a name="842"><span class="lineNum">     842 </span>                :            :           break;</a>
+<a name="843"><span class="lineNum">     843 </span>                :            :         }</a>
+<a name="844"><span class="lineNum">     844 </span>                :            :     }</a>
+<a name="845"><span class="lineNum">     845 </span>                :            :   while (parent);</a>
+<a name="846"><span class="lineNum">     846 </span>                :            :   set_parent (node, node_type ());</a>
+<a name="847"><span class="lineNum">     847 </span>                :            : }</a>
+<a name="848"><span class="lineNum">     848 </span>                :            : </a>
+<a name="849"><span class="lineNum">     849 </span>                :            : // See the comment above the declaration.</a>
+<a name="850"><span class="lineNum">     850 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="851"><span class="lineNum">     851 </span>                :            : inline void</a>
+<a name="852"><span class="lineNum">     852 </span>                :            : rootless_splay_tree&lt;Accessors&gt;::splay_known_min_node (node_type node)</a>
+<a name="853"><span class="lineNum">     853 </span>                :            : {</a>
+<a name="854"><span class="lineNum">     854 </span>                :            :   splay_known_limit&lt;0&gt; (node);</a>
+<a name="855"><span class="lineNum">     855 </span>                :            : }</a>
+<a name="856"><span class="lineNum">     856 </span>                :            : </a>
+<a name="857"><span class="lineNum">     857 </span>                :            : // See the comment above the declaration.</a>
+<a name="858"><span class="lineNum">     858 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="859"><span class="lineNum">     859 </span>                :            : inline void</a>
+<a name="860"><span class="lineNum">     860 </span>                :            : rootless_splay_tree&lt;Accessors&gt;::splay_known_max_node (node_type node)</a>
+<a name="861"><span class="lineNum">     861 </span>                :            : {</a>
+<a name="862"><span class="lineNum">     862 </span>                :            :   splay_known_limit&lt;1&gt; (node);</a>
+<a name="863"><span class="lineNum">     863 </span>                :            : }</a>
+<a name="864"><span class="lineNum">     864 </span>                :            : </a>
+<a name="865"><span class="lineNum">     865 </span>                :            : // See the comment above the declaration.</a>
+<a name="866"><span class="lineNum">     866 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="867"><span class="lineNum">     867 </span>                :            : template&lt;typename DefaultResult, typename Predicate&gt;</a>
+<a name="868"><span class="lineNum">     868 </span>                :            : auto</a>
+<a name="869"><span class="lineNum">     869 </span>                :<span class="lineNoCov">          0 : rootless_splay_tree&lt;Accessors&gt;::</span></a>
+<a name="870"><span class="lineNum">     870 </span>                :            : splay_and_search (node_type node, DefaultResult default_result,</a>
+<a name="871"><span class="lineNum">     871 </span>                :            :                   Predicate predicate)</a>
+<a name="872"><span class="lineNum">     872 </span>                :            :   -&gt; decltype (predicate (node, 0))</a>
+<a name="873"><span class="lineNum">     873 </span>                :            : {</a>
+<a name="874"><span class="lineNum">     874 </span>                :            :   using Result = decltype (predicate (node, 0));</a>
+<a name="875"><span class="lineNum">     875 </span>                :            : </a>
+<a name="876"><span class="lineNum">     876 </span>                :<span class="lineNoCov">          0 :   node_type child = node;</span></a>
+<a name="877"><span class="lineNum">     877 </span>                :<span class="lineNoCov">          0 :   node_type parent = get_parent (child);</span></a>
+<a name="878"><span class="lineNum">     878 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!parent)</span></a>
+<a name="879"><span class="lineNum">     879 </span>                :<span class="lineNoCov">          0 :     return default_result;</span></a>
+<a name="880"><span class="lineNum">     880 </span>                :            : </a>
+<a name="881"><span class="lineNum">     881 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   do</span></a>
+<a name="882"><span class="lineNum">     882 </span>                :            :     {</a>
+<a name="883"><span class="lineNum">     883 </span>                :            :       // At this point, NODE conceptually replaces CHILD as a child of</a>
+<a name="884"><span class="lineNum">     884 </span>                :            :       // PARENT, but we haven't yet updated PARENT accordingly.</a>
+<a name="885"><span class="lineNum">     885 </span>                :<span class="lineNoCov">          0 :       unsigned int index = child_index (parent, child);</span></a>
+<a name="886"><span class="lineNum">     886 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (Result result = predicate (parent, index))</span></a>
+<a name="887"><span class="lineNum">     887 </span>                :            :         {</a>
+<a name="888"><span class="lineNum">     888 </span>                :<span class="lineNoCov">          0 :           set_child (parent, index, node);</span></a>
+<a name="889"><span class="lineNum">     889 </span>                :<span class="lineNoCov">          0 :           return result;</span></a>
+<a name="890"><span class="lineNum">     890 </span>                :            :         }</a>
+<a name="891"><span class="lineNum">     891 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (node_type grandparent = get_parent (parent))</span></a>
+<a name="892"><span class="lineNum">     892 </span>                :            :         {</a>
+<a name="893"><span class="lineNum">     893 </span>                :<span class="lineNoCov">          0 :           node_type greatgrandparent = get_parent (grandparent);</span></a>
+<a name="894"><span class="lineNum">     894 </span>                :<span class="lineNoCov">          0 :           unsigned int parent_index = child_index (grandparent, parent);</span></a>
+<a name="895"><span class="lineNum">     895 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :           if (Result result = predicate (grandparent, parent_index))</span></a>
+<a name="896"><span class="lineNum">     896 </span>                :            :             {</a>
+<a name="897"><span class="lineNum">     897 </span>                :<span class="lineNoCov">          0 :               set_child (parent, index, node);</span></a>
+<a name="898"><span class="lineNum">     898 </span>                :<span class="lineNoCov">          0 :               return result;</span></a>
+<a name="899"><span class="lineNum">     899 </span>                :            :             }</a>
+<a name="900"><span class="lineNum">     900 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :           if (index == parent_index)</span></a>
+<a name="901"><span class="lineNum">     901 </span>                :            :             {</a>
+<a name="902"><span class="lineNum">     902 </span>                :<span class="lineNoCov">          0 :               promote_child (grandparent, parent_index, parent);</span></a>
+<a name="903"><span class="lineNum">     903 </span>                :<span class="lineNoCov">          0 :               promote_child (parent, index, node);</span></a>
+<a name="904"><span class="lineNum">     904 </span>                :            :             }</a>
+<a name="905"><span class="lineNum">     905 </span>                :            :           else</a>
+<a name="906"><span class="lineNum">     906 </span>                :            :             {</a>
+<a name="907"><span class="lineNum">     907 </span>                :<span class="lineNoCov">          0 :               promote_child (parent, index, node);</span></a>
+<a name="908"><span class="lineNum">     908 </span>                :<span class="lineNoCov">          0 :               promote_child (grandparent, parent_index, node);</span></a>
+<a name="909"><span class="lineNum">     909 </span>                :            :             }</a>
+<a name="910"><span class="lineNum">     910 </span>                :<span class="lineNoCov">          0 :           child = grandparent;</span></a>
+<a name="911"><span class="lineNum">     911 </span>                :<span class="lineNoCov">          0 :           parent = greatgrandparent;</span></a>
+<a name="912"><span class="lineNum">     912 </span>                :            :         }</a>
+<a name="913"><span class="lineNum">     913 </span>                :            :       else</a>
+<a name="914"><span class="lineNum">     914 </span>                :            :         {</a>
+<a name="915"><span class="lineNum">     915 </span>                :<span class="lineNoCov">          0 :           promote_child (parent, index, node);</span></a>
+<a name="916"><span class="lineNum">     916 </span>                :<span class="lineNoCov">          0 :           break;</span></a>
+<a name="917"><span class="lineNum">     917 </span>                :            :         }</a>
+<a name="918"><span class="lineNum">     918 </span>                :            :     }</a>
+<a name="919"><span class="lineNum">     919 </span>                :            :   while (parent);</a>
+<a name="920"><span class="lineNum">     920 </span>                :<span class="lineNoCov">          0 :   set_parent (node, node_type ());</span></a>
+<a name="921"><span class="lineNum">     921 </span>                :<span class="lineNoCov">          0 :   return default_result;</span></a>
+<a name="922"><span class="lineNum">     922 </span>                :            : }</a>
+<a name="923"><span class="lineNum">     923 </span>                :            : </a>
+<a name="924"><span class="lineNum">     924 </span>                :            : // Splay NODE1 looking to see if one of its ancestors is NODE2.  If it is,</a>
+<a name="925"><span class="lineNum">     925 </span>                :            : // return -1 if NODE1 comes before NODE2 or 1 if NODE1 comes after NODE2.</a>
+<a name="926"><span class="lineNum">     926 </span>                :            : // Return 0 if NODE2 is not an ancestor of NODE1.</a>
+<a name="927"><span class="lineNum">     927 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="928"><span class="lineNum">     928 </span>                :            : int</a>
+<a name="929"><span class="lineNum">     929 </span>                :<span class="lineNoCov">          0 : rootless_splay_tree&lt;Accessors&gt;::compare_nodes_one_way (node_type node1,</span></a>
+<a name="930"><span class="lineNum">     930 </span>                :            :                                                        node_type node2)</a>
+<a name="931"><span class="lineNum">     931 </span>                :            : {</a>
+<a name="932"><span class="lineNum">     932 </span>                :<span class="lineNoCov">          0 :   auto compare = [&amp;](node_type parent, unsigned int index) -&gt; int</span></a>
+<a name="933"><span class="lineNum">     933 </span>                :            :     {</a>
+<a name="934"><span class="lineNum">     934 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (parent == node2)</span></a>
+<a name="935"><span class="lineNum">     935 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         return index ? 1 : -1;</span></a>
+<a name="936"><span class="lineNum">     936 </span>                :<span class="lineNoCov">          0 :       return 0;</span></a>
+<a name="937"><span class="lineNum">     937 </span>                :            :     };</a>
+<a name="938"><span class="lineNum">     938 </span>                :<span class="lineNoCov">          0 :   return splay_and_search (node1, 0, compare);</span></a>
+<a name="939"><span class="lineNum">     939 </span>                :            : }</a>
+<a name="940"><span class="lineNum">     940 </span>                :            : </a>
+<a name="941"><span class="lineNum">     941 </span>                :            : // See the comment above the declaration.</a>
+<a name="942"><span class="lineNum">     942 </span>                :            : template&lt;typename Accessors&gt;</a>
+<a name="943"><span class="lineNum">     943 </span>                :            : int</a>
+<a name="944"><span class="lineNum">     944 </span>                :<span class="lineNoCov">          0 : rootless_splay_tree&lt;Accessors&gt;::compare_nodes (node_type node1,</span></a>
+<a name="945"><span class="lineNum">     945 </span>                :            :                                                node_type node2)</a>
+<a name="946"><span class="lineNum">     946 </span>                :            : {</a>
+<a name="947"><span class="lineNum">     947 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (node1 == node2)</span></a>
+<a name="948"><span class="lineNum">     948 </span>                :<span class="lineNoCov">          0 :     return 0;</span></a>
+<a name="949"><span class="lineNum">     949 </span>                :            : </a>
+<a name="950"><span class="lineNum">     950 </span>                :            :   // Splay NODE1 looking for NODE2.</a>
+<a name="951"><span class="lineNum">     951 </span>                :<span class="lineNoCov">          0 :   int cmp = compare_nodes_one_way (node1, node2);</span></a>
+<a name="952"><span class="lineNum">     952 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (cmp)</span></a>
+<a name="953"><span class="lineNum">     953 </span>                :<span class="lineNoCov">          0 :     return cmp;</span></a>
+<a name="954"><span class="lineNum">     954 </span>                :            : </a>
+<a name="955"><span class="lineNum">     955 </span>                :            :   // That failed, but NODE1 is now the root of the tree.  Splay NODE2</a>
+<a name="956"><span class="lineNum">     956 </span>                :            :   // to see on which side of NODE1 it falls.</a>
+<a name="957"><span class="lineNum">     957 </span>                :<span class="lineNoCov">          0 :   cmp = compare_nodes_one_way (node2, node1);</span></a>
+<a name="958"><span class="lineNum">     958 </span>                :            :   gcc_checking_assert (cmp);</a>
+<a name="959"><span class="lineNum">     959 </span>                :<span class="lineNoCov">          0 :   return -cmp;</span></a>
+<a name="960"><span class="lineNum">     960 </span>                :            : }</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

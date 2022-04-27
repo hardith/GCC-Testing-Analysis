@@ -1,0 +1,594 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/cp/name-lookup.h</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">gcc/cp</a> - name-lookup.h<span style="font-size: 80%;"> (source / <a href="name-lookup.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntryLo">54.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Declarations for -*- C++ -*- name lookup routines.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 2003-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :    Contributed by Gabriel Dos Reis &lt;gdr@integrable-solutions.net&gt;</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : </a>
+<a name="5"><span class="lineNum">       5 </span>                :            : This file is part of GCC.</a>
+<a name="6"><span class="lineNum">       6 </span>                :            : </a>
+<a name="7"><span class="lineNum">       7 </span>                :            : GCC is free software; you can redistribute it and/or modify</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : it under the terms of the GNU General Public License as published by</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : the Free Software Foundation; either version 3, or (at your option)</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : any later version.</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : </a>
+<a name="12"><span class="lineNum">      12 </span>                :            : GCC is distributed in the hope that it will be useful,</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : GNU General Public License for more details.</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : </a>
+<a name="17"><span class="lineNum">      17 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : </a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #ifndef GCC_CP_NAME_LOOKUP_H</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #define GCC_CP_NAME_LOOKUP_H</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : </a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;c-family/c-common.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : </a>
+<a name="26"><span class="lineNum">      26 </span>                :            : </a>
+<a name="27"><span class="lineNum">      27 </span>                :            : /* The datatype used to implement C++ scope.  */</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : struct cp_binding_level;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : </a>
+<a name="30"><span class="lineNum">      30 </span>                :            : /* Nonzero if this binding is for a local scope, as opposed to a class</a>
+<a name="31"><span class="lineNum">      31 </span>                :            :    or namespace scope.  */</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : #define LOCAL_BINDING_P(NODE) ((NODE)-&gt;is_local)</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : </a>
+<a name="34"><span class="lineNum">      34 </span>                :            : /* True if NODE-&gt;value is from a base class of the class which is</a>
+<a name="35"><span class="lineNum">      35 </span>                :            :    currently being defined.  */</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : #define INHERITED_VALUE_BINDING_P(NODE) ((NODE)-&gt;value_is_inherited)</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : </a>
+<a name="38"><span class="lineNum">      38 </span>                :            : /* The IMPLICIT_TYPEDEF is hidden from ordinary name lookup (it was</a>
+<a name="39"><span class="lineNum">      39 </span>                :            :    injected via a local class's friend decl). The typdef may be in the</a>
+<a name="40"><span class="lineNum">      40 </span>                :            :    VALUE or the TYPE slot.  We do not get the situation where the</a>
+<a name="41"><span class="lineNum">      41 </span>                :            :    value and type slots are both filled and both hidden.  */</a>
+<a name="42"><span class="lineNum">      42 </span>                :            : #define HIDDEN_TYPE_BINDING_P(NODE) ((NODE)-&gt;type_is_hidden)</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : </a>
+<a name="44"><span class="lineNum">      44 </span>                :            : /* Datatype that represents binding established by a declaration between</a>
+<a name="45"><span class="lineNum">      45 </span>                :            :    a name and a C++ entity.  */</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : struct GTY(()) cxx_binding {</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :   /* Link to chain together various bindings for this name.  */</a>
+<a name="48"><span class="lineNum">      48 </span>                :            :   cxx_binding *previous;</a>
+<a name="49"><span class="lineNum">      49 </span>                :            :   /* The non-type entity this name is bound to.  */</a>
+<a name="50"><span class="lineNum">      50 </span>                :            :   tree value;</a>
+<a name="51"><span class="lineNum">      51 </span>                :            :   /* The type entity this name is bound to.  */</a>
+<a name="52"><span class="lineNum">      52 </span>                :            :   tree type;</a>
+<a name="53"><span class="lineNum">      53 </span>                :            :   /* The scope at which this binding was made.  */</a>
+<a name="54"><span class="lineNum">      54 </span>                :            :   cp_binding_level *scope;</a>
+<a name="55"><span class="lineNum">      55 </span>                :            : </a>
+<a name="56"><span class="lineNum">      56 </span>                :            :   bool value_is_inherited : 1;</a>
+<a name="57"><span class="lineNum">      57 </span>                :            :   bool is_local : 1;</a>
+<a name="58"><span class="lineNum">      58 </span>                :            :   bool type_is_hidden : 1;</a>
+<a name="59"><span class="lineNum">      59 </span>                :            : };</a>
+<a name="60"><span class="lineNum">      60 </span>                :            : </a>
+<a name="61"><span class="lineNum">      61 </span>                :            : /* Datatype used to temporarily save C++ bindings (for implicit</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :    instantiations purposes and like).  Implemented in decl.c.  */</a>
+<a name="63"><span class="lineNum">      63 </span>                :            : struct GTY(()) cxx_saved_binding {</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :   /* The name of the current binding.  */</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :   tree identifier;</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :   /* The binding we're saving.  */</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :   cxx_binding *binding;</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :   tree real_type_value;</a>
+<a name="69"><span class="lineNum">      69 </span>                :            : };</a>
+<a name="70"><span class="lineNum">      70 </span>                :            : </a>
+<a name="71"><span class="lineNum">      71 </span>                :            : /* To support lazy module loading, we squirrel away a section number</a>
+<a name="72"><span class="lineNum">      72 </span>                :            :    (and a couple of flags) in the binding slot of unloaded bindings.</a>
+<a name="73"><span class="lineNum">      73 </span>                :            :    We rely on pointers being aligned and setting the bottom bit to</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :    mark a lazy value.  GTY doesn't like an array of union, so we have</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :    a containing struct.  */</a>
+<a name="76"><span class="lineNum">      76 </span>                :            : </a>
+<a name="77"><span class="lineNum">      77 </span>                :            : struct GTY(()) binding_slot {</a>
+<a name="78"><span class="lineNum">      78 </span>                :            :   union GTY((desc (&quot;%1.is_lazy ()&quot;))) binding_slot_lazy {</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :     tree GTY((tag (&quot;false&quot;))) binding;</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :   } u;</a>
+<a name="81"><span class="lineNum">      81 </span>                :            : </a>
+<a name="82"><span class="lineNum">      82 </span>                :<span class="lineNoCov">          0 :   operator tree &amp; ()</span></a>
+<a name="83"><span class="lineNum">      83 </span>                :            :   {</a>
+<a name="84"><span class="lineNum">      84 </span>                :            :     gcc_checking_assert (!is_lazy ());</a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineNoCov">          0 :     return u.binding;</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :            :   }</a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineNoCov">          0 :   binding_slot &amp;operator= (tree t)</span></a>
+<a name="88"><span class="lineNum">      88 </span>                :            :   {</a>
+<a name="89"><span class="lineNum">      89 </span>                :<span class="lineNoCov">          0 :     u.binding = t;</span></a>
+<a name="90"><span class="lineNum">      90 </span>                :<span class="lineNoCov">          0 :     return *this;</span></a>
+<a name="91"><span class="lineNum">      91 </span>                :            :   }</a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineNoCov">          0 :   bool is_lazy () const</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :            :   {</a>
+<a name="94"><span class="lineNum">      94 </span>                :<span class="lineNoCov">          0 :     return bool (uintptr_t (u.binding) &amp; 1);</span></a>
+<a name="95"><span class="lineNum">      95 </span>                :            :   }</a>
+<a name="96"><span class="lineNum">      96 </span>                :<span class="lineNoCov">          0 :   void set_lazy (unsigned snum)</span></a>
+<a name="97"><span class="lineNum">      97 </span>                :            :   {</a>
+<a name="98"><span class="lineNum">      98 </span>                :            :     gcc_checking_assert (!u.binding);</a>
+<a name="99"><span class="lineNum">      99 </span>                :<span class="lineNoCov">          0 :     u.binding = tree (uintptr_t ((snum &lt;&lt; 1) | 1));</span></a>
+<a name="100"><span class="lineNum">     100 </span>                :<span class="lineNoCov">          0 :   }</span></a>
+<a name="101"><span class="lineNum">     101 </span>                :            :   void or_lazy (unsigned snum)</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :   {</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :     gcc_checking_assert (is_lazy ());</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :     u.binding = tree (uintptr_t (u.binding) | (snum &lt;&lt; 1));</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :   }</a>
+<a name="106"><span class="lineNum">     106 </span>                :<span class="lineNoCov">          0 :   unsigned get_lazy () const</span></a>
+<a name="107"><span class="lineNum">     107 </span>                :            :   {</a>
+<a name="108"><span class="lineNum">     108 </span>                :            :     gcc_checking_assert (is_lazy ());</a>
+<a name="109"><span class="lineNum">     109 </span>                :<span class="lineNoCov">          0 :     return unsigned (uintptr_t (u.binding) &gt;&gt; 1);</span></a>
+<a name="110"><span class="lineNum">     110 </span>                :            :   }</a>
+<a name="111"><span class="lineNum">     111 </span>                :            : };</a>
+<a name="112"><span class="lineNum">     112 </span>                :            : </a>
+<a name="113"><span class="lineNum">     113 </span>                :            : /* Bindings for modules are held in a sparse array.  There is always a</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :    current TU slot, others are allocated as needed.  By construction</a>
+<a name="115"><span class="lineNum">     115 </span>                :            :    of the importing mechanism we only ever need to append to the</a>
+<a name="116"><span class="lineNum">     116 </span>                :            :    array.  Rather than have straight index/slot tuples, we bunch them</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :    up for greater packing.</a>
+<a name="118"><span class="lineNum">     118 </span>                :            : </a>
+<a name="119"><span class="lineNum">     119 </span>                :            :    The cluster representation packs well on a 64-bit system.  */</a>
+<a name="120"><span class="lineNum">     120 </span>                :            : </a>
+<a name="121"><span class="lineNum">     121 </span>                :            : #define BINDING_VECTOR_SLOTS_PER_CLUSTER 2</a>
+<a name="122"><span class="lineNum">     122 </span>                :            : struct binding_index {</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :   unsigned short base;</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :   unsigned short span;</a>
+<a name="125"><span class="lineNum">     125 </span>                :            : };</a>
+<a name="126"><span class="lineNum">     126 </span>                :            : </a>
+<a name="127"><span class="lineNum">     127 </span>                :            : struct GTY(()) binding_cluster</a>
+<a name="128"><span class="lineNum">     128 </span>                :            : {</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :   binding_index GTY((skip)) indices[BINDING_VECTOR_SLOTS_PER_CLUSTER];</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :   binding_slot slots[BINDING_VECTOR_SLOTS_PER_CLUSTER];</a>
+<a name="131"><span class="lineNum">     131 </span>                :            : };</a>
+<a name="132"><span class="lineNum">     132 </span>                :            : </a>
+<a name="133"><span class="lineNum">     133 </span>                :            : /* These two fields overlay lang flags.  So don't use those.  */</a>
+<a name="134"><span class="lineNum">     134 </span>                :            : #define BINDING_VECTOR_ALLOC_CLUSTERS(NODE) \</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :   (BINDING_VECTOR_CHECK (NODE)-&gt;base.u.dependence_info.clique)</a>
+<a name="136"><span class="lineNum">     136 </span>                :            : #define BINDING_VECTOR_NUM_CLUSTERS(NODE) \</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :   (BINDING_VECTOR_CHECK (NODE)-&gt;base.u.dependence_info.base)</a>
+<a name="138"><span class="lineNum">     138 </span>                :            : #define BINDING_VECTOR_CLUSTER_BASE(NODE) \</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :   (((tree_binding_vec *)BINDING_VECTOR_CHECK (NODE))-&gt;vec)</a>
+<a name="140"><span class="lineNum">     140 </span>                :            : #define BINDING_VECTOR_CLUSTER_LAST(NODE) \</a>
+<a name="141"><span class="lineNum">     141 </span>                :            :   (&amp;BINDING_VECTOR_CLUSTER (NODE, BINDING_VECTOR_NUM_CLUSTERS (NODE) - 1))</a>
+<a name="142"><span class="lineNum">     142 </span>                :            : #define BINDING_VECTOR_CLUSTER(NODE,IX) \</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :   (((tree_binding_vec *)BINDING_VECTOR_CHECK (NODE))-&gt;vec[IX])</a>
+<a name="144"><span class="lineNum">     144 </span>                :            : </a>
+<a name="145"><span class="lineNum">     145 </span>                :            : struct GTY(()) tree_binding_vec {</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :   struct tree_base base;</a>
+<a name="147"><span class="lineNum">     147 </span>                :            :   tree name;</a>
+<a name="148"><span class="lineNum">     148 </span>                :            :   binding_cluster GTY((length (&quot;%h.base.u.dependence_info.base&quot;))) vec[1];</a>
+<a name="149"><span class="lineNum">     149 </span>                :            : };</a>
+<a name="150"><span class="lineNum">     150 </span>                :            : </a>
+<a name="151"><span class="lineNum">     151 </span>                :            : /* The name of a module vector.  */</a>
+<a name="152"><span class="lineNum">     152 </span>                :            : #define BINDING_VECTOR_NAME(NODE) \</a>
+<a name="153"><span class="lineNum">     153 </span>                :            :   (((tree_binding_vec *)BINDING_VECTOR_CHECK (NODE))-&gt;name)</a>
+<a name="154"><span class="lineNum">     154 </span>                :            : </a>
+<a name="155"><span class="lineNum">     155 </span>                :            : /* tree_binding_vec does uses  base.u.dependence_info.base field for</a>
+<a name="156"><span class="lineNum">     156 </span>                :            :    length.  It does not have lang_flag etc available!  */</a>
+<a name="157"><span class="lineNum">     157 </span>                :            : </a>
+<a name="158"><span class="lineNum">     158 </span>                :            : /* These two flags note if a module-vector contains deduplicated</a>
+<a name="159"><span class="lineNum">     159 </span>                :            :    bindings (i.e. multiple declarations in different imports).  */</a>
+<a name="160"><span class="lineNum">     160 </span>                :            : /* This binding contains duplicate references to a global module</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :    entity.  */</a>
+<a name="162"><span class="lineNum">     162 </span>                :            : #define BINDING_VECTOR_GLOBAL_DUPS_P(NODE) \</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :   (BINDING_VECTOR_CHECK (NODE)-&gt;base.static_flag)</a>
+<a name="164"><span class="lineNum">     164 </span>                :            : /* This binding contains duplicate references to a partioned module</a>
+<a name="165"><span class="lineNum">     165 </span>                :            :    entity.  */</a>
+<a name="166"><span class="lineNum">     166 </span>                :            : #define BINDING_VECTOR_PARTITION_DUPS_P(NODE) \</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :   (BINDING_VECTOR_CHECK (NODE)-&gt;base.volatile_flag)</a>
+<a name="168"><span class="lineNum">     168 </span>                :            : </a>
+<a name="169"><span class="lineNum">     169 </span>                :            : /* These two flags indicate the provenence of the bindings on this</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :    particular vector slot.  We can of course determine this from slot</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :    number, but that's a relatively expensive lookup.  This avoids</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :    that when iterating.  */</a>
+<a name="173"><span class="lineNum">     173 </span>                :            : /* This slot is part of the global module (a header unit).  */</a>
+<a name="174"><span class="lineNum">     174 </span>                :            : #define MODULE_BINDING_GLOBAL_P(NODE) \</a>
+<a name="175"><span class="lineNum">     175 </span>                :            :   (OVERLOAD_CHECK (NODE)-&gt;base.static_flag)</a>
+<a name="176"><span class="lineNum">     176 </span>                :            : /* This slot is part of the current module (a partition or primary).  */</a>
+<a name="177"><span class="lineNum">     177 </span>                :            : #define MODULE_BINDING_PARTITION_P(NODE)                \</a>
+<a name="178"><span class="lineNum">     178 </span>                :            :   (OVERLOAD_CHECK (NODE)-&gt;base.volatile_flag)</a>
+<a name="179"><span class="lineNum">     179 </span>                :            : </a>
+<a name="180"><span class="lineNum">     180 </span>                :            : extern void set_identifier_type_value (tree, tree);</a>
+<a name="181"><span class="lineNum">     181 </span>                :            : extern void push_binding (tree, tree, cp_binding_level*);</a>
+<a name="182"><span class="lineNum">     182 </span>                :            : extern void pop_local_binding (tree, tree);</a>
+<a name="183"><span class="lineNum">     183 </span>                :            : extern void pop_bindings_and_leave_scope (void);</a>
+<a name="184"><span class="lineNum">     184 </span>                :            : extern tree constructor_name (tree);</a>
+<a name="185"><span class="lineNum">     185 </span>                :            : extern bool constructor_name_p (tree, tree);</a>
+<a name="186"><span class="lineNum">     186 </span>                :            : </a>
+<a name="187"><span class="lineNum">     187 </span>                :            : /* The kinds of scopes we recognize.  */</a>
+<a name="188"><span class="lineNum">     188 </span>                :            : enum scope_kind {</a>
+<a name="189"><span class="lineNum">     189 </span>                :            :   sk_block = 0,      /* An ordinary block scope.  This enumerator must</a>
+<a name="190"><span class="lineNum">     190 </span>                :            :                         have the value zero because &quot;cp_binding_level&quot;</a>
+<a name="191"><span class="lineNum">     191 </span>                :            :                         is initialized by using &quot;memset&quot; to set the</a>
+<a name="192"><span class="lineNum">     192 </span>                :            :                         contents to zero, and the default scope kind</a>
+<a name="193"><span class="lineNum">     193 </span>                :            :                         is &quot;sk_block&quot;.  */</a>
+<a name="194"><span class="lineNum">     194 </span>                :            :   sk_cleanup,        /* A scope for (pseudo-)scope for cleanup.  It is</a>
+<a name="195"><span class="lineNum">     195 </span>                :            :                         pseudo in that it is transparent to name lookup</a>
+<a name="196"><span class="lineNum">     196 </span>                :            :                         activities.  */</a>
+<a name="197"><span class="lineNum">     197 </span>                :            :   sk_try,            /* A try-block.  */</a>
+<a name="198"><span class="lineNum">     198 </span>                :            :   sk_catch,          /* A catch-block.  */</a>
+<a name="199"><span class="lineNum">     199 </span>                :            :   sk_for,            /* The scope of the variable declared in a</a>
+<a name="200"><span class="lineNum">     200 </span>                :            :                         init-statement.  */</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :   sk_cond,           /* The scope of the variable declared in the condition</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :                         of an if or switch statement.  */</a>
+<a name="203"><span class="lineNum">     203 </span>                :            :   sk_function_parms, /* The scope containing function parameters.  */</a>
+<a name="204"><span class="lineNum">     204 </span>                :            :   sk_class,          /* The scope containing the members of a class.  */</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :   sk_scoped_enum,    /* The scope containing the enumerators of a C++11</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :                         scoped enumeration.  */</a>
+<a name="207"><span class="lineNum">     207 </span>                :            :   sk_namespace,      /* The scope containing the members of a</a>
+<a name="208"><span class="lineNum">     208 </span>                :            :                         namespace, including the global scope.  */</a>
+<a name="209"><span class="lineNum">     209 </span>                :            :   sk_template_parms, /* A scope for template parameters.  */</a>
+<a name="210"><span class="lineNum">     210 </span>                :            :   sk_template_spec,  /* Like sk_template_parms, but for an explicit</a>
+<a name="211"><span class="lineNum">     211 </span>                :            :                         specialization.  Since, by definition, an</a>
+<a name="212"><span class="lineNum">     212 </span>                :            :                         explicit specialization is introduced by</a>
+<a name="213"><span class="lineNum">     213 </span>                :            :                         &quot;template &lt;&gt;&quot;, this scope is always empty.  */</a>
+<a name="214"><span class="lineNum">     214 </span>                :            :   sk_transaction,    /* A synchronized or atomic statement.  */</a>
+<a name="215"><span class="lineNum">     215 </span>                :            :   sk_omp             /* An OpenMP structured block.  */</a>
+<a name="216"><span class="lineNum">     216 </span>                :            : };</a>
+<a name="217"><span class="lineNum">     217 </span>                :            : </a>
+<a name="218"><span class="lineNum">     218 </span>                :            : struct GTY(()) cp_class_binding {</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :   cxx_binding *base;</a>
+<a name="220"><span class="lineNum">     220 </span>                :            :   /* The bound name.  */</a>
+<a name="221"><span class="lineNum">     221 </span>                :            :   tree identifier;</a>
+<a name="222"><span class="lineNum">     222 </span>                :            : };</a>
+<a name="223"><span class="lineNum">     223 </span>                :            : </a>
+<a name="224"><span class="lineNum">     224 </span>                :            : /* For each binding contour we allocate a binding_level structure</a>
+<a name="225"><span class="lineNum">     225 </span>                :            :    which records the names defined in that contour.</a>
+<a name="226"><span class="lineNum">     226 </span>                :            :    Contours include:</a>
+<a name="227"><span class="lineNum">     227 </span>                :            :     0) the global one</a>
+<a name="228"><span class="lineNum">     228 </span>                :            :     1) one for each function definition,</a>
+<a name="229"><span class="lineNum">     229 </span>                :            :        where internal declarations of the parameters appear.</a>
+<a name="230"><span class="lineNum">     230 </span>                :            :     2) one for each compound statement,</a>
+<a name="231"><span class="lineNum">     231 </span>                :            :        to record its declarations.</a>
+<a name="232"><span class="lineNum">     232 </span>                :            : </a>
+<a name="233"><span class="lineNum">     233 </span>                :            :    The current meaning of a name can be found by searching the levels</a>
+<a name="234"><span class="lineNum">     234 </span>                :            :    from the current one out to the global one.</a>
+<a name="235"><span class="lineNum">     235 </span>                :            : </a>
+<a name="236"><span class="lineNum">     236 </span>                :            :    Off to the side, may be the class_binding_level.  This exists only</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :    to catch class-local declarations.  It is otherwise nonexistent.</a>
+<a name="238"><span class="lineNum">     238 </span>                :            : </a>
+<a name="239"><span class="lineNum">     239 </span>                :            :    Also there may be binding levels that catch cleanups that must be</a>
+<a name="240"><span class="lineNum">     240 </span>                :            :    run when exceptions occur.  Thus, to see whether a name is bound in</a>
+<a name="241"><span class="lineNum">     241 </span>                :            :    the current scope, it is not enough to look in the</a>
+<a name="242"><span class="lineNum">     242 </span>                :            :    CURRENT_BINDING_LEVEL.  You should use lookup_name_current_level</a>
+<a name="243"><span class="lineNum">     243 </span>                :            :    instead.  */</a>
+<a name="244"><span class="lineNum">     244 </span>                :            : </a>
+<a name="245"><span class="lineNum">     245 </span>                :            : struct GTY(()) cp_binding_level {</a>
+<a name="246"><span class="lineNum">     246 </span>                :            :   /* A chain of _DECL nodes for all variables, constants, functions,</a>
+<a name="247"><span class="lineNum">     247 </span>                :            :       and typedef types.  These are in the reverse of the order</a>
+<a name="248"><span class="lineNum">     248 </span>                :            :       supplied.  There may be OVERLOADs on this list, too, but they</a>
+<a name="249"><span class="lineNum">     249 </span>                :            :       are wrapped in TREE_LISTs; the TREE_VALUE is the OVERLOAD.  */</a>
+<a name="250"><span class="lineNum">     250 </span>                :            :   tree names;</a>
+<a name="251"><span class="lineNum">     251 </span>                :            : </a>
+<a name="252"><span class="lineNum">     252 </span>                :            :   /* Using directives.  */</a>
+<a name="253"><span class="lineNum">     253 </span>                :            :   vec&lt;tree, va_gc&gt; *using_directives;</a>
+<a name="254"><span class="lineNum">     254 </span>                :            : </a>
+<a name="255"><span class="lineNum">     255 </span>                :            :   /* For the binding level corresponding to a class, the entities</a>
+<a name="256"><span class="lineNum">     256 </span>                :            :       declared in the class or its base classes.  */</a>
+<a name="257"><span class="lineNum">     257 </span>                :            :   vec&lt;cp_class_binding, va_gc&gt; *class_shadowed;</a>
+<a name="258"><span class="lineNum">     258 </span>                :            : </a>
+<a name="259"><span class="lineNum">     259 </span>                :            :   /* Similar to class_shadowed, but for IDENTIFIER_TYPE_VALUE, and</a>
+<a name="260"><span class="lineNum">     260 </span>                :            :       is used for all binding levels. The TREE_PURPOSE is the name of</a>
+<a name="261"><span class="lineNum">     261 </span>                :            :       the entity, the TREE_TYPE is the associated type.  In addition</a>
+<a name="262"><span class="lineNum">     262 </span>                :            :       the TREE_VALUE is the IDENTIFIER_TYPE_VALUE before we entered</a>
+<a name="263"><span class="lineNum">     263 </span>                :            :       the class.  */</a>
+<a name="264"><span class="lineNum">     264 </span>                :            :   tree type_shadowed;</a>
+<a name="265"><span class="lineNum">     265 </span>                :            : </a>
+<a name="266"><span class="lineNum">     266 </span>                :            :   /* For each level (except not the global one),</a>
+<a name="267"><span class="lineNum">     267 </span>                :            :       a chain of BLOCK nodes for all the levels</a>
+<a name="268"><span class="lineNum">     268 </span>                :            :       that were entered and exited one level down.  */</a>
+<a name="269"><span class="lineNum">     269 </span>                :            :   tree blocks;</a>
+<a name="270"><span class="lineNum">     270 </span>                :            : </a>
+<a name="271"><span class="lineNum">     271 </span>                :            :   /* The entity (namespace, class, function) the scope of which this</a>
+<a name="272"><span class="lineNum">     272 </span>                :            :       binding contour corresponds to.  Otherwise NULL.  */</a>
+<a name="273"><span class="lineNum">     273 </span>                :            :   tree this_entity;</a>
+<a name="274"><span class="lineNum">     274 </span>                :            : </a>
+<a name="275"><span class="lineNum">     275 </span>                :            :   /* The binding level which this one is contained in (inherits from).  */</a>
+<a name="276"><span class="lineNum">     276 </span>                :            :   cp_binding_level *level_chain;</a>
+<a name="277"><span class="lineNum">     277 </span>                :            : </a>
+<a name="278"><span class="lineNum">     278 </span>                :            :   /* STATEMENT_LIST for statements in this binding contour.</a>
+<a name="279"><span class="lineNum">     279 </span>                :            :       Only used at present for SK_CLEANUP temporary bindings.  */</a>
+<a name="280"><span class="lineNum">     280 </span>                :            :   tree statement_list;</a>
+<a name="281"><span class="lineNum">     281 </span>                :            : </a>
+<a name="282"><span class="lineNum">     282 </span>                :            :   /* Binding depth at which this level began.  */</a>
+<a name="283"><span class="lineNum">     283 </span>                :            :   int binding_depth;</a>
+<a name="284"><span class="lineNum">     284 </span>                :            : </a>
+<a name="285"><span class="lineNum">     285 </span>                :            :   /* The kind of scope that this object represents.  However, a</a>
+<a name="286"><span class="lineNum">     286 </span>                :            :       SK_TEMPLATE_SPEC scope is represented with KIND set to</a>
+<a name="287"><span class="lineNum">     287 </span>                :            :       SK_TEMPLATE_PARMS and EXPLICIT_SPEC_P set to true.  */</a>
+<a name="288"><span class="lineNum">     288 </span>                :            :   ENUM_BITFIELD (scope_kind) kind : 4;</a>
+<a name="289"><span class="lineNum">     289 </span>                :            : </a>
+<a name="290"><span class="lineNum">     290 </span>                :            :   /* True if this scope is an SK_TEMPLATE_SPEC scope.  This field is</a>
+<a name="291"><span class="lineNum">     291 </span>                :            :       only valid if KIND == SK_TEMPLATE_PARMS.  */</a>
+<a name="292"><span class="lineNum">     292 </span>                :            :   BOOL_BITFIELD explicit_spec_p : 1;</a>
+<a name="293"><span class="lineNum">     293 </span>                :            : </a>
+<a name="294"><span class="lineNum">     294 </span>                :            :   /* true means make a BLOCK for this level regardless of all else.  */</a>
+<a name="295"><span class="lineNum">     295 </span>                :            :   unsigned keep : 1;</a>
+<a name="296"><span class="lineNum">     296 </span>                :            : </a>
+<a name="297"><span class="lineNum">     297 </span>                :            :   /* Nonzero if this level can safely have additional</a>
+<a name="298"><span class="lineNum">     298 </span>                :            :       cleanup-needing variables added to it.  */</a>
+<a name="299"><span class="lineNum">     299 </span>                :            :   unsigned more_cleanups_ok : 1;</a>
+<a name="300"><span class="lineNum">     300 </span>                :            :   unsigned have_cleanups : 1;</a>
+<a name="301"><span class="lineNum">     301 </span>                :            : </a>
+<a name="302"><span class="lineNum">     302 </span>                :            :   /* Transient state set if this scope is of sk_class kind</a>
+<a name="303"><span class="lineNum">     303 </span>                :            :      and is in the process of defining 'this_entity'.  Reset</a>
+<a name="304"><span class="lineNum">     304 </span>                :            :      on leaving the class definition to allow for the scope</a>
+<a name="305"><span class="lineNum">     305 </span>                :            :      to be subsequently re-used as a non-defining scope for</a>
+<a name="306"><span class="lineNum">     306 </span>                :            :      'this_entity'.  */</a>
+<a name="307"><span class="lineNum">     307 </span>                :            :   unsigned defining_class_p : 1;</a>
+<a name="308"><span class="lineNum">     308 </span>                :            : </a>
+<a name="309"><span class="lineNum">     309 </span>                :            :   /* true for SK_FUNCTION_PARMS of immediate functions.  */</a>
+<a name="310"><span class="lineNum">     310 </span>                :            :   unsigned immediate_fn_ctx_p : 1;</a>
+<a name="311"><span class="lineNum">     311 </span>                :            : </a>
+<a name="312"><span class="lineNum">     312 </span>                :            :   /* 22 bits left to fill a 32-bit word.  */</a>
+<a name="313"><span class="lineNum">     313 </span>                :            : };</a>
+<a name="314"><span class="lineNum">     314 </span>                :            : </a>
+<a name="315"><span class="lineNum">     315 </span>                :            : /* The binding level currently in effect.  */</a>
+<a name="316"><span class="lineNum">     316 </span>                :            : </a>
+<a name="317"><span class="lineNum">     317 </span>                :            : #define current_binding_level                   \</a>
+<a name="318"><span class="lineNum">     318 </span>                :            :   (*(cfun &amp;&amp; cp_function_chain &amp;&amp; cp_function_chain-&gt;bindings \</a>
+<a name="319"><span class="lineNum">     319 </span>                :            :    ? &amp;cp_function_chain-&gt;bindings                \</a>
+<a name="320"><span class="lineNum">     320 </span>                :            :    : &amp;scope_chain-&gt;bindings))</a>
+<a name="321"><span class="lineNum">     321 </span>                :            : </a>
+<a name="322"><span class="lineNum">     322 </span>                :            : /* The binding level of the current class, if any.  */</a>
+<a name="323"><span class="lineNum">     323 </span>                :            : </a>
+<a name="324"><span class="lineNum">     324 </span>                :            : #define class_binding_level scope_chain-&gt;class_bindings</a>
+<a name="325"><span class="lineNum">     325 </span>                :            : </a>
+<a name="326"><span class="lineNum">     326 </span>                :            : /* True if SCOPE designates the global scope binding contour.  */</a>
+<a name="327"><span class="lineNum">     327 </span>                :            : #define global_scope_p(SCOPE) \</a>
+<a name="328"><span class="lineNum">     328 </span>                :            :   ((SCOPE) == NAMESPACE_LEVEL (global_namespace))</a>
+<a name="329"><span class="lineNum">     329 </span>                :            : </a>
+<a name="330"><span class="lineNum">     330 </span>                :            : extern cp_binding_level *leave_scope (void);</a>
+<a name="331"><span class="lineNum">     331 </span>                :            : extern bool kept_level_p (void);</a>
+<a name="332"><span class="lineNum">     332 </span>                :            : extern bool global_bindings_p (void);</a>
+<a name="333"><span class="lineNum">     333 </span>                :            : extern bool toplevel_bindings_p (void);</a>
+<a name="334"><span class="lineNum">     334 </span>                :            : extern bool namespace_bindings_p (void);</a>
+<a name="335"><span class="lineNum">     335 </span>                :            : extern bool local_bindings_p (void);</a>
+<a name="336"><span class="lineNum">     336 </span>                :            : extern bool template_parm_scope_p (void);</a>
+<a name="337"><span class="lineNum">     337 </span>                :            : extern scope_kind innermost_scope_kind (void);</a>
+<a name="338"><span class="lineNum">     338 </span>                :            : extern cp_binding_level *begin_scope (scope_kind, tree);</a>
+<a name="339"><span class="lineNum">     339 </span>                :            : extern void print_binding_stack (void);</a>
+<a name="340"><span class="lineNum">     340 </span>                :            : extern void pop_everything (void);</a>
+<a name="341"><span class="lineNum">     341 </span>                :            : extern void keep_next_level (bool);</a>
+<a name="342"><span class="lineNum">     342 </span>                :            : extern bool is_ancestor (tree ancestor, tree descendant);</a>
+<a name="343"><span class="lineNum">     343 </span>                :            : extern bool is_nested_namespace (tree parent, tree descendant,</a>
+<a name="344"><span class="lineNum">     344 </span>                :            :                                  bool inline_only = false);</a>
+<a name="345"><span class="lineNum">     345 </span>                :            : extern tree push_scope (tree);</a>
+<a name="346"><span class="lineNum">     346 </span>                :            : extern void pop_scope (tree);</a>
+<a name="347"><span class="lineNum">     347 </span>                :            : extern tree push_inner_scope (tree);</a>
+<a name="348"><span class="lineNum">     348 </span>                :            : extern void pop_inner_scope (tree, tree);</a>
+<a name="349"><span class="lineNum">     349 </span>                :            : extern void push_binding_level (cp_binding_level *);</a>
+<a name="350"><span class="lineNum">     350 </span>                :            : </a>
+<a name="351"><span class="lineNum">     351 </span>                :            : extern bool handle_namespace_attrs (tree, tree);</a>
+<a name="352"><span class="lineNum">     352 </span>                :            : extern void pushlevel_class (void);</a>
+<a name="353"><span class="lineNum">     353 </span>                :            : extern void poplevel_class (void);</a>
+<a name="354"><span class="lineNum">     354 </span>                :            : </a>
+<a name="355"><span class="lineNum">     355 </span>                :            : /* What kind of scopes name lookup looks in.  An enum class so we</a>
+<a name="356"><span class="lineNum">     356 </span>                :            :    don't accidentally mix integers.  */</a>
+<a name="357"><span class="lineNum">     357 </span>                :            : enum class LOOK_where</a>
+<a name="358"><span class="lineNum">     358 </span>                :            : {</a>
+<a name="359"><span class="lineNum">     359 </span>                :            :   BLOCK = 1 &lt;&lt; 0,  /* Consider block scopes.  */ </a>
+<a name="360"><span class="lineNum">     360 </span>                :            :   CLASS = 1 &lt;&lt; 1,  /* Consider class scopes.  */ </a>
+<a name="361"><span class="lineNum">     361 </span>                :            :   NAMESPACE = 1 &lt;&lt; 2,  /* Consider namespace scopes.  */ </a>
+<a name="362"><span class="lineNum">     362 </span>                :            : </a>
+<a name="363"><span class="lineNum">     363 </span>                :            :   ALL = BLOCK | CLASS | NAMESPACE,</a>
+<a name="364"><span class="lineNum">     364 </span>                :            :   BLOCK_NAMESPACE = BLOCK | NAMESPACE,</a>
+<a name="365"><span class="lineNum">     365 </span>                :            :   CLASS_NAMESPACE = CLASS | NAMESPACE,</a>
+<a name="366"><span class="lineNum">     366 </span>                :            : };</a>
+<a name="367"><span class="lineNum">     367 </span>                :<span class="lineCov">   19847000 : constexpr LOOK_where operator| (LOOK_where a, LOOK_where b)</span></a>
+<a name="368"><span class="lineNum">     368 </span>                :            : {</a>
+<a name="369"><span class="lineNum">     369 </span>                :<span class="lineCov">   19847000 :   return LOOK_where (unsigned (a) | unsigned (b));</span></a>
+<a name="370"><span class="lineNum">     370 </span>                :            : }</a>
+<a name="371"><span class="lineNum">     371 </span>                :<span class="lineCov">   59542000 : constexpr LOOK_where operator&amp; (LOOK_where a, LOOK_where b)</span></a>
+<a name="372"><span class="lineNum">     372 </span>                :            : {</a>
+<a name="373"><span class="lineNum">     373 </span>                :<span class="lineCov">   59542000 :   return LOOK_where (unsigned (a) &amp; unsigned (b));</span></a>
+<a name="374"><span class="lineNum">     374 </span>                :            : }</a>
+<a name="375"><span class="lineNum">     375 </span>                :            : </a>
+<a name="376"><span class="lineNum">     376 </span>                :            : enum class LOOK_want</a>
+<a name="377"><span class="lineNum">     377 </span>                :            : {</a>
+<a name="378"><span class="lineNum">     378 </span>                :            :   NORMAL = 0,  /* Normal lookup -- non-types can hide implicit types.  */</a>
+<a name="379"><span class="lineNum">     379 </span>                :            :   TYPE = 1 &lt;&lt; 1,  /* We only want TYPE_DECLS.  */</a>
+<a name="380"><span class="lineNum">     380 </span>                :            :   NAMESPACE = 1 &lt;&lt; 2,  /* We only want NAMESPACE_DECLS.  */</a>
+<a name="381"><span class="lineNum">     381 </span>                :            : </a>
+<a name="382"><span class="lineNum">     382 </span>                :            :   HIDDEN_FRIEND = 1 &lt;&lt; 3, /* See hidden friends.  */</a>
+<a name="383"><span class="lineNum">     383 </span>                :            :   HIDDEN_LAMBDA = 1 &lt;&lt; 4,  /* See lambda-ignored entities.  */</a>
+<a name="384"><span class="lineNum">     384 </span>                :            : </a>
+<a name="385"><span class="lineNum">     385 </span>                :            :   TYPE_NAMESPACE = TYPE | NAMESPACE,  /* Either NAMESPACE or TYPE.  */</a>
+<a name="386"><span class="lineNum">     386 </span>                :            : };</a>
+<a name="387"><span class="lineNum">     387 </span>                :<span class="lineCov">       1460 : constexpr LOOK_want operator| (LOOK_want a, LOOK_want b)</span></a>
+<a name="388"><span class="lineNum">     388 </span>                :            : {</a>
+<a name="389"><span class="lineNum">     389 </span>                :<span class="lineCov">       1460 :   return LOOK_want (unsigned (a) | unsigned (b));</span></a>
+<a name="390"><span class="lineNum">     390 </span>                :            : }</a>
+<a name="391"><span class="lineNum">     391 </span>                :<span class="lineCov">   53063100 : constexpr LOOK_want operator&amp; (LOOK_want a, LOOK_want b)</span></a>
+<a name="392"><span class="lineNum">     392 </span>                :            : {</a>
+<a name="393"><span class="lineNum">     393 </span>                :<span class="lineCov">   53063100 :   return LOOK_want (unsigned (a) &amp; unsigned (b));</span></a>
+<a name="394"><span class="lineNum">     394 </span>                :            : }</a>
+<a name="395"><span class="lineNum">     395 </span>                :            : </a>
+<a name="396"><span class="lineNum">     396 </span>                :            : extern tree lookup_name (tree, LOOK_where, LOOK_want = LOOK_want::NORMAL);</a>
+<a name="397"><span class="lineNum">     397 </span>                :            : /* Also declared in c-family/c-common.h.  */</a>
+<a name="398"><span class="lineNum">     398 </span>                :            : extern tree lookup_name (tree name);</a>
+<a name="399"><span class="lineNum">     399 </span>                :<span class="lineCov">   17960400 : inline tree lookup_name (tree name, LOOK_want want)</span></a>
+<a name="400"><span class="lineNum">     400 </span>                :            : {</a>
+<a name="401"><span class="lineNum">     401 </span>                :<span class="lineCov">   17960400 :   return lookup_name (name, LOOK_where::ALL, want);</span></a>
+<a name="402"><span class="lineNum">     402 </span>                :            : }</a>
+<a name="403"><span class="lineNum">     403 </span>                :            : </a>
+<a name="404"><span class="lineNum">     404 </span>                :            : enum class TAG_how</a>
+<a name="405"><span class="lineNum">     405 </span>                :            : {</a>
+<a name="406"><span class="lineNum">     406 </span>                :            :   CURRENT_ONLY = 0, // Look and insert only in current scope</a>
+<a name="407"><span class="lineNum">     407 </span>                :            : </a>
+<a name="408"><span class="lineNum">     408 </span>                :            :   GLOBAL = 1, // Unqualified lookup, innermost-non-class insertion</a>
+<a name="409"><span class="lineNum">     409 </span>                :            : </a>
+<a name="410"><span class="lineNum">     410 </span>                :            :   INNERMOST_NON_CLASS = 2, // Look and insert only into</a>
+<a name="411"><span class="lineNum">     411 </span>                :            :                            // innermost-non-class</a>
+<a name="412"><span class="lineNum">     412 </span>                :            : </a>
+<a name="413"><span class="lineNum">     413 </span>                :            :   HIDDEN_FRIEND = 3, // As INNERMOST_NON_CLASS, but hide it</a>
+<a name="414"><span class="lineNum">     414 </span>                :            : };</a>
+<a name="415"><span class="lineNum">     415 </span>                :            : </a>
+<a name="416"><span class="lineNum">     416 </span>                :            : extern tree lookup_elaborated_type (tree, TAG_how);</a>
+<a name="417"><span class="lineNum">     417 </span>                :            : extern tree get_namespace_binding (tree ns, tree id);</a>
+<a name="418"><span class="lineNum">     418 </span>                :            : extern void set_global_binding (tree decl);</a>
+<a name="419"><span class="lineNum">     419 </span>                :<span class="lineCov">      29029 : inline tree get_global_binding (tree id)</span></a>
+<a name="420"><span class="lineNum">     420 </span>                :            : {</a>
+<a name="421"><span class="lineNum">     421 </span>                :<span class="lineCov">      29029 :   return get_namespace_binding (NULL_TREE, id);</span></a>
+<a name="422"><span class="lineNum">     422 </span>                :            : }</a>
+<a name="423"><span class="lineNum">     423 </span>                :            : extern tree lookup_qualified_name (tree scope, tree name,</a>
+<a name="424"><span class="lineNum">     424 </span>                :            :                                    LOOK_want = LOOK_want::NORMAL,</a>
+<a name="425"><span class="lineNum">     425 </span>                :            :                                    bool = true);</a>
+<a name="426"><span class="lineNum">     426 </span>                :            : extern tree lookup_qualified_name (tree scope, const char *name,</a>
+<a name="427"><span class="lineNum">     427 </span>                :            :                                    LOOK_want = LOOK_want::NORMAL,</a>
+<a name="428"><span class="lineNum">     428 </span>                :            :                                    bool = true);</a>
+<a name="429"><span class="lineNum">     429 </span>                :            : extern bool pushdecl_class_level (tree);</a>
+<a name="430"><span class="lineNum">     430 </span>                :            : extern tree pushdecl_namespace_level (tree, bool hiding = false);</a>
+<a name="431"><span class="lineNum">     431 </span>                :            : extern bool push_class_level_binding (tree, tree);</a>
+<a name="432"><span class="lineNum">     432 </span>                :            : extern tree get_local_decls ();</a>
+<a name="433"><span class="lineNum">     433 </span>                :            : extern int function_parm_depth (void);</a>
+<a name="434"><span class="lineNum">     434 </span>                :            : extern tree cp_namespace_decls (tree);</a>
+<a name="435"><span class="lineNum">     435 </span>                :            : extern void set_decl_namespace (tree, tree, bool);</a>
+<a name="436"><span class="lineNum">     436 </span>                :            : extern void push_decl_namespace (tree);</a>
+<a name="437"><span class="lineNum">     437 </span>                :            : extern void pop_decl_namespace (void);</a>
+<a name="438"><span class="lineNum">     438 </span>                :            : extern void do_namespace_alias (tree, tree);</a>
+<a name="439"><span class="lineNum">     439 </span>                :            : extern tree do_class_using_decl (tree, tree);</a>
+<a name="440"><span class="lineNum">     440 </span>                :            : extern tree lookup_arg_dependent (tree, tree, vec&lt;tree, va_gc&gt; *);</a>
+<a name="441"><span class="lineNum">     441 </span>                :            : extern tree search_anon_aggr (tree, tree, bool = false);</a>
+<a name="442"><span class="lineNum">     442 </span>                :            : extern tree get_class_binding_direct (tree, tree, bool want_type = false);</a>
+<a name="443"><span class="lineNum">     443 </span>                :            : extern tree get_class_binding (tree, tree, bool want_type = false);</a>
+<a name="444"><span class="lineNum">     444 </span>                :            : extern tree *find_member_slot (tree klass, tree name);</a>
+<a name="445"><span class="lineNum">     445 </span>                :            : extern tree *add_member_slot (tree klass, tree name);</a>
+<a name="446"><span class="lineNum">     446 </span>                :            : extern void resort_type_member_vec (void *, void *,</a>
+<a name="447"><span class="lineNum">     447 </span>                :            :                                     gt_pointer_operator, void *);</a>
+<a name="448"><span class="lineNum">     448 </span>                :            : extern vec&lt;tree, va_gc&gt; *set_class_bindings (tree, int extra = 0);</a>
+<a name="449"><span class="lineNum">     449 </span>                :            : extern void insert_late_enum_def_bindings (tree, tree);</a>
+<a name="450"><span class="lineNum">     450 </span>                :            : extern tree innermost_non_namespace_value (tree);</a>
+<a name="451"><span class="lineNum">     451 </span>                :            : extern cxx_binding *outer_binding (tree, cxx_binding *, bool);</a>
+<a name="452"><span class="lineNum">     452 </span>                :            : extern void cp_emit_debug_info_for_using (tree, tree);</a>
+<a name="453"><span class="lineNum">     453 </span>                :            : </a>
+<a name="454"><span class="lineNum">     454 </span>                :            : extern void finish_nonmember_using_decl (tree scope, tree name);</a>
+<a name="455"><span class="lineNum">     455 </span>                :            : extern void finish_using_directive (tree target, tree attribs);</a>
+<a name="456"><span class="lineNum">     456 </span>                :            : void push_local_extern_decl_alias (tree decl);</a>
+<a name="457"><span class="lineNum">     457 </span>                :            : extern tree pushdecl (tree, bool hiding = false);</a>
+<a name="458"><span class="lineNum">     458 </span>                :            : extern tree pushdecl_outermost_localscope (tree);</a>
+<a name="459"><span class="lineNum">     459 </span>                :            : extern tree pushdecl_top_level (tree);</a>
+<a name="460"><span class="lineNum">     460 </span>                :            : extern tree pushdecl_top_level_and_finish (tree, tree);</a>
+<a name="461"><span class="lineNum">     461 </span>                :            : extern tree pushtag (tree, tree, TAG_how = TAG_how::CURRENT_ONLY);</a>
+<a name="462"><span class="lineNum">     462 </span>                :            : extern int push_namespace (tree, bool make_inline = false);</a>
+<a name="463"><span class="lineNum">     463 </span>                :            : extern void pop_namespace (void);</a>
+<a name="464"><span class="lineNum">     464 </span>                :            : extern void push_nested_namespace (tree);</a>
+<a name="465"><span class="lineNum">     465 </span>                :            : extern void pop_nested_namespace (tree);</a>
+<a name="466"><span class="lineNum">     466 </span>                :            : extern void push_to_top_level (void);</a>
+<a name="467"><span class="lineNum">     467 </span>                :            : extern void pop_from_top_level (void);</a>
+<a name="468"><span class="lineNum">     468 </span>                :            : extern void maybe_save_operator_binding (tree);</a>
+<a name="469"><span class="lineNum">     469 </span>                :            : extern void push_operator_bindings (void);</a>
+<a name="470"><span class="lineNum">     470 </span>                :            : extern void push_using_decl_bindings (tree, tree);</a>
+<a name="471"><span class="lineNum">     471 </span>                :            : extern void discard_operator_bindings (tree);</a>
+<a name="472"><span class="lineNum">     472 </span>                :            : </a>
+<a name="473"><span class="lineNum">     473 </span>                :            : /* Lower level interface for modules. */</a>
+<a name="474"><span class="lineNum">     474 </span>                :            : extern tree *mergeable_namespace_slots (tree ns, tree name, bool is_global,</a>
+<a name="475"><span class="lineNum">     475 </span>                :            :                                         tree *mvec);</a>
+<a name="476"><span class="lineNum">     476 </span>                :            : extern void add_mergeable_namespace_entity (tree *slot, tree decl);</a>
+<a name="477"><span class="lineNum">     477 </span>                :            : extern tree lookup_class_binding (tree ctx, tree name);</a>
+<a name="478"><span class="lineNum">     478 </span>                :            : extern bool import_module_binding (tree ctx, tree name, unsigned mod,</a>
+<a name="479"><span class="lineNum">     479 </span>                :            :                                    unsigned snum);</a>
+<a name="480"><span class="lineNum">     480 </span>                :            : extern bool set_module_binding (tree ctx, tree name, unsigned mod,</a>
+<a name="481"><span class="lineNum">     481 </span>                :            :                                 int mod_glob_flag,</a>
+<a name="482"><span class="lineNum">     482 </span>                :            :                                 tree value, tree type, tree visible);</a>
+<a name="483"><span class="lineNum">     483 </span>                :            : extern void add_module_namespace_decl (tree ns, tree decl);</a>
+<a name="484"><span class="lineNum">     484 </span>                :            : </a>
+<a name="485"><span class="lineNum">     485 </span>                :            : enum WMB_Flags</a>
+<a name="486"><span class="lineNum">     486 </span>                :            : {</a>
+<a name="487"><span class="lineNum">     487 </span>                :            :   WMB_None = 0,</a>
+<a name="488"><span class="lineNum">     488 </span>                :            :   WMB_Dups = 1 &lt;&lt; 0,</a>
+<a name="489"><span class="lineNum">     489 </span>                :            :   WMB_Export = 1 &lt;&lt; 1,</a>
+<a name="490"><span class="lineNum">     490 </span>                :            :   WMB_Using = 1 &lt;&lt; 2,</a>
+<a name="491"><span class="lineNum">     491 </span>                :            :   WMB_Hidden = 1 &lt;&lt; 3,</a>
+<a name="492"><span class="lineNum">     492 </span>                :            : };</a>
+<a name="493"><span class="lineNum">     493 </span>                :            : </a>
+<a name="494"><span class="lineNum">     494 </span>                :            : extern unsigned walk_module_binding (tree binding, bitmap partitions,</a>
+<a name="495"><span class="lineNum">     495 </span>                :            :                                      bool (*)(tree decl, WMB_Flags, void *data),</a>
+<a name="496"><span class="lineNum">     496 </span>                :            :                                      void *data);</a>
+<a name="497"><span class="lineNum">     497 </span>                :            : extern tree add_imported_namespace (tree ctx, tree name, location_t,</a>
+<a name="498"><span class="lineNum">     498 </span>                :            :                                     unsigned module,</a>
+<a name="499"><span class="lineNum">     499 </span>                :            :                                     bool inline_p, bool visible_p);</a>
+<a name="500"><span class="lineNum">     500 </span>                :            : extern const char *get_cxx_dialect_name (enum cxx_dialect dialect);</a>
+<a name="501"><span class="lineNum">     501 </span>                :            : </a>
+<a name="502"><span class="lineNum">     502 </span>                :            : #endif /* GCC_CP_NAME_LOOKUP_H */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

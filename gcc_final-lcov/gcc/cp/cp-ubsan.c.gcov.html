@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/cp/cp-ubsan.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">gcc/cp</a> - cp-ubsan.c<span style="font-size: 80%;"> (source / <a href="cp-ubsan.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">152</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">134</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* UndefinedBehaviorSanitizer, undefined behavior detector.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 2014-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :    Contributed by Jakub Jelinek &lt;jakub@redhat.com&gt;</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : </a>
+<a name="5"><span class="lineNum">       5 </span>                :            : This file is part of GCC.</a>
+<a name="6"><span class="lineNum">       6 </span>                :            : </a>
+<a name="7"><span class="lineNum">       7 </span>                :            : GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : the terms of the GNU General Public License as published by the Free</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : Software Foundation; either version 3, or (at your option) any later</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : version.</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : </a>
+<a name="12"><span class="lineNum">      12 </span>                :            : GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : for more details.</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : </a>
+<a name="17"><span class="lineNum">      17 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : </a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &quot;config.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &quot;system.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &quot;coretypes.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;cp-tree.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &quot;ubsan.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &quot;stringpool.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &quot;attribs.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &quot;asan.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : </a>
+<a name="30"><span class="lineNum">      30 </span>                :            : /* Test if we should instrument vptr access.  */</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : </a>
+<a name="32"><span class="lineNum">      32 </span>                :            : static bool</a>
+<a name="33"><span class="lineNum">      33 </span>                :<span class="lineNoCov">          0 : cp_ubsan_instrument_vptr_p (tree type)</span></a>
+<a name="34"><span class="lineNum">      34 </span>                :            : {</a>
+<a name="35"><span class="lineNum">      35 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!flag_rtti || flag_sanitize_undefined_trap_on_error)</span></a>
+<a name="36"><span class="lineNum">      36 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="37"><span class="lineNum">      37 </span>                :            : </a>
+<a name="38"><span class="lineNum">      38 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!sanitize_flags_p (SANITIZE_VPTR))</span></a>
+<a name="39"><span class="lineNum">      39 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="40"><span class="lineNum">      40 </span>                :            : </a>
+<a name="41"><span class="lineNum">      41 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (current_function_decl == NULL_TREE)</span></a>
+<a name="42"><span class="lineNum">      42 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="43"><span class="lineNum">      43 </span>                :            : </a>
+<a name="44"><span class="lineNum">      44 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (type)</span></a>
+<a name="45"><span class="lineNum">      45 </span>                :            :     {</a>
+<a name="46"><span class="lineNum">      46 </span>                :<span class="lineNoCov">          0 :       type = TYPE_MAIN_VARIANT (type);</span></a>
+<a name="47"><span class="lineNum">      47 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       if (!CLASS_TYPE_P (type) || !CLASSTYPE_VTABLES (type))</span></a>
+<span class="lineNum">         </span>   <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span><span class="branchNoExec" title="Branch 6 was not executed"> # </span><span class="branchNoExec" title="Branch 7 was not executed"> # </span>]
+<a name="48"><span class="lineNum">      48 </span>                :<span class="lineNoCov">          0 :         return false;</span></a>
+<a name="49"><span class="lineNum">      49 </span>                :            :     }</a>
+<a name="50"><span class="lineNum">      50 </span>                :            : </a>
+<a name="51"><span class="lineNum">      51 </span>                :<span class="lineNoCov">          0 :   return true;</span></a>
+<a name="52"><span class="lineNum">      52 </span>                :            : }</a>
+<a name="53"><span class="lineNum">      53 </span>                :            : </a>
+<a name="54"><span class="lineNum">      54 </span>                :            : /* Helper function for</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :    cp_ubsan_maybe_instrument_{member_{call,access},downcast}.</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :    Instrument vptr access.  */</a>
+<a name="57"><span class="lineNum">      57 </span>                :            : </a>
+<a name="58"><span class="lineNum">      58 </span>                :            : static tree</a>
+<a name="59"><span class="lineNum">      59 </span>                :<span class="lineNoCov">          0 : cp_ubsan_instrument_vptr (location_t loc, tree op, tree type, bool is_addr,</span></a>
+<a name="60"><span class="lineNum">      60 </span>                :            :                           enum ubsan_null_ckind ckind)</a>
+<a name="61"><span class="lineNum">      61 </span>                :            : {</a>
+<a name="62"><span class="lineNum">      62 </span>                :<span class="lineNoCov">          0 :   type = TYPE_MAIN_VARIANT (type);</span></a>
+<a name="63"><span class="lineNum">      63 </span>                :<span class="lineNoCov">          0 :   const char *mangled = mangle_type_string (type);</span></a>
+<a name="64"><span class="lineNum">      64 </span>                :<span class="lineNoCov">          0 :   hashval_t str_hash1 = htab_hash_string (mangled);</span></a>
+<a name="65"><span class="lineNum">      65 </span>                :<span class="lineNoCov">          0 :   hashval_t str_hash2 = iterative_hash (mangled, strlen (mangled), 0);</span></a>
+<a name="66"><span class="lineNum">      66 </span>                :<span class="lineNoCov">          0 :   tree str_hash = wide_int_to_tree (uint64_type_node,</span></a>
+<a name="67"><span class="lineNum">      67 </span>                :<span class="lineNoCov">          0 :                                     wi::uhwi (((uint64_t) str_hash1 &lt;&lt; 32)</span></a>
+<a name="68"><span class="lineNum">      68 </span>                :<span class="lineNoCov">          0 :                                               | str_hash2, 64));</span></a>
+<a name="69"><span class="lineNum">      69 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!is_addr)</span></a>
+<a name="70"><span class="lineNum">      70 </span>                :<span class="lineNoCov">          0 :     op = build_fold_addr_expr_loc (loc, op);</span></a>
+<a name="71"><span class="lineNum">      71 </span>                :<span class="lineNoCov">          0 :   op = save_expr (op);</span></a>
+<a name="72"><span class="lineNum">      72 </span>                :<span class="lineNoCov">          0 :   tree vptr = fold_build3_loc (loc, COMPONENT_REF,</span></a>
+<a name="73"><span class="lineNum">      73 </span>                :<span class="lineNoCov">          0 :                                TREE_TYPE (TYPE_VFIELD (type)),</span></a>
+<a name="74"><span class="lineNum">      74 </span>                :            :                                build_fold_indirect_ref_loc (loc, op),</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :                                TYPE_VFIELD (type), NULL_TREE);</a>
+<a name="76"><span class="lineNum">      76 </span>                :<span class="lineNoCov">          0 :   vptr = fold_convert_loc (loc, pointer_sized_int_node, vptr);</span></a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineNoCov">          0 :   vptr = fold_convert_loc (loc, uint64_type_node, vptr);</span></a>
+<a name="78"><span class="lineNum">      78 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (ckind == UBSAN_DOWNCAST_POINTER)</span></a>
+<a name="79"><span class="lineNum">      79 </span>                :            :     {</a>
+<a name="80"><span class="lineNum">      80 </span>                :<span class="lineNoCov">          0 :       tree cond = build2_loc (loc, NE_EXPR, boolean_type_node, op,</span></a>
+<a name="81"><span class="lineNum">      81 </span>                :            :                               build_zero_cst (TREE_TYPE (op)));</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :       /* This is a compiler generated comparison, don't emit</a>
+<a name="83"><span class="lineNum">      83 </span>                :            :          e.g. -Wnonnull-compare warning for it.  */</a>
+<a name="84"><span class="lineNum">      84 </span>                :<span class="lineNoCov">          0 :       TREE_NO_WARNING (cond) = 1;</span></a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineNoCov">          0 :       vptr = build3_loc (loc, COND_EXPR, uint64_type_node, cond,</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :<span class="lineNoCov">          0 :                          vptr, build_int_cst (uint64_type_node, 0));</span></a>
+<a name="87"><span class="lineNum">      87 </span>                :            :     }</a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineNoCov">          0 :   tree ti_decl = get_tinfo_decl (type);</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :<span class="lineNoCov">          0 :   mark_used (ti_decl);</span></a>
+<a name="90"><span class="lineNum">      90 </span>                :<span class="lineNoCov">          0 :   tree ptype = build_pointer_type (type);</span></a>
+<a name="91"><span class="lineNum">      91 </span>                :            :   tree call</a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineNoCov">          0 :     = build_call_expr_internal_loc (loc, IFN_UBSAN_VPTR,</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :            :                                     void_type_node, 5, op, vptr, str_hash,</a>
+<a name="94"><span class="lineNum">      94 </span>                :            :                                     build_address (ti_decl),</a>
+<a name="95"><span class="lineNum">      95 </span>                :            :                                     build_int_cst (ptype, ckind));</a>
+<a name="96"><span class="lineNum">      96 </span>                :<span class="lineNoCov">          0 :   TREE_SIDE_EFFECTS (call) = 1;</span></a>
+<a name="97"><span class="lineNum">      97 </span>                :<span class="lineNoCov">          0 :   return fold_build2 (COMPOUND_EXPR, TREE_TYPE (op), call, op);</span></a>
+<a name="98"><span class="lineNum">      98 </span>                :            : }</a>
+<a name="99"><span class="lineNum">      99 </span>                :            : </a>
+<a name="100"><span class="lineNum">     100 </span>                :            : /* Helper function for</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :    cp_ubsan_maybe_instrument_{member_{call,access},downcast}.</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :    Instrument vptr access if it should be instrumented, otherwise return</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :    NULL_TREE.  */</a>
+<a name="104"><span class="lineNum">     104 </span>                :            : </a>
+<a name="105"><span class="lineNum">     105 </span>                :            : static tree</a>
+<a name="106"><span class="lineNum">     106 </span>                :<span class="lineNoCov">          0 : cp_ubsan_maybe_instrument_vptr (location_t loc, tree op, tree type,</span></a>
+<a name="107"><span class="lineNum">     107 </span>                :            :                                 bool is_addr, enum ubsan_null_ckind ckind)</a>
+<a name="108"><span class="lineNum">     108 </span>                :            : {</a>
+<a name="109"><span class="lineNum">     109 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!cp_ubsan_instrument_vptr_p (type))</span></a>
+<a name="110"><span class="lineNum">     110 </span>                :<span class="lineNoCov">          0 :     return NULL_TREE;</span></a>
+<a name="111"><span class="lineNum">     111 </span>                :<span class="lineNoCov">          0 :   return cp_ubsan_instrument_vptr (loc, op, type, is_addr, ckind);</span></a>
+<a name="112"><span class="lineNum">     112 </span>                :            : }</a>
+<a name="113"><span class="lineNum">     113 </span>                :            : </a>
+<a name="114"><span class="lineNum">     114 </span>                :            : /* Instrument a member call (but not constructor call) if needed.  */</a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>                :            : void</a>
+<a name="117"><span class="lineNum">     117 </span>                :<span class="lineNoCov">          0 : cp_ubsan_maybe_instrument_member_call (tree stmt)</span></a>
+<a name="118"><span class="lineNum">     118 </span>                :            : {</a>
+<a name="119"><span class="lineNum">     119 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (call_expr_nargs (stmt) == 0)</span></a>
+<a name="120"><span class="lineNum">     120 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="121"><span class="lineNum">     121 </span>                :            :   tree op, *opp;</a>
+<a name="122"><span class="lineNum">     122 </span>                :            : </a>
+<a name="123"><span class="lineNum">     123 </span>                :<span class="lineNoCov">          0 :   tree fn = CALL_EXPR_FN (stmt);</span></a>
+<a name="124"><span class="lineNum">     124 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (fn &amp;&amp; TREE_CODE (fn) == OBJ_TYPE_REF)</span></a>
+<a name="125"><span class="lineNum">     125 </span>                :            :     {</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :       /* Virtual function call: Sanitize the use of the object pointer in the</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :          OBJ_TYPE_REF, since the vtable reference will SEGV otherwise (95221).</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :          OBJ_TYPE_REF_EXPR is ptr-&gt;vptr[N] and OBJ_TYPE_REF_OBJECT is ptr.  But</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :          we can't be sure of finding OBJ_TYPE_REF_OBJECT in OBJ_TYPE_REF_EXPR</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :          if the latter has been optimized, so we use a COMPOUND_EXPR below.  */</a>
+<a name="131"><span class="lineNum">     131 </span>                :<span class="lineNoCov">          0 :       opp = &amp;OBJ_TYPE_REF_EXPR (fn);</span></a>
+<a name="132"><span class="lineNum">     132 </span>                :<span class="lineNoCov">          0 :       op = OBJ_TYPE_REF_OBJECT (fn);</span></a>
+<a name="133"><span class="lineNum">     133 </span>                :            :     }</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :   else</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :     {</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :       /* Non-virtual call: Sanitize the 'this' argument.  */</a>
+<a name="137"><span class="lineNum">     137 </span>                :<span class="lineNoCov">          0 :       opp = &amp;CALL_EXPR_ARG (stmt, 0);</span></a>
+<a name="138"><span class="lineNum">     138 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (*opp == error_mark_node</span></a>
+<a name="139"><span class="lineNum">     139 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :           || !INDIRECT_TYPE_P (TREE_TYPE (*opp)))</span></a>
+<a name="140"><span class="lineNum">     140 </span>                :<span class="lineNoCov">          0 :         return;</span></a>
+<a name="141"><span class="lineNum">     141 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       while (TREE_CODE (*opp) == COMPOUND_EXPR)</span></a>
+<a name="142"><span class="lineNum">     142 </span>                :<span class="lineNoCov">          0 :         opp = &amp;TREE_OPERAND (*opp, 1);</span></a>
+<a name="143"><span class="lineNum">     143 </span>                :<span class="lineNoCov">          0 :       op = *opp;</span></a>
+<a name="144"><span class="lineNum">     144 </span>                :            :     }</a>
+<a name="145"><span class="lineNum">     145 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :   op = cp_ubsan_maybe_instrument_vptr (EXPR_LOCATION (stmt), op,</span></a>
+<a name="146"><span class="lineNum">     146 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                        TREE_TYPE (TREE_TYPE (op)),</span></a>
+<a name="147"><span class="lineNum">     147 </span>                :            :                                        true, UBSAN_MEMBER_CALL);</a>
+<a name="148"><span class="lineNum">     148 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!op)</span></a>
+<a name="149"><span class="lineNum">     149 </span>                :            :     /* No change.  */;</a>
+<a name="150"><span class="lineNum">     150 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :   else if (fn &amp;&amp; TREE_CODE (fn) == OBJ_TYPE_REF)</span></a>
+<a name="151"><span class="lineNum">     151 </span>                :<span class="lineNoCov">          0 :     *opp = cp_build_compound_expr (op, *opp, tf_none);</span></a>
+<a name="152"><span class="lineNum">     152 </span>                :            :   else</a>
+<a name="153"><span class="lineNum">     153 </span>                :<span class="lineNoCov">          0 :     *opp = op;</span></a>
+<a name="154"><span class="lineNum">     154 </span>                :            : }</a>
+<a name="155"><span class="lineNum">     155 </span>                :            : </a>
+<a name="156"><span class="lineNum">     156 </span>                :            : /* Data passed to cp_ubsan_check_member_access_r.  */</a>
+<a name="157"><span class="lineNum">     157 </span>                :            : </a>
+<a name="158"><span class="lineNum">     158 </span>                :            : struct cp_ubsan_check_member_access_data</a>
+<a name="159"><span class="lineNum">     159 </span>                :            : {</a>
+<a name="160"><span class="lineNum">     160 </span>                :            :   hash_set&lt;tree&gt; *pset;</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :   bool is_addr;</a>
+<a name="162"><span class="lineNum">     162 </span>                :            : };</a>
+<a name="163"><span class="lineNum">     163 </span>                :            : </a>
+<a name="164"><span class="lineNum">     164 </span>                :            : static tree cp_ubsan_check_member_access_r (tree *, int *, void *);</a>
+<a name="165"><span class="lineNum">     165 </span>                :            : </a>
+<a name="166"><span class="lineNum">     166 </span>                :            : /* Instrument a member access.  */</a>
+<a name="167"><span class="lineNum">     167 </span>                :            : </a>
+<a name="168"><span class="lineNum">     168 </span>                :            : static bool</a>
+<a name="169"><span class="lineNum">     169 </span>                :<span class="lineNoCov">          0 : cp_ubsan_maybe_instrument_member_access</span></a>
+<a name="170"><span class="lineNum">     170 </span>                :            :      (tree stmt, cp_ubsan_check_member_access_data *ucmd)</a>
+<a name="171"><span class="lineNum">     171 </span>                :            : {</a>
+<a name="172"><span class="lineNum">     172 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (DECL_ARTIFICIAL (TREE_OPERAND (stmt, 1)))</span></a>
+<a name="173"><span class="lineNum">     173 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="174"><span class="lineNum">     174 </span>                :            : </a>
+<a name="175"><span class="lineNum">     175 </span>                :<span class="lineNoCov">          0 :   tree base = TREE_OPERAND (stmt, 0);</span></a>
+<a name="176"><span class="lineNum">     176 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!cp_ubsan_instrument_vptr_p (TREE_TYPE (base)))</span></a>
+<a name="177"><span class="lineNum">     177 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="178"><span class="lineNum">     178 </span>                :            : </a>
+<a name="179"><span class="lineNum">     179 </span>                :<span class="lineNoCov">          0 :   cp_walk_tree (&amp;base, cp_ubsan_check_member_access_r, ucmd, ucmd-&gt;pset);</span></a>
+<a name="180"><span class="lineNum">     180 </span>                :            : </a>
+<a name="181"><span class="lineNum">     181 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :   base = cp_ubsan_instrument_vptr (EXPR_LOCATION (stmt), base,</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="182"><span class="lineNum">     182 </span>                :            :                                    TREE_TYPE (base), false,</a>
+<a name="183"><span class="lineNum">     183 </span>                :            :                                    UBSAN_MEMBER_ACCESS);</a>
+<a name="184"><span class="lineNum">     184 </span>                :            :   TREE_OPERAND (stmt, 0)</a>
+<a name="185"><span class="lineNum">     185 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :     = build_fold_indirect_ref_loc (EXPR_LOCATION (stmt), base);</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="186"><span class="lineNum">     186 </span>                :<span class="lineNoCov">          0 :   return true;</span></a>
+<a name="187"><span class="lineNum">     187 </span>                :            : }</a>
+<a name="188"><span class="lineNum">     188 </span>                :            : </a>
+<a name="189"><span class="lineNum">     189 </span>                :            : /* Attempt to instrument member accesses inside of the function.</a>
+<a name="190"><span class="lineNum">     190 </span>                :            :    cp_ubsan_maybe_instrument_member_access should be called on COMPONENT_REFs</a>
+<a name="191"><span class="lineNum">     191 </span>                :            :    in the GENERIC IL, but only when the field is actually accessed, not</a>
+<a name="192"><span class="lineNum">     192 </span>                :            :    merely when it's address is taken.  Therefore we track in is_addr field</a>
+<a name="193"><span class="lineNum">     193 </span>                :            :    whether in the current context we are processing address taken</a>
+<a name="194"><span class="lineNum">     194 </span>                :            :    handled components or not.  E.g. for &amp;x-&gt;y[w-&gt;z] we want to call</a>
+<a name="195"><span class="lineNum">     195 </span>                :            :    cp_ubsan_maybe_instrument_member_access on *w.z COMPONENT_REF, but</a>
+<a name="196"><span class="lineNum">     196 </span>                :            :    not on *x.y.  */</a>
+<a name="197"><span class="lineNum">     197 </span>                :            : </a>
+<a name="198"><span class="lineNum">     198 </span>                :            : static tree</a>
+<a name="199"><span class="lineNum">     199 </span>                :<span class="lineNoCov">          0 : cp_ubsan_check_member_access_r (tree *stmt_p, int *walk_subtrees, void *data)</span></a>
+<a name="200"><span class="lineNum">     200 </span>                :            : {</a>
+<a name="201"><span class="lineNum">     201 </span>                :<span class="lineNoCov">          0 :   tree stmt = *stmt_p, t;</span></a>
+<a name="202"><span class="lineNum">     202 </span>                :<span class="lineNoCov">          0 :   cp_ubsan_check_member_access_data *ucmd</span></a>
+<a name="203"><span class="lineNum">     203 </span>                :            :     = (cp_ubsan_check_member_access_data *) data;</a>
+<a name="204"><span class="lineNum">     204 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :   switch (TREE_CODE (stmt))</span></a>
+<a name="205"><span class="lineNum">     205 </span>                :            :     {</a>
+<a name="206"><span class="lineNum">     206 </span>                :<span class="lineNoCov">          0 :     case ADDR_EXPR:</span></a>
+<a name="207"><span class="lineNum">     207 </span>                :<span class="lineNoCov">          0 :       t = TREE_OPERAND (stmt, 0);</span></a>
+<a name="208"><span class="lineNum">     208 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       while ((TREE_CODE (t) == MEM_REF || INDIRECT_REF_P (t))</span></a>
+<a name="209"><span class="lineNum">     209 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :              &amp;&amp; TREE_CODE (TREE_OPERAND (t, 0)) == ADDR_EXPR)</span></a>
+<a name="210"><span class="lineNum">     210 </span>                :<span class="lineNoCov">          0 :         t = TREE_OPERAND (TREE_OPERAND (t, 0), 0);</span></a>
+<a name="211"><span class="lineNum">     211 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (handled_component_p (t))</span></a>
+<a name="212"><span class="lineNum">     212 </span>                :            :         {</a>
+<a name="213"><span class="lineNum">     213 </span>                :<span class="lineNoCov">          0 :           *walk_subtrees = 0;</span></a>
+<a name="214"><span class="lineNum">     214 </span>                :<span class="lineNoCov">          0 :           ucmd-&gt;is_addr = true;</span></a>
+<a name="215"><span class="lineNum">     215 </span>                :<span class="lineNoCov">          0 :           cp_walk_tree (&amp;t, cp_ubsan_check_member_access_r,</span></a>
+<a name="216"><span class="lineNum">     216 </span>                :            :                         data, ucmd-&gt;pset);</a>
+<a name="217"><span class="lineNum">     217 </span>                :<span class="lineNoCov">          0 :           ucmd-&gt;is_addr = false;</span></a>
+<a name="218"><span class="lineNum">     218 </span>                :            :         }</a>
+<a name="219"><span class="lineNum">     219 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="220"><span class="lineNum">     220 </span>                :<span class="lineNoCov">          0 :     case MEM_REF:</span></a>
+<a name="221"><span class="lineNum">     221 </span>                :            :     case INDIRECT_REF:</a>
+<a name="222"><span class="lineNum">     222 </span>                :<span class="lineNoCov">          0 :       t = TREE_OPERAND (stmt, 0);</span></a>
+<a name="223"><span class="lineNum">     223 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (TREE_CODE (t) == ADDR_EXPR)</span></a>
+<a name="224"><span class="lineNum">     224 </span>                :            :         {</a>
+<a name="225"><span class="lineNum">     225 </span>                :<span class="lineNoCov">          0 :           *walk_subtrees = 0;</span></a>
+<a name="226"><span class="lineNum">     226 </span>                :<span class="lineNoCov">          0 :           t = TREE_OPERAND (t, 0);</span></a>
+<a name="227"><span class="lineNum">     227 </span>                :<span class="lineNoCov">          0 :           cp_walk_tree (&amp;t, cp_ubsan_check_member_access_r, data, ucmd-&gt;pset);</span></a>
+<a name="228"><span class="lineNum">     228 </span>                :            :         }</a>
+<a name="229"><span class="lineNum">     229 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="230"><span class="lineNum">     230 </span>                :<span class="lineNoCov">          0 :     case COMPONENT_REF:</span></a>
+<a name="231"><span class="lineNum">     231 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       if (!ucmd-&gt;is_addr &amp;&amp; cp_ubsan_maybe_instrument_member_access (stmt, ucmd))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="232"><span class="lineNum">     232 </span>                :            :         {</a>
+<a name="233"><span class="lineNum">     233 </span>                :<span class="lineNoCov">          0 :           *walk_subtrees = 0;</span></a>
+<a name="234"><span class="lineNum">     234 </span>                :<span class="lineNoCov">          0 :           break;</span></a>
+<a name="235"><span class="lineNum">     235 </span>                :            :         }</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :       /* FALLTHRU */</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :     default:</a>
+<a name="238"><span class="lineNum">     238 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       if (ucmd-&gt;is_addr &amp;&amp; handled_component_p (stmt))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="239"><span class="lineNum">     239 </span>                :            :         {</a>
+<a name="240"><span class="lineNum">     240 </span>                :<span class="lineNoCov">          0 :           int i, len = TREE_OPERAND_LENGTH (stmt);</span></a>
+<a name="241"><span class="lineNum">     241 </span>                :<span class="lineNoCov">          0 :           *walk_subtrees = 0;</span></a>
+<a name="242"><span class="lineNum">     242 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :           if (!handled_component_p (TREE_OPERAND (stmt, 0)))</span></a>
+<a name="243"><span class="lineNum">     243 </span>                :<span class="lineNoCov">          0 :             ucmd-&gt;is_addr = false;</span></a>
+<a name="244"><span class="lineNum">     244 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :           for (i = 0; i &lt; len; i++)</span></a>
+<a name="245"><span class="lineNum">     245 </span>                :            :             {</a>
+<a name="246"><span class="lineNum">     246 </span>                :<span class="lineNoCov">          0 :               cp_walk_tree (&amp;TREE_OPERAND (stmt, i),</span></a>
+<a name="247"><span class="lineNum">     247 </span>                :            :                             cp_ubsan_check_member_access_r, data, ucmd-&gt;pset);</a>
+<a name="248"><span class="lineNum">     248 </span>                :<span class="lineNoCov">          0 :               ucmd-&gt;is_addr = false;</span></a>
+<a name="249"><span class="lineNum">     249 </span>                :            :             }</a>
+<a name="250"><span class="lineNum">     250 </span>                :<span class="lineNoCov">          0 :           ucmd-&gt;is_addr = true;</span></a>
+<a name="251"><span class="lineNum">     251 </span>                :            :         }</a>
+<a name="252"><span class="lineNum">     252 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="253"><span class="lineNum">     253 </span>                :            :     }</a>
+<a name="254"><span class="lineNum">     254 </span>                :<span class="lineNoCov">          0 :   return NULL_TREE;</span></a>
+<a name="255"><span class="lineNum">     255 </span>                :            : }</a>
+<a name="256"><span class="lineNum">     256 </span>                :            : </a>
+<a name="257"><span class="lineNum">     257 </span>                :            : /* Instrument all member accesses inside GENERIC *T_P.  */</a>
+<a name="258"><span class="lineNum">     258 </span>                :            : </a>
+<a name="259"><span class="lineNum">     259 </span>                :            : void</a>
+<a name="260"><span class="lineNum">     260 </span>                :<span class="lineNoCov">          0 : cp_ubsan_instrument_member_accesses (tree *t_p)</span></a>
+<a name="261"><span class="lineNum">     261 </span>                :            : {</a>
+<a name="262"><span class="lineNum">     262 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (cp_ubsan_instrument_vptr_p (NULL_TREE))</span></a>
+<a name="263"><span class="lineNum">     263 </span>                :            :     {</a>
+<a name="264"><span class="lineNum">     264 </span>                :<span class="lineNoCov">          0 :       hash_set&lt;tree&gt; pset;</span></a>
+<a name="265"><span class="lineNum">     265 </span>                :            :       cp_ubsan_check_member_access_data ucmd;</a>
+<a name="266"><span class="lineNum">     266 </span>                :<span class="lineNoCov">          0 :       ucmd.pset = &amp;pset;</span></a>
+<a name="267"><span class="lineNum">     267 </span>                :<span class="lineNoCov">          0 :       ucmd.is_addr = false;</span></a>
+<a name="268"><span class="lineNum">     268 </span>                :<span class="lineNoCov">          0 :       cp_walk_tree (t_p, cp_ubsan_check_member_access_r, &amp;ucmd, &amp;pset);</span></a>
+<a name="269"><span class="lineNum">     269 </span>                :            :     }</a>
+<a name="270"><span class="lineNum">     270 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="271"><span class="lineNum">     271 </span>                :            : </a>
+<a name="272"><span class="lineNum">     272 </span>                :            : /* Instrument downcast.  */</a>
+<a name="273"><span class="lineNum">     273 </span>                :            : </a>
+<a name="274"><span class="lineNum">     274 </span>                :            : tree</a>
+<a name="275"><span class="lineNum">     275 </span>                :<span class="lineNoCov">          0 : cp_ubsan_maybe_instrument_downcast (location_t loc, tree type,</span></a>
+<a name="276"><span class="lineNum">     276 </span>                :            :                                     tree intype, tree op)</a>
+<a name="277"><span class="lineNum">     277 </span>                :            : {</a>
+<a name="278"><span class="lineNum">     278 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!INDIRECT_TYPE_P (type)</span></a>
+<a name="279"><span class="lineNum">     279 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || !INDIRECT_TYPE_P (intype)</span></a>
+<a name="280"><span class="lineNum">     280 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || !INDIRECT_TYPE_P (TREE_TYPE (op))</span></a>
+<a name="281"><span class="lineNum">     281 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       || !CLASS_TYPE_P (TREE_TYPE (TREE_TYPE (op)))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="282"><span class="lineNum">     282 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       || !is_properly_derived_from (TREE_TYPE (type), TREE_TYPE (intype)))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="283"><span class="lineNum">     283 </span>                :<span class="lineNoCov">          0 :     return NULL_TREE;</span></a>
+<a name="284"><span class="lineNum">     284 </span>                :            : </a>
+<a name="285"><span class="lineNum">     285 </span>                :<span class="lineNoCov">          0 :   return cp_ubsan_maybe_instrument_vptr (loc, op, TREE_TYPE (type), true,</span></a>
+<a name="286"><span class="lineNum">     286 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                                          TYPE_PTR_P (type)</span></a>
+<a name="287"><span class="lineNum">     287 </span>                :            :                                          ? UBSAN_DOWNCAST_POINTER</a>
+<a name="288"><span class="lineNum">     288 </span>                :<span class="lineNoCov">          0 :                                          : UBSAN_DOWNCAST_REFERENCE);</span></a>
+<a name="289"><span class="lineNum">     289 </span>                :            : }</a>
+<a name="290"><span class="lineNum">     290 </span>                :            : </a>
+<a name="291"><span class="lineNum">     291 </span>                :            : /* Instrument cast to virtual base.  */</a>
+<a name="292"><span class="lineNum">     292 </span>                :            : </a>
+<a name="293"><span class="lineNum">     293 </span>                :            : tree</a>
+<a name="294"><span class="lineNum">     294 </span>                :<span class="lineNoCov">          0 : cp_ubsan_maybe_instrument_cast_to_vbase (location_t loc, tree type, tree op)</span></a>
+<a name="295"><span class="lineNum">     295 </span>                :            : {</a>
+<a name="296"><span class="lineNum">     296 </span>                :<span class="lineNoCov">          0 :   return cp_ubsan_maybe_instrument_vptr (loc, op, type, true,</span></a>
+<a name="297"><span class="lineNum">     297 </span>                :<span class="lineNoCov">          0 :                                          UBSAN_CAST_TO_VBASE);</span></a>
+<a name="298"><span class="lineNum">     298 </span>                :            : }</a>
+<a name="299"><span class="lineNum">     299 </span>                :            : </a>
+<a name="300"><span class="lineNum">     300 </span>                :            : /* Called from initialize_vtbl_ptrs via dfs_walk.  BINFO is the base</a>
+<a name="301"><span class="lineNum">     301 </span>                :            :    which we want to initialize the vtable pointer for, DATA is</a>
+<a name="302"><span class="lineNum">     302 </span>                :            :    TREE_LIST whose TREE_VALUE is the this ptr expression.  */</a>
+<a name="303"><span class="lineNum">     303 </span>                :            : </a>
+<a name="304"><span class="lineNum">     304 </span>                :            : static tree</a>
+<a name="305"><span class="lineNum">     305 </span>                :<span class="lineNoCov">          0 : cp_ubsan_dfs_initialize_vtbl_ptrs (tree binfo, void *data)</span></a>
+<a name="306"><span class="lineNum">     306 </span>                :            : {</a>
+<a name="307"><span class="lineNum">     307 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!TYPE_CONTAINS_VPTR_P (BINFO_TYPE (binfo)))</span></a>
+<a name="308"><span class="lineNum">     308 </span>                :<span class="lineNoCov">          0 :     return dfs_skip_bases;</span></a>
+<a name="309"><span class="lineNum">     309 </span>                :            : </a>
+<a name="310"><span class="lineNum">     310 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!BINFO_PRIMARY_P (binfo))</span></a>
+<a name="311"><span class="lineNum">     311 </span>                :            :     {</a>
+<a name="312"><span class="lineNum">     312 </span>                :<span class="lineNoCov">          0 :       tree base_ptr = TREE_VALUE ((tree) data);</span></a>
+<a name="313"><span class="lineNum">     313 </span>                :            : </a>
+<a name="314"><span class="lineNum">     314 </span>                :<span class="lineNoCov">          0 :       base_ptr = build_base_path (PLUS_EXPR, base_ptr, binfo, /*nonnull=*/1,</span></a>
+<a name="315"><span class="lineNum">     315 </span>                :            :                                   tf_warning_or_error);</a>
+<a name="316"><span class="lineNum">     316 </span>                :            : </a>
+<a name="317"><span class="lineNum">     317 </span>                :            :       /* Compute the location of the vtpr.  */</a>
+<a name="318"><span class="lineNum">     318 </span>                :            :       tree vtbl_ptr</a>
+<a name="319"><span class="lineNum">     319 </span>                :<span class="lineNoCov">          0 :         = build_vfield_ref (cp_build_fold_indirect_ref (base_ptr),</span></a>
+<a name="320"><span class="lineNum">     320 </span>                :            :                             TREE_TYPE (binfo));</a>
+<a name="321"><span class="lineNum">     321 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       gcc_assert (vtbl_ptr != error_mark_node);</span></a>
+<a name="322"><span class="lineNum">     322 </span>                :            : </a>
+<a name="323"><span class="lineNum">     323 </span>                :            :       /* Assign NULL to the vptr.  */</a>
+<a name="324"><span class="lineNum">     324 </span>                :<span class="lineNoCov">          0 :       tree vtbl = build_zero_cst (TREE_TYPE (vtbl_ptr));</span></a>
+<a name="325"><span class="lineNum">     325 </span>                :<span class="lineNoCov">          0 :       tree stmt = cp_build_modify_expr (input_location, vtbl_ptr, NOP_EXPR,</span></a>
+<a name="326"><span class="lineNum">     326 </span>                :            :                                         vtbl, tf_warning_or_error);</a>
+<a name="327"><span class="lineNum">     327 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (vptr_via_virtual_p (binfo))</span></a>
+<a name="328"><span class="lineNum">     328 </span>                :            :         /* If this vptr comes from a virtual base of the complete object, only</a>
+<a name="329"><span class="lineNum">     329 </span>                :            :            clear it if we're in charge of virtual bases.  */</a>
+<a name="330"><span class="lineNum">     330 </span>                :<span class="lineNoCov">          0 :         stmt = build_if_in_charge (stmt);</span></a>
+<a name="331"><span class="lineNum">     331 </span>                :<span class="lineNoCov">          0 :       finish_expr_stmt (stmt);</span></a>
+<a name="332"><span class="lineNum">     332 </span>                :            :     }</a>
+<a name="333"><span class="lineNum">     333 </span>                :            : </a>
+<a name="334"><span class="lineNum">     334 </span>                :<span class="lineNoCov">          0 :   return NULL_TREE;</span></a>
+<a name="335"><span class="lineNum">     335 </span>                :            : }</a>
+<a name="336"><span class="lineNum">     336 </span>                :            : </a>
+<a name="337"><span class="lineNum">     337 </span>                :            : /* Initialize all the vtable pointers in the object pointed to by</a>
+<a name="338"><span class="lineNum">     338 </span>                :            :    ADDR to NULL, so that we catch invalid calls to methods before</a>
+<a name="339"><span class="lineNum">     339 </span>                :            :    mem-initializers are completed.  */</a>
+<a name="340"><span class="lineNum">     340 </span>                :            : </a>
+<a name="341"><span class="lineNum">     341 </span>                :            : void</a>
+<a name="342"><span class="lineNum">     342 </span>                :<span class="lineNoCov">          0 : cp_ubsan_maybe_initialize_vtbl_ptrs (tree addr)</span></a>
+<a name="343"><span class="lineNum">     343 </span>                :            : {</a>
+<a name="344"><span class="lineNum">     344 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!cp_ubsan_instrument_vptr_p (NULL_TREE))</span></a>
+<a name="345"><span class="lineNum">     345 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="346"><span class="lineNum">     346 </span>                :            : </a>
+<a name="347"><span class="lineNum">     347 </span>                :<span class="lineNoCov">          0 :   tree type = TREE_TYPE (TREE_TYPE (addr));</span></a>
+<a name="348"><span class="lineNum">     348 </span>                :<span class="lineNoCov">          0 :   tree list = build_tree_list (type, addr);</span></a>
+<a name="349"><span class="lineNum">     349 </span>                :            :   /* We cannot rely on the vtable being set up.  We have to indirect via the</a>
+<a name="350"><span class="lineNum">     350 </span>                :            :      vtt_parm.  */</a>
+<a name="351"><span class="lineNum">     351 </span>                :<span class="lineNoCov">          0 :   int save_in_base_initializer = in_base_initializer;</span></a>
+<a name="352"><span class="lineNum">     352 </span>                :<span class="lineNoCov">          0 :   in_base_initializer = 1;</span></a>
+<a name="353"><span class="lineNum">     353 </span>                :            : </a>
+<a name="354"><span class="lineNum">     354 </span>                :            :   /* Walk through the hierarchy, initializing the vptr in each base</a>
+<a name="355"><span class="lineNum">     355 </span>                :            :      class to NULL.  */</a>
+<a name="356"><span class="lineNum">     356 </span>                :<span class="lineNoCov">          0 :   dfs_walk_once (TYPE_BINFO (type), cp_ubsan_dfs_initialize_vtbl_ptrs,</span></a>
+<a name="357"><span class="lineNum">     357 </span>                :            :                  NULL, list);</a>
+<a name="358"><span class="lineNum">     358 </span>                :            : </a>
+<a name="359"><span class="lineNum">     359 </span>                :<span class="lineNoCov">          0 :   in_base_initializer = save_in_base_initializer;</span></a>
+<a name="360"><span class="lineNum">     360 </span>                :            : }</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

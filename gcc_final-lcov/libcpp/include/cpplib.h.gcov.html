@@ -1,0 +1,1552 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - libcpp/include/cpplib.h</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">libcpp/include</a> - cpplib.h<span style="font-size: 80%;"> (source / <a href="cpplib.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntryLo">65.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntryMed">84.6 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntryLo">33.3 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Definitions for CPP library.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 1995-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :    Written by Per Bothner, 1994-95.</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : </a>
+<a name="5"><span class="lineNum">       5 </span>                :            : This program is free software; you can redistribute it and/or modify it</a>
+<a name="6"><span class="lineNum">       6 </span>                :            : under the terms of the GNU General Public License as published by the</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : Free Software Foundation; either version 3, or (at your option) any</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : later version.</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : </a>
+<a name="10"><span class="lineNum">      10 </span>                :            : This program is distributed in the hope that it will be useful,</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : GNU General Public License for more details.</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : </a>
+<a name="15"><span class="lineNum">      15 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : along with this program; see the file COPYING3.  If not see</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : </a>
+<a name="19"><span class="lineNum">      19 </span>                :            :  In other words, you are welcome to use, share and improve this program.</a>
+<a name="20"><span class="lineNum">      20 </span>                :            :  You are forbidden to forbid anyone else to use, share and improve</a>
+<a name="21"><span class="lineNum">      21 </span>                :            :  what you give them.   Help stamp out software-hoarding!  */</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #ifndef LIBCPP_CPPLIB_H</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #define LIBCPP_CPPLIB_H</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : </a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &lt;sys/types.h&gt;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &quot;symtab.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &quot;line-map.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : </a>
+<a name="29"><span class="lineNum">      29 </span>                :            : typedef struct cpp_reader cpp_reader;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : typedef struct cpp_buffer cpp_buffer;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : typedef struct cpp_options cpp_options;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : typedef struct cpp_token cpp_token;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : typedef struct cpp_string cpp_string;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : typedef struct cpp_hashnode cpp_hashnode;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : typedef struct cpp_macro cpp_macro;</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : typedef struct cpp_callbacks cpp_callbacks;</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : typedef struct cpp_dir cpp_dir;</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : </a>
+<a name="39"><span class="lineNum">      39 </span>                :            : struct _cpp_file;</a>
+<a name="40"><span class="lineNum">      40 </span>                :            : </a>
+<a name="41"><span class="lineNum">      41 </span>                :            : /* The first three groups, apart from '=', can appear in preprocessor</a>
+<a name="42"><span class="lineNum">      42 </span>                :            :    expressions (+= and -= are used to indicate unary + and - resp.).</a>
+<a name="43"><span class="lineNum">      43 </span>                :            :    This allows a lookup table to be implemented in _cpp_parse_expr.</a>
+<a name="44"><span class="lineNum">      44 </span>                :            : </a>
+<a name="45"><span class="lineNum">      45 </span>                :            :    The first group, to CPP_LAST_EQ, can be immediately followed by an</a>
+<a name="46"><span class="lineNum">      46 </span>                :            :    '='.  The lexer needs operators ending in '=', like &quot;&gt;&gt;=&quot;, to be in</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :    the same order as their counterparts without the '=', like &quot;&gt;&gt;&quot;.</a>
+<a name="48"><span class="lineNum">      48 </span>                :            : </a>
+<a name="49"><span class="lineNum">      49 </span>                :            :    See the cpp_operator table optab in expr.c if you change the order or</a>
+<a name="50"><span class="lineNum">      50 </span>                :            :    add or remove anything in the first group.  */</a>
+<a name="51"><span class="lineNum">      51 </span>                :            : </a>
+<a name="52"><span class="lineNum">      52 </span>                :            : #define TTYPE_TABLE                                                     \</a>
+<a name="53"><span class="lineNum">      53 </span>                :            :   OP(EQ,                &quot;=&quot;)                                          \</a>
+<a name="54"><span class="lineNum">      54 </span>                :            :   OP(NOT,               &quot;!&quot;)                                          \</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :   OP(GREATER,           &quot;&gt;&quot;)       /* compare */                           \</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :   OP(LESS,              &quot;&lt;&quot;)                                               \</a>
+<a name="57"><span class="lineNum">      57 </span>                :            :   OP(PLUS,              &quot;+&quot;)  /* math */                              \</a>
+<a name="58"><span class="lineNum">      58 </span>                :            :   OP(MINUS,             &quot;-&quot;)                                          \</a>
+<a name="59"><span class="lineNum">      59 </span>                :            :   OP(MULT,              &quot;*&quot;)                                          \</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :   OP(DIV,               &quot;/&quot;)                                          \</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :   OP(MOD,               &quot;%&quot;)                                          \</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :   OP(AND,               &quot;&amp;&quot;)      /* bit ops */                           \</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :   OP(OR,                &quot;|&quot;)                                          \</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :   OP(XOR,               &quot;^&quot;)                                          \</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :   OP(RSHIFT,            &quot;&gt;&gt;&quot;)                                           \</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :   OP(LSHIFT,            &quot;&lt;&lt;&quot;)                                           \</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :                                                                         \</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :   OP(COMPL,             &quot;~&quot;)                                          \</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :   OP(AND_AND,           &quot;&amp;&amp;&quot;) /* logical */                           \</a>
+<a name="70"><span class="lineNum">      70 </span>                :            :   OP(OR_OR,             &quot;||&quot;)                                         \</a>
+<a name="71"><span class="lineNum">      71 </span>                :            :   OP(QUERY,             &quot;?&quot;)                                          \</a>
+<a name="72"><span class="lineNum">      72 </span>                :            :   OP(COLON,             &quot;:&quot;)                                          \</a>
+<a name="73"><span class="lineNum">      73 </span>                :            :   OP(COMMA,             &quot;,&quot;)  /* grouping */                          \</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :   OP(OPEN_PAREN,        &quot;(&quot;)                                          \</a>
+<a name="75"><span class="lineNum">      75 </span>                :            :   OP(CLOSE_PAREN,       &quot;)&quot;)                                          \</a>
+<a name="76"><span class="lineNum">      76 </span>                :            :   TK(EOF,               NONE)                                           \</a>
+<a name="77"><span class="lineNum">      77 </span>                :            :   OP(EQ_EQ,             &quot;==&quot;) /* compare */                           \</a>
+<a name="78"><span class="lineNum">      78 </span>                :            :   OP(NOT_EQ,            &quot;!=&quot;)                                         \</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :   OP(GREATER_EQ,        &quot;&gt;=&quot;)                                              \</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :   OP(LESS_EQ,           &quot;&lt;=&quot;)                                              \</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :   OP(SPACESHIP,         &quot;&lt;=&gt;&quot;)                                          \</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :                                                                         \</a>
+<a name="83"><span class="lineNum">      83 </span>                :            :   /* These two are unary + / - in preprocessor expressions.  */         \</a>
+<a name="84"><span class="lineNum">      84 </span>                :            :   OP(PLUS_EQ,           &quot;+=&quot;) /* math */                              \</a>
+<a name="85"><span class="lineNum">      85 </span>                :            :   OP(MINUS_EQ,          &quot;-=&quot;)                                         \</a>
+<a name="86"><span class="lineNum">      86 </span>                :            :                                                                         \</a>
+<a name="87"><span class="lineNum">      87 </span>                :            :   OP(MULT_EQ,           &quot;*=&quot;)                                         \</a>
+<a name="88"><span class="lineNum">      88 </span>                :            :   OP(DIV_EQ,            &quot;/=&quot;)                                         \</a>
+<a name="89"><span class="lineNum">      89 </span>                :            :   OP(MOD_EQ,            &quot;%=&quot;)                                         \</a>
+<a name="90"><span class="lineNum">      90 </span>                :            :   OP(AND_EQ,            &quot;&amp;=&quot;)     /* bit ops */                           \</a>
+<a name="91"><span class="lineNum">      91 </span>                :            :   OP(OR_EQ,             &quot;|=&quot;)                                         \</a>
+<a name="92"><span class="lineNum">      92 </span>                :            :   OP(XOR_EQ,            &quot;^=&quot;)                                         \</a>
+<a name="93"><span class="lineNum">      93 </span>                :            :   OP(RSHIFT_EQ,         &quot;&gt;&gt;=&quot;)                                          \</a>
+<a name="94"><span class="lineNum">      94 </span>                :            :   OP(LSHIFT_EQ,         &quot;&lt;&lt;=&quot;)                                          \</a>
+<a name="95"><span class="lineNum">      95 </span>                :            :   /* Digraphs together, beginning with CPP_FIRST_DIGRAPH.  */           \</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :   OP(HASH,              &quot;#&quot;)  /* digraphs */                          \</a>
+<a name="97"><span class="lineNum">      97 </span>                :            :   OP(PASTE,             &quot;##&quot;)                                         \</a>
+<a name="98"><span class="lineNum">      98 </span>                :            :   OP(OPEN_SQUARE,       &quot;[&quot;)                                          \</a>
+<a name="99"><span class="lineNum">      99 </span>                :            :   OP(CLOSE_SQUARE,      &quot;]&quot;)                                          \</a>
+<a name="100"><span class="lineNum">     100 </span>                :            :   OP(OPEN_BRACE,        &quot;{&quot;)                                          \</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :   OP(CLOSE_BRACE,       &quot;}&quot;)                                          \</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :   /* The remainder of the punctuation.  Order is not significant.  */   \</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :   OP(SEMICOLON,         &quot;;&quot;)  /* structure */                         \</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :   OP(ELLIPSIS,          &quot;...&quot;)                                                \</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :   OP(PLUS_PLUS,         &quot;++&quot;) /* increment */                         \</a>
+<a name="106"><span class="lineNum">     106 </span>                :            :   OP(MINUS_MINUS,       &quot;--&quot;)                                         \</a>
+<a name="107"><span class="lineNum">     107 </span>                :            :   OP(DEREF,             &quot;-&gt;&quot;)      /* accessors */                         \</a>
+<a name="108"><span class="lineNum">     108 </span>                :            :   OP(DOT,               &quot;.&quot;)                                          \</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :   OP(SCOPE,             &quot;::&quot;)                                         \</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :   OP(DEREF_STAR,        &quot;-&gt;*&quot;)                                             \</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :   OP(DOT_STAR,          &quot;.*&quot;)                                         \</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :   OP(ATSIGN,            &quot;@&quot;)  /* used in Objective-C */                       \</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :                                                                         \</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :   TK(NAME,              IDENT)   /* word */                             \</a>
+<a name="115"><span class="lineNum">     115 </span>                :            :   TK(AT_NAME,           IDENT)   /* @word - Objective-C */              \</a>
+<a name="116"><span class="lineNum">     116 </span>                :            :   TK(NUMBER,            LITERAL) /* 34_be+ta  */                        \</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :                                                                         \</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :   TK(CHAR,              LITERAL) /* 'char' */                           \</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :   TK(WCHAR,             LITERAL) /* L'char' */                          \</a>
+<a name="120"><span class="lineNum">     120 </span>                :            :   TK(CHAR16,            LITERAL) /* u'char' */                          \</a>
+<a name="121"><span class="lineNum">     121 </span>                :            :   TK(CHAR32,            LITERAL) /* U'char' */                          \</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :   TK(UTF8CHAR,          LITERAL) /* u8'char' */                         \</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :   TK(OTHER,             LITERAL) /* stray punctuation */                \</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :                                                                         \</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :   TK(STRING,            LITERAL) /* &quot;string&quot; */                               \</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :   TK(WSTRING,           LITERAL) /* L&quot;string&quot; */                      \</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :   TK(STRING16,          LITERAL) /* u&quot;string&quot; */                      \</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :   TK(STRING32,          LITERAL) /* U&quot;string&quot; */                      \</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :   TK(UTF8STRING,        LITERAL) /* u8&quot;string&quot; */                     \</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :   TK(OBJC_STRING,       LITERAL) /* @&quot;string&quot; - Objective-C */                \</a>
+<a name="131"><span class="lineNum">     131 </span>                :            :   TK(HEADER_NAME,       LITERAL) /* &lt;stdio.h&gt; in #include */              \</a>
+<a name="132"><span class="lineNum">     132 </span>                :            :                                                                         \</a>
+<a name="133"><span class="lineNum">     133 </span>                :            :   TK(CHAR_USERDEF,      LITERAL) /* 'char'_suffix - C++-0x */           \</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :   TK(WCHAR_USERDEF,     LITERAL) /* L'char'_suffix - C++-0x */          \</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :   TK(CHAR16_USERDEF,    LITERAL) /* u'char'_suffix - C++-0x */          \</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :   TK(CHAR32_USERDEF,    LITERAL) /* U'char'_suffix - C++-0x */          \</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :   TK(UTF8CHAR_USERDEF,  LITERAL) /* u8'char'_suffix - C++-0x */         \</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :   TK(STRING_USERDEF,    LITERAL) /* &quot;string&quot;_suffix - C++-0x */               \</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :   TK(WSTRING_USERDEF,   LITERAL) /* L&quot;string&quot;_suffix - C++-0x */      \</a>
+<a name="140"><span class="lineNum">     140 </span>                :            :   TK(STRING16_USERDEF,  LITERAL) /* u&quot;string&quot;_suffix - C++-0x */      \</a>
+<a name="141"><span class="lineNum">     141 </span>                :            :   TK(STRING32_USERDEF,  LITERAL) /* U&quot;string&quot;_suffix - C++-0x */      \</a>
+<a name="142"><span class="lineNum">     142 </span>                :            :   TK(UTF8STRING_USERDEF,LITERAL) /* u8&quot;string&quot;_suffix - C++-0x */     \</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :                                                                         \</a>
+<a name="144"><span class="lineNum">     144 </span>                :            :   TK(COMMENT,           LITERAL) /* Only if output comments.  */        \</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :                                  /* SPELL_LITERAL happens to DTRT.  */  \</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :   TK(MACRO_ARG,         NONE)    /* Macro argument.  */                 \</a>
+<a name="147"><span class="lineNum">     147 </span>                :            :   TK(PRAGMA,            NONE)    /* Only for deferred pragmas.  */      \</a>
+<a name="148"><span class="lineNum">     148 </span>                :            :   TK(PRAGMA_EOL,        NONE)    /* End-of-line for deferred pragmas.  */ \</a>
+<a name="149"><span class="lineNum">     149 </span>                :            :   TK(PADDING,           NONE)    /* Whitespace for -E.  */</a>
+<a name="150"><span class="lineNum">     150 </span>                :            : </a>
+<a name="151"><span class="lineNum">     151 </span>                :            : #define OP(e, s) CPP_ ## e,</a>
+<a name="152"><span class="lineNum">     152 </span>                :            : #define TK(e, s) CPP_ ## e,</a>
+<a name="153"><span class="lineNum">     153 </span>                :            : enum cpp_ttype</a>
+<a name="154"><span class="lineNum">     154 </span>                :            : {</a>
+<a name="155"><span class="lineNum">     155 </span>                :            :   TTYPE_TABLE</a>
+<a name="156"><span class="lineNum">     156 </span>                :            :   N_TTYPES,</a>
+<a name="157"><span class="lineNum">     157 </span>                :            : </a>
+<a name="158"><span class="lineNum">     158 </span>                :            :   /* A token type for keywords, as opposed to ordinary identifiers.  */</a>
+<a name="159"><span class="lineNum">     159 </span>                :            :   CPP_KEYWORD,</a>
+<a name="160"><span class="lineNum">     160 </span>                :            : </a>
+<a name="161"><span class="lineNum">     161 </span>                :            :   /* Positions in the table.  */</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :   CPP_LAST_EQ        = CPP_LSHIFT,</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :   CPP_FIRST_DIGRAPH  = CPP_HASH,</a>
+<a name="164"><span class="lineNum">     164 </span>                :            :   CPP_LAST_PUNCTUATOR= CPP_ATSIGN,</a>
+<a name="165"><span class="lineNum">     165 </span>                :            :   CPP_LAST_CPP_OP    = CPP_LESS_EQ</a>
+<a name="166"><span class="lineNum">     166 </span>                :            : };</a>
+<a name="167"><span class="lineNum">     167 </span>                :            : #undef OP</a>
+<a name="168"><span class="lineNum">     168 </span>                :            : #undef TK</a>
+<a name="169"><span class="lineNum">     169 </span>                :            : </a>
+<a name="170"><span class="lineNum">     170 </span>                :            : /* C language kind, used when calling cpp_create_reader.  */</a>
+<a name="171"><span class="lineNum">     171 </span>                :            : enum c_lang {CLK_GNUC89 = 0, CLK_GNUC99, CLK_GNUC11, CLK_GNUC17, CLK_GNUC2X,</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :              CLK_STDC89, CLK_STDC94, CLK_STDC99, CLK_STDC11, CLK_STDC17,</a>
+<a name="173"><span class="lineNum">     173 </span>                :            :              CLK_STDC2X,</a>
+<a name="174"><span class="lineNum">     174 </span>                :            :              CLK_GNUCXX, CLK_CXX98, CLK_GNUCXX11, CLK_CXX11,</a>
+<a name="175"><span class="lineNum">     175 </span>                :            :              CLK_GNUCXX14, CLK_CXX14, CLK_GNUCXX17, CLK_CXX17,</a>
+<a name="176"><span class="lineNum">     176 </span>                :            :              CLK_GNUCXX20, CLK_CXX20, CLK_GNUCXX23, CLK_CXX23,</a>
+<a name="177"><span class="lineNum">     177 </span>                :            :              CLK_ASM};</a>
+<a name="178"><span class="lineNum">     178 </span>                :            : </a>
+<a name="179"><span class="lineNum">     179 </span>                :            : /* Payload of a NUMBER, STRING, CHAR or COMMENT token.  */</a>
+<a name="180"><span class="lineNum">     180 </span>                :            : struct GTY(()) cpp_string {</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :   unsigned int len;</a>
+<a name="182"><span class="lineNum">     182 </span>                :            :   const unsigned char *text;</a>
+<a name="183"><span class="lineNum">     183 </span>                :            : };</a>
+<a name="184"><span class="lineNum">     184 </span>                :            : </a>
+<a name="185"><span class="lineNum">     185 </span>                :            : /* Flags for the cpp_token structure.  */</a>
+<a name="186"><span class="lineNum">     186 </span>                :            : #define PREV_WHITE      (1 &lt;&lt; 0) /* If whitespace before this token.  */</a>
+<a name="187"><span class="lineNum">     187 </span>                :            : #define DIGRAPH         (1 &lt;&lt; 1) /* If it was a digraph.  */</a>
+<a name="188"><span class="lineNum">     188 </span>                :            : #define STRINGIFY_ARG   (1 &lt;&lt; 2) /* If macro argument to be stringified.  */</a>
+<a name="189"><span class="lineNum">     189 </span>                :            : #define PASTE_LEFT      (1 &lt;&lt; 3) /* If on LHS of a ## operator.  */</a>
+<a name="190"><span class="lineNum">     190 </span>                :            : #define NAMED_OP        (1 &lt;&lt; 4) /* C++ named operators.  */</a>
+<a name="191"><span class="lineNum">     191 </span>                :            : #define PREV_FALLTHROUGH (1 &lt;&lt; 5) /* On a token preceeded by FALLTHROUGH</a>
+<a name="192"><span class="lineNum">     192 </span>                :            :                                      comment.  */</a>
+<a name="193"><span class="lineNum">     193 </span>                :            : #define BOL             (1 &lt;&lt; 6) /* Token at beginning of line.  */</a>
+<a name="194"><span class="lineNum">     194 </span>                :            : #define PURE_ZERO       (1 &lt;&lt; 7) /* Single 0 digit, used by the C++ frontend,</a>
+<a name="195"><span class="lineNum">     195 </span>                :            :                                     set in c-lex.c.  */</a>
+<a name="196"><span class="lineNum">     196 </span>                :            : #define SP_DIGRAPH      (1 &lt;&lt; 8) /* # or ## token was a digraph.  */</a>
+<a name="197"><span class="lineNum">     197 </span>                :            : #define SP_PREV_WHITE   (1 &lt;&lt; 9) /* If whitespace before a ##</a>
+<a name="198"><span class="lineNum">     198 </span>                :            :                                     operator, or before this token</a>
+<a name="199"><span class="lineNum">     199 </span>                :            :                                     after a # operator.  */</a>
+<a name="200"><span class="lineNum">     200 </span>                :            : #define NO_EXPAND       (1 &lt;&lt; 10) /* Do not macro-expand this token.  */</a>
+<a name="201"><span class="lineNum">     201 </span>                :            : </a>
+<a name="202"><span class="lineNum">     202 </span>                :            : /* Specify which field, if any, of the cpp_token union is used.  */</a>
+<a name="203"><span class="lineNum">     203 </span>                :            : </a>
+<a name="204"><span class="lineNum">     204 </span>                :            : enum cpp_token_fld_kind {</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :   CPP_TOKEN_FLD_NODE,</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :   CPP_TOKEN_FLD_SOURCE,</a>
+<a name="207"><span class="lineNum">     207 </span>                :            :   CPP_TOKEN_FLD_STR,</a>
+<a name="208"><span class="lineNum">     208 </span>                :            :   CPP_TOKEN_FLD_ARG_NO,</a>
+<a name="209"><span class="lineNum">     209 </span>                :            :   CPP_TOKEN_FLD_TOKEN_NO,</a>
+<a name="210"><span class="lineNum">     210 </span>                :            :   CPP_TOKEN_FLD_PRAGMA,</a>
+<a name="211"><span class="lineNum">     211 </span>                :            :   CPP_TOKEN_FLD_NONE</a>
+<a name="212"><span class="lineNum">     212 </span>                :            : };</a>
+<a name="213"><span class="lineNum">     213 </span>                :            : </a>
+<a name="214"><span class="lineNum">     214 </span>                :            : /* A macro argument in the cpp_token union.  */</a>
+<a name="215"><span class="lineNum">     215 </span>                :            : struct GTY(()) cpp_macro_arg {</a>
+<a name="216"><span class="lineNum">     216 </span>                :            :   /* Argument number.  */</a>
+<a name="217"><span class="lineNum">     217 </span>                :            :   unsigned int arg_no;</a>
+<a name="218"><span class="lineNum">     218 </span>                :            :   /* The original spelling of the macro argument token.  */</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :   cpp_hashnode *</a>
+<a name="220"><span class="lineNum">     220 </span>                :            :     GTY ((nested_ptr (union tree_node,</a>
+<a name="221"><span class="lineNum">     221 </span>                :            :                 &quot;%h ? CPP_HASHNODE (GCC_IDENT_TO_HT_IDENT (%h)) : NULL&quot;,</a>
+<a name="222"><span class="lineNum">     222 </span>                :            :                         &quot;%h ? HT_IDENT_TO_GCC_IDENT (HT_NODE (%h)) : NULL&quot;)))</a>
+<a name="223"><span class="lineNum">     223 </span>                :            :        spelling;</a>
+<a name="224"><span class="lineNum">     224 </span>                :            : };</a>
+<a name="225"><span class="lineNum">     225 </span>                :            : </a>
+<a name="226"><span class="lineNum">     226 </span>                :            : /* An identifier in the cpp_token union.  */</a>
+<a name="227"><span class="lineNum">     227 </span>                :            : struct GTY(()) cpp_identifier {</a>
+<a name="228"><span class="lineNum">     228 </span>                :            :   /* The canonical (UTF-8) spelling of the identifier.  */</a>
+<a name="229"><span class="lineNum">     229 </span>                :            :   cpp_hashnode *</a>
+<a name="230"><span class="lineNum">     230 </span>                :            :     GTY ((nested_ptr (union tree_node,</a>
+<a name="231"><span class="lineNum">     231 </span>                :            :                 &quot;%h ? CPP_HASHNODE (GCC_IDENT_TO_HT_IDENT (%h)) : NULL&quot;,</a>
+<a name="232"><span class="lineNum">     232 </span>                :            :                         &quot;%h ? HT_IDENT_TO_GCC_IDENT (HT_NODE (%h)) : NULL&quot;)))</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :        node;</a>
+<a name="234"><span class="lineNum">     234 </span>                :            :   /* The original spelling of the identifier.  */</a>
+<a name="235"><span class="lineNum">     235 </span>                :            :   cpp_hashnode *</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :     GTY ((nested_ptr (union tree_node,</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :                 &quot;%h ? CPP_HASHNODE (GCC_IDENT_TO_HT_IDENT (%h)) : NULL&quot;,</a>
+<a name="238"><span class="lineNum">     238 </span>                :            :                         &quot;%h ? HT_IDENT_TO_GCC_IDENT (HT_NODE (%h)) : NULL&quot;)))</a>
+<a name="239"><span class="lineNum">     239 </span>                :            :        spelling;</a>
+<a name="240"><span class="lineNum">     240 </span>                :            : };</a>
+<a name="241"><span class="lineNum">     241 </span>                :            : </a>
+<a name="242"><span class="lineNum">     242 </span>                :            : /* A preprocessing token.  This has been carefully packed and should</a>
+<a name="243"><span class="lineNum">     243 </span>                :            :    occupy 16 bytes on 32-bit hosts and 24 bytes on 64-bit hosts.  */</a>
+<a name="244"><span class="lineNum">     244 </span>                :            : struct GTY(()) cpp_token {</a>
+<a name="245"><span class="lineNum">     245 </span>                :            : </a>
+<a name="246"><span class="lineNum">     246 </span>                :            :   /* Location of first char of token, together with range of full token.  */</a>
+<a name="247"><span class="lineNum">     247 </span>                :            :   location_t src_loc;</a>
+<a name="248"><span class="lineNum">     248 </span>                :            : </a>
+<a name="249"><span class="lineNum">     249 </span>                :            :   ENUM_BITFIELD(cpp_ttype) type : CHAR_BIT;  /* token type */</a>
+<a name="250"><span class="lineNum">     250 </span>                :            :   unsigned short flags;         /* flags - see above */</a>
+<a name="251"><span class="lineNum">     251 </span>                :            : </a>
+<a name="252"><span class="lineNum">     252 </span>                :            :   union cpp_token_u</a>
+<a name="253"><span class="lineNum">     253 </span>                :            :   {</a>
+<a name="254"><span class="lineNum">     254 </span>                :            :     /* An identifier.  */</a>
+<a name="255"><span class="lineNum">     255 </span>                :            :     struct cpp_identifier GTY ((tag (&quot;CPP_TOKEN_FLD_NODE&quot;))) node;</a>
+<a name="256"><span class="lineNum">     256 </span>                :            :          </a>
+<a name="257"><span class="lineNum">     257 </span>                :            :     /* Inherit padding from this token.  */</a>
+<a name="258"><span class="lineNum">     258 </span>                :            :     cpp_token * GTY ((tag (&quot;CPP_TOKEN_FLD_SOURCE&quot;))) source;</a>
+<a name="259"><span class="lineNum">     259 </span>                :            : </a>
+<a name="260"><span class="lineNum">     260 </span>                :            :     /* A string, or number.  */</a>
+<a name="261"><span class="lineNum">     261 </span>                :            :     struct cpp_string GTY ((tag (&quot;CPP_TOKEN_FLD_STR&quot;))) str;</a>
+<a name="262"><span class="lineNum">     262 </span>                :            : </a>
+<a name="263"><span class="lineNum">     263 </span>                :            :     /* Argument no. (and original spelling) for a CPP_MACRO_ARG.  */</a>
+<a name="264"><span class="lineNum">     264 </span>                :            :     struct cpp_macro_arg GTY ((tag (&quot;CPP_TOKEN_FLD_ARG_NO&quot;))) macro_arg;</a>
+<a name="265"><span class="lineNum">     265 </span>                :            : </a>
+<a name="266"><span class="lineNum">     266 </span>                :            :     /* Original token no. for a CPP_PASTE (from a sequence of</a>
+<a name="267"><span class="lineNum">     267 </span>                :            :        consecutive paste tokens in a macro expansion).  */</a>
+<a name="268"><span class="lineNum">     268 </span>                :            :     unsigned int GTY ((tag (&quot;CPP_TOKEN_FLD_TOKEN_NO&quot;))) token_no;</a>
+<a name="269"><span class="lineNum">     269 </span>                :            : </a>
+<a name="270"><span class="lineNum">     270 </span>                :            :     /* Caller-supplied identifier for a CPP_PRAGMA.  */</a>
+<a name="271"><span class="lineNum">     271 </span>                :            :     unsigned int GTY ((tag (&quot;CPP_TOKEN_FLD_PRAGMA&quot;))) pragma;</a>
+<a name="272"><span class="lineNum">     272 </span>                :            :   } GTY ((desc (&quot;cpp_token_val_index (&amp;%1)&quot;))) val;</a>
+<a name="273"><span class="lineNum">     273 </span>                :            : };</a>
+<a name="274"><span class="lineNum">     274 </span>                :            : </a>
+<a name="275"><span class="lineNum">     275 </span>                :            : /* Say which field is in use.  */</a>
+<a name="276"><span class="lineNum">     276 </span>                :            : extern enum cpp_token_fld_kind cpp_token_val_index (const cpp_token *tok);</a>
+<a name="277"><span class="lineNum">     277 </span>                :            : </a>
+<a name="278"><span class="lineNum">     278 </span>                :            : /* A type wide enough to hold any multibyte source character.</a>
+<a name="279"><span class="lineNum">     279 </span>                :            :    cpplib's character constant interpreter requires an unsigned type.</a>
+<a name="280"><span class="lineNum">     280 </span>                :            :    Also, a typedef for the signed equivalent.</a>
+<a name="281"><span class="lineNum">     281 </span>                :            :    The width of this type is capped at 32 bits; there do exist targets</a>
+<a name="282"><span class="lineNum">     282 </span>                :            :    where wchar_t is 64 bits, but only in a non-default mode, and there</a>
+<a name="283"><span class="lineNum">     283 </span>                :            :    would be no meaningful interpretation for a wchar_t value greater</a>
+<a name="284"><span class="lineNum">     284 </span>                :            :    than 2^32 anyway -- the widest wide-character encoding around is</a>
+<a name="285"><span class="lineNum">     285 </span>                :            :    ISO 10646, which stops at 2^31.  */</a>
+<a name="286"><span class="lineNum">     286 </span>                :            : #if CHAR_BIT * SIZEOF_INT &gt;= 32</a>
+<a name="287"><span class="lineNum">     287 </span>                :            : # define CPPCHAR_SIGNED_T int</a>
+<a name="288"><span class="lineNum">     288 </span>                :            : #elif CHAR_BIT * SIZEOF_LONG &gt;= 32</a>
+<a name="289"><span class="lineNum">     289 </span>                :            : # define CPPCHAR_SIGNED_T long</a>
+<a name="290"><span class="lineNum">     290 </span>                :            : #else</a>
+<a name="291"><span class="lineNum">     291 </span>                :            : # error &quot;Cannot find a least-32-bit signed integer type&quot;</a>
+<a name="292"><span class="lineNum">     292 </span>                :            : #endif</a>
+<a name="293"><span class="lineNum">     293 </span>                :            : typedef unsigned CPPCHAR_SIGNED_T cppchar_t;</a>
+<a name="294"><span class="lineNum">     294 </span>                :            : typedef CPPCHAR_SIGNED_T cppchar_signed_t;</a>
+<a name="295"><span class="lineNum">     295 </span>                :            : </a>
+<a name="296"><span class="lineNum">     296 </span>                :            : /* Style of header dependencies to generate.  */</a>
+<a name="297"><span class="lineNum">     297 </span>                :            : enum cpp_deps_style { DEPS_NONE = 0, DEPS_USER, DEPS_SYSTEM };</a>
+<a name="298"><span class="lineNum">     298 </span>                :            : </a>
+<a name="299"><span class="lineNum">     299 </span>                :            : /* The possible normalization levels, from most restrictive to least.  */</a>
+<a name="300"><span class="lineNum">     300 </span>                :            : enum cpp_normalize_level {</a>
+<a name="301"><span class="lineNum">     301 </span>                :            :   /* In NFKC.  */</a>
+<a name="302"><span class="lineNum">     302 </span>                :            :   normalized_KC = 0,</a>
+<a name="303"><span class="lineNum">     303 </span>                :            :   /* In NFC.  */</a>
+<a name="304"><span class="lineNum">     304 </span>                :            :   normalized_C,</a>
+<a name="305"><span class="lineNum">     305 </span>                :            :   /* In NFC, except for subsequences where being in NFC would make</a>
+<a name="306"><span class="lineNum">     306 </span>                :            :      the identifier invalid.  */</a>
+<a name="307"><span class="lineNum">     307 </span>                :            :   normalized_identifier_C,</a>
+<a name="308"><span class="lineNum">     308 </span>                :            :   /* Not normalized at all.  */</a>
+<a name="309"><span class="lineNum">     309 </span>                :            :   normalized_none</a>
+<a name="310"><span class="lineNum">     310 </span>                :            : };</a>
+<a name="311"><span class="lineNum">     311 </span>                :            : </a>
+<a name="312"><span class="lineNum">     312 </span>                :            : enum cpp_main_search </a>
+<a name="313"><span class="lineNum">     313 </span>                :            : {</a>
+<a name="314"><span class="lineNum">     314 </span>                :            :   CMS_none,    /* A regular source file.  */</a>
+<a name="315"><span class="lineNum">     315 </span>                :            :   CMS_header,  /* Is a directly-specified header file (eg PCH or</a>
+<a name="316"><span class="lineNum">     316 </span>                :            :                   header-unit).  */</a>
+<a name="317"><span class="lineNum">     317 </span>                :            :   CMS_user,    /* Search the user INCLUDE path.  */</a>
+<a name="318"><span class="lineNum">     318 </span>                :            :   CMS_system,  /* Search the system INCLUDE path.  */</a>
+<a name="319"><span class="lineNum">     319 </span>                :            : };</a>
+<a name="320"><span class="lineNum">     320 </span>                :            : </a>
+<a name="321"><span class="lineNum">     321 </span>                :            : /* This structure is nested inside struct cpp_reader, and</a>
+<a name="322"><span class="lineNum">     322 </span>                :            :    carries all the options visible to the command line.  */</a>
+<a name="323"><span class="lineNum">     323 </span>                :            : struct cpp_options</a>
+<a name="324"><span class="lineNum">     324 </span>                :            : {</a>
+<a name="325"><span class="lineNum">     325 </span>                :            :   /* The language we're preprocessing.  */</a>
+<a name="326"><span class="lineNum">     326 </span>                :            :   enum c_lang lang;</a>
+<a name="327"><span class="lineNum">     327 </span>                :            : </a>
+<a name="328"><span class="lineNum">     328 </span>                :            :   /* Nonzero means use extra default include directories for C++.  */</a>
+<a name="329"><span class="lineNum">     329 </span>                :            :   unsigned char cplusplus;</a>
+<a name="330"><span class="lineNum">     330 </span>                :            : </a>
+<a name="331"><span class="lineNum">     331 </span>                :            :   /* Nonzero means handle cplusplus style comments.  */</a>
+<a name="332"><span class="lineNum">     332 </span>                :            :   unsigned char cplusplus_comments;</a>
+<a name="333"><span class="lineNum">     333 </span>                :            : </a>
+<a name="334"><span class="lineNum">     334 </span>                :            :   /* Nonzero means define __OBJC__, treat @ as a special token, use</a>
+<a name="335"><span class="lineNum">     335 </span>                :            :      the OBJC[PLUS]_INCLUDE_PATH environment variable, and allow</a>
+<a name="336"><span class="lineNum">     336 </span>                :            :      &quot;#import&quot;.  */</a>
+<a name="337"><span class="lineNum">     337 </span>                :            :   unsigned char objc;</a>
+<a name="338"><span class="lineNum">     338 </span>                :            : </a>
+<a name="339"><span class="lineNum">     339 </span>                :            :   /* Nonzero means don't copy comments into the output file.  */</a>
+<a name="340"><span class="lineNum">     340 </span>                :            :   unsigned char discard_comments;</a>
+<a name="341"><span class="lineNum">     341 </span>                :            : </a>
+<a name="342"><span class="lineNum">     342 </span>                :            :   /* Nonzero means don't copy comments into the output file during</a>
+<a name="343"><span class="lineNum">     343 </span>                :            :      macro expansion.  */</a>
+<a name="344"><span class="lineNum">     344 </span>                :            :   unsigned char discard_comments_in_macro_exp;</a>
+<a name="345"><span class="lineNum">     345 </span>                :            : </a>
+<a name="346"><span class="lineNum">     346 </span>                :            :   /* Nonzero means process the ISO trigraph sequences.  */</a>
+<a name="347"><span class="lineNum">     347 </span>                :            :   unsigned char trigraphs;</a>
+<a name="348"><span class="lineNum">     348 </span>                :            : </a>
+<a name="349"><span class="lineNum">     349 </span>                :            :   /* Nonzero means process the ISO digraph sequences.  */</a>
+<a name="350"><span class="lineNum">     350 </span>                :            :   unsigned char digraphs;</a>
+<a name="351"><span class="lineNum">     351 </span>                :            : </a>
+<a name="352"><span class="lineNum">     352 </span>                :            :   /* Nonzero means to allow hexadecimal floats and LL suffixes.  */</a>
+<a name="353"><span class="lineNum">     353 </span>                :            :   unsigned char extended_numbers;</a>
+<a name="354"><span class="lineNum">     354 </span>                :            : </a>
+<a name="355"><span class="lineNum">     355 </span>                :            :   /* Nonzero means process u/U prefix literals (UTF-16/32).  */</a>
+<a name="356"><span class="lineNum">     356 </span>                :            :   unsigned char uliterals;</a>
+<a name="357"><span class="lineNum">     357 </span>                :            : </a>
+<a name="358"><span class="lineNum">     358 </span>                :            :   /* Nonzero means process u8 prefixed character literals (UTF-8).  */</a>
+<a name="359"><span class="lineNum">     359 </span>                :            :   unsigned char utf8_char_literals;</a>
+<a name="360"><span class="lineNum">     360 </span>                :            : </a>
+<a name="361"><span class="lineNum">     361 </span>                :            :   /* Nonzero means process r/R raw strings.  If this is set, uliterals</a>
+<a name="362"><span class="lineNum">     362 </span>                :            :      must be set as well.  */</a>
+<a name="363"><span class="lineNum">     363 </span>                :            :   unsigned char rliterals;</a>
+<a name="364"><span class="lineNum">     364 </span>                :            : </a>
+<a name="365"><span class="lineNum">     365 </span>                :            :   /* Nonzero means print names of header files (-H).  */</a>
+<a name="366"><span class="lineNum">     366 </span>                :            :   unsigned char print_include_names;</a>
+<a name="367"><span class="lineNum">     367 </span>                :            : </a>
+<a name="368"><span class="lineNum">     368 </span>                :            :   /* Nonzero means complain about deprecated features.  */</a>
+<a name="369"><span class="lineNum">     369 </span>                :            :   unsigned char cpp_warn_deprecated;</a>
+<a name="370"><span class="lineNum">     370 </span>                :            : </a>
+<a name="371"><span class="lineNum">     371 </span>                :            :   /* Nonzero means warn if slash-star appears in a comment.  */</a>
+<a name="372"><span class="lineNum">     372 </span>                :            :   unsigned char warn_comments;</a>
+<a name="373"><span class="lineNum">     373 </span>                :            : </a>
+<a name="374"><span class="lineNum">     374 </span>                :            :   /* Nonzero means to warn about __DATA__, __TIME__ and __TIMESTAMP__ usage.   */</a>
+<a name="375"><span class="lineNum">     375 </span>                :            :   unsigned char warn_date_time;</a>
+<a name="376"><span class="lineNum">     376 </span>                :            : </a>
+<a name="377"><span class="lineNum">     377 </span>                :            :   /* Nonzero means warn if a user-supplied include directory does not</a>
+<a name="378"><span class="lineNum">     378 </span>                :            :      exist.  */</a>
+<a name="379"><span class="lineNum">     379 </span>                :            :   unsigned char warn_missing_include_dirs;</a>
+<a name="380"><span class="lineNum">     380 </span>                :            : </a>
+<a name="381"><span class="lineNum">     381 </span>                :            :   /* Nonzero means warn if there are any trigraphs.  */</a>
+<a name="382"><span class="lineNum">     382 </span>                :            :   unsigned char warn_trigraphs;</a>
+<a name="383"><span class="lineNum">     383 </span>                :            : </a>
+<a name="384"><span class="lineNum">     384 </span>                :            :   /* Nonzero means warn about multicharacter charconsts.  */</a>
+<a name="385"><span class="lineNum">     385 </span>                :            :   unsigned char warn_multichar;</a>
+<a name="386"><span class="lineNum">     386 </span>                :            : </a>
+<a name="387"><span class="lineNum">     387 </span>                :            :   /* Nonzero means warn about various incompatibilities with</a>
+<a name="388"><span class="lineNum">     388 </span>                :            :      traditional C.  */</a>
+<a name="389"><span class="lineNum">     389 </span>                :            :   unsigned char cpp_warn_traditional;</a>
+<a name="390"><span class="lineNum">     390 </span>                :            : </a>
+<a name="391"><span class="lineNum">     391 </span>                :            :   /* Nonzero means warn about long long numeric constants.  */</a>
+<a name="392"><span class="lineNum">     392 </span>                :            :   unsigned char cpp_warn_long_long;</a>
+<a name="393"><span class="lineNum">     393 </span>                :            : </a>
+<a name="394"><span class="lineNum">     394 </span>                :            :   /* Nonzero means warn about text after an #endif (or #else).  */</a>
+<a name="395"><span class="lineNum">     395 </span>                :            :   unsigned char warn_endif_labels;</a>
+<a name="396"><span class="lineNum">     396 </span>                :            : </a>
+<a name="397"><span class="lineNum">     397 </span>                :            :   /* Nonzero means warn about implicit sign changes owing to integer</a>
+<a name="398"><span class="lineNum">     398 </span>                :            :      promotions.  */</a>
+<a name="399"><span class="lineNum">     399 </span>                :            :   unsigned char warn_num_sign_change;</a>
+<a name="400"><span class="lineNum">     400 </span>                :            : </a>
+<a name="401"><span class="lineNum">     401 </span>                :            :   /* Zero means don't warn about __VA_ARGS__ usage in c89 pedantic mode.</a>
+<a name="402"><span class="lineNum">     402 </span>                :            :      Presumably the usage is protected by the appropriate #ifdef.  */</a>
+<a name="403"><span class="lineNum">     403 </span>                :            :   unsigned char warn_variadic_macros;</a>
+<a name="404"><span class="lineNum">     404 </span>                :            : </a>
+<a name="405"><span class="lineNum">     405 </span>                :            :   /* Nonzero means warn about builtin macros that are redefined or</a>
+<a name="406"><span class="lineNum">     406 </span>                :            :      explicitly undefined.  */</a>
+<a name="407"><span class="lineNum">     407 </span>                :            :   unsigned char warn_builtin_macro_redefined;</a>
+<a name="408"><span class="lineNum">     408 </span>                :            : </a>
+<a name="409"><span class="lineNum">     409 </span>                :            :   /* Different -Wimplicit-fallthrough= levels.  */</a>
+<a name="410"><span class="lineNum">     410 </span>                :            :   unsigned char cpp_warn_implicit_fallthrough;</a>
+<a name="411"><span class="lineNum">     411 </span>                :            : </a>
+<a name="412"><span class="lineNum">     412 </span>                :            :   /* Nonzero means we should look for header.gcc files that remap file</a>
+<a name="413"><span class="lineNum">     413 </span>                :            :      names.  */</a>
+<a name="414"><span class="lineNum">     414 </span>                :            :   unsigned char remap;</a>
+<a name="415"><span class="lineNum">     415 </span>                :            : </a>
+<a name="416"><span class="lineNum">     416 </span>                :            :   /* Zero means dollar signs are punctuation.  */</a>
+<a name="417"><span class="lineNum">     417 </span>                :            :   unsigned char dollars_in_ident;</a>
+<a name="418"><span class="lineNum">     418 </span>                :            : </a>
+<a name="419"><span class="lineNum">     419 </span>                :            :   /* Nonzero means UCNs are accepted in identifiers.  */</a>
+<a name="420"><span class="lineNum">     420 </span>                :            :   unsigned char extended_identifiers;</a>
+<a name="421"><span class="lineNum">     421 </span>                :            : </a>
+<a name="422"><span class="lineNum">     422 </span>                :            :   /* True if we should warn about dollars in identifiers or numbers</a>
+<a name="423"><span class="lineNum">     423 </span>                :            :      for this translation unit.  */</a>
+<a name="424"><span class="lineNum">     424 </span>                :            :   unsigned char warn_dollars;</a>
+<a name="425"><span class="lineNum">     425 </span>                :            : </a>
+<a name="426"><span class="lineNum">     426 </span>                :            :   /* Nonzero means warn if undefined identifiers are evaluated in an #if.  */</a>
+<a name="427"><span class="lineNum">     427 </span>                :            :   unsigned char warn_undef;</a>
+<a name="428"><span class="lineNum">     428 </span>                :            : </a>
+<a name="429"><span class="lineNum">     429 </span>                :            :   /* Nonzero means warn if &quot;defined&quot; is encountered in a place other than</a>
+<a name="430"><span class="lineNum">     430 </span>                :            :      an #if.  */</a>
+<a name="431"><span class="lineNum">     431 </span>                :            :   unsigned char warn_expansion_to_defined;</a>
+<a name="432"><span class="lineNum">     432 </span>                :            : </a>
+<a name="433"><span class="lineNum">     433 </span>                :            :   /* Nonzero means warn of unused macros from the main file.  */</a>
+<a name="434"><span class="lineNum">     434 </span>                :            :   unsigned char warn_unused_macros;</a>
+<a name="435"><span class="lineNum">     435 </span>                :            : </a>
+<a name="436"><span class="lineNum">     436 </span>                :            :   /* Nonzero for the 1999 C Standard, including corrigenda and amendments.  */</a>
+<a name="437"><span class="lineNum">     437 </span>                :            :   unsigned char c99;</a>
+<a name="438"><span class="lineNum">     438 </span>                :            : </a>
+<a name="439"><span class="lineNum">     439 </span>                :            :   /* Nonzero if we are conforming to a specific C or C++ standard.  */</a>
+<a name="440"><span class="lineNum">     440 </span>                :            :   unsigned char std;</a>
+<a name="441"><span class="lineNum">     441 </span>                :            : </a>
+<a name="442"><span class="lineNum">     442 </span>                :            :   /* Nonzero means give all the error messages the ANSI standard requires.  */</a>
+<a name="443"><span class="lineNum">     443 </span>                :            :   unsigned char cpp_pedantic;</a>
+<a name="444"><span class="lineNum">     444 </span>                :            : </a>
+<a name="445"><span class="lineNum">     445 </span>                :            :   /* Nonzero means we're looking at already preprocessed code, so don't</a>
+<a name="446"><span class="lineNum">     446 </span>                :            :      bother trying to do macro expansion and whatnot.  */</a>
+<a name="447"><span class="lineNum">     447 </span>                :            :   unsigned char preprocessed;</a>
+<a name="448"><span class="lineNum">     448 </span>                :            :   </a>
+<a name="449"><span class="lineNum">     449 </span>                :            :   /* Nonzero means we are going to emit debugging logs during</a>
+<a name="450"><span class="lineNum">     450 </span>                :            :      preprocessing.  */</a>
+<a name="451"><span class="lineNum">     451 </span>                :            :   unsigned char debug;</a>
+<a name="452"><span class="lineNum">     452 </span>                :            : </a>
+<a name="453"><span class="lineNum">     453 </span>                :            :   /* Nonzero means we are tracking locations of tokens involved in</a>
+<a name="454"><span class="lineNum">     454 </span>                :            :      macro expansion. 1 Means we track the location in degraded mode</a>
+<a name="455"><span class="lineNum">     455 </span>                :            :      where we do not track locations of tokens resulting from the</a>
+<a name="456"><span class="lineNum">     456 </span>                :            :      expansion of arguments of function-like macro.  2 Means we do</a>
+<a name="457"><span class="lineNum">     457 </span>                :            :      track all macro expansions. This last option is the one that</a>
+<a name="458"><span class="lineNum">     458 </span>                :            :      consumes the highest amount of memory.  */</a>
+<a name="459"><span class="lineNum">     459 </span>                :            :   unsigned char track_macro_expansion;</a>
+<a name="460"><span class="lineNum">     460 </span>                :            : </a>
+<a name="461"><span class="lineNum">     461 </span>                :            :   /* Nonzero means handle C++ alternate operator names.  */</a>
+<a name="462"><span class="lineNum">     462 </span>                :            :   unsigned char operator_names;</a>
+<a name="463"><span class="lineNum">     463 </span>                :            : </a>
+<a name="464"><span class="lineNum">     464 </span>                :            :   /* Nonzero means warn about use of C++ alternate operator names.  */</a>
+<a name="465"><span class="lineNum">     465 </span>                :            :   unsigned char warn_cxx_operator_names;</a>
+<a name="466"><span class="lineNum">     466 </span>                :            : </a>
+<a name="467"><span class="lineNum">     467 </span>                :            :   /* True for traditional preprocessing.  */</a>
+<a name="468"><span class="lineNum">     468 </span>                :            :   unsigned char traditional;</a>
+<a name="469"><span class="lineNum">     469 </span>                :            : </a>
+<a name="470"><span class="lineNum">     470 </span>                :            :   /* Nonzero for C++ 2011 Standard user-defined literals.  */</a>
+<a name="471"><span class="lineNum">     471 </span>                :            :   unsigned char user_literals;</a>
+<a name="472"><span class="lineNum">     472 </span>                :            : </a>
+<a name="473"><span class="lineNum">     473 </span>                :            :   /* Nonzero means warn when a string or character literal is followed by a</a>
+<a name="474"><span class="lineNum">     474 </span>                :            :      ud-suffix which does not beging with an underscore.  */</a>
+<a name="475"><span class="lineNum">     475 </span>                :            :   unsigned char warn_literal_suffix;</a>
+<a name="476"><span class="lineNum">     476 </span>                :            : </a>
+<a name="477"><span class="lineNum">     477 </span>                :            :   /* Nonzero means interpret imaginary, fixed-point, or other gnu extension</a>
+<a name="478"><span class="lineNum">     478 </span>                :            :      literal number suffixes as user-defined literal number suffixes.  */</a>
+<a name="479"><span class="lineNum">     479 </span>                :            :   unsigned char ext_numeric_literals;</a>
+<a name="480"><span class="lineNum">     480 </span>                :            : </a>
+<a name="481"><span class="lineNum">     481 </span>                :            :   /* Nonzero means extended identifiers allow the characters specified</a>
+<a name="482"><span class="lineNum">     482 </span>                :            :      in C11 and C++11.  */</a>
+<a name="483"><span class="lineNum">     483 </span>                :            :   unsigned char c11_identifiers;</a>
+<a name="484"><span class="lineNum">     484 </span>                :            : </a>
+<a name="485"><span class="lineNum">     485 </span>                :            :   /* Nonzero for C++ 2014 Standard binary constants.  */</a>
+<a name="486"><span class="lineNum">     486 </span>                :            :   unsigned char binary_constants;</a>
+<a name="487"><span class="lineNum">     487 </span>                :            : </a>
+<a name="488"><span class="lineNum">     488 </span>                :            :   /* Nonzero for C++ 2014 Standard digit separators.  */</a>
+<a name="489"><span class="lineNum">     489 </span>                :            :   unsigned char digit_separators;</a>
+<a name="490"><span class="lineNum">     490 </span>                :            : </a>
+<a name="491"><span class="lineNum">     491 </span>                :            :   /* Nonzero for C2X decimal floating-point constants.  */</a>
+<a name="492"><span class="lineNum">     492 </span>                :            :   unsigned char dfp_constants;</a>
+<a name="493"><span class="lineNum">     493 </span>                :            : </a>
+<a name="494"><span class="lineNum">     494 </span>                :            :   /* Nonzero for C++20 __VA_OPT__ feature.  */</a>
+<a name="495"><span class="lineNum">     495 </span>                :            :   unsigned char va_opt;</a>
+<a name="496"><span class="lineNum">     496 </span>                :            : </a>
+<a name="497"><span class="lineNum">     497 </span>                :            :   /* Nonzero for the '::' token.  */</a>
+<a name="498"><span class="lineNum">     498 </span>                :            :   unsigned char scope;</a>
+<a name="499"><span class="lineNum">     499 </span>                :            : </a>
+<a name="500"><span class="lineNum">     500 </span>                :            :   /* Nonzero means tokenize C++20 module directives.  */</a>
+<a name="501"><span class="lineNum">     501 </span>                :            :   unsigned char module_directives;</a>
+<a name="502"><span class="lineNum">     502 </span>                :            : </a>
+<a name="503"><span class="lineNum">     503 </span>                :            :   /* Nonzero for C++23 size_t literals.  */</a>
+<a name="504"><span class="lineNum">     504 </span>                :            :   unsigned char size_t_literals;</a>
+<a name="505"><span class="lineNum">     505 </span>                :            : </a>
+<a name="506"><span class="lineNum">     506 </span>                :            :   /* Holds the name of the target (execution) character set.  */</a>
+<a name="507"><span class="lineNum">     507 </span>                :            :   const char *narrow_charset;</a>
+<a name="508"><span class="lineNum">     508 </span>                :            : </a>
+<a name="509"><span class="lineNum">     509 </span>                :            :   /* Holds the name of the target wide character set.  */</a>
+<a name="510"><span class="lineNum">     510 </span>                :            :   const char *wide_charset;</a>
+<a name="511"><span class="lineNum">     511 </span>                :            : </a>
+<a name="512"><span class="lineNum">     512 </span>                :            :   /* Holds the name of the input character set.  */</a>
+<a name="513"><span class="lineNum">     513 </span>                :            :   const char *input_charset;</a>
+<a name="514"><span class="lineNum">     514 </span>                :            : </a>
+<a name="515"><span class="lineNum">     515 </span>                :            :   /* The minimum permitted level of normalization before a warning</a>
+<a name="516"><span class="lineNum">     516 </span>                :            :      is generated.  See enum cpp_normalize_level.  */</a>
+<a name="517"><span class="lineNum">     517 </span>                :            :   int warn_normalize;</a>
+<a name="518"><span class="lineNum">     518 </span>                :            : </a>
+<a name="519"><span class="lineNum">     519 </span>                :            :   /* True to warn about precompiled header files we couldn't use.  */</a>
+<a name="520"><span class="lineNum">     520 </span>                :            :   bool warn_invalid_pch;</a>
+<a name="521"><span class="lineNum">     521 </span>                :            : </a>
+<a name="522"><span class="lineNum">     522 </span>                :            :   /* True if dependencies should be restored from a precompiled header.  */</a>
+<a name="523"><span class="lineNum">     523 </span>                :            :   bool restore_pch_deps;</a>
+<a name="524"><span class="lineNum">     524 </span>                :            : </a>
+<a name="525"><span class="lineNum">     525 </span>                :            :   /* True if warn about differences between C90 and C99.  */</a>
+<a name="526"><span class="lineNum">     526 </span>                :            :   signed char cpp_warn_c90_c99_compat;</a>
+<a name="527"><span class="lineNum">     527 </span>                :            : </a>
+<a name="528"><span class="lineNum">     528 </span>                :            :   /* True if warn about differences between C11 and C2X.  */</a>
+<a name="529"><span class="lineNum">     529 </span>                :            :   signed char cpp_warn_c11_c2x_compat;</a>
+<a name="530"><span class="lineNum">     530 </span>                :            : </a>
+<a name="531"><span class="lineNum">     531 </span>                :            :   /* True if warn about differences between C++98 and C++11.  */</a>
+<a name="532"><span class="lineNum">     532 </span>                :            :   bool cpp_warn_cxx11_compat;</a>
+<a name="533"><span class="lineNum">     533 </span>                :            : </a>
+<a name="534"><span class="lineNum">     534 </span>                :            :   /* Dependency generation.  */</a>
+<a name="535"><span class="lineNum">     535 </span>                :            :   struct</a>
+<a name="536"><span class="lineNum">     536 </span>                :            :   {</a>
+<a name="537"><span class="lineNum">     537 </span>                :            :     /* Style of header dependencies to generate.  */</a>
+<a name="538"><span class="lineNum">     538 </span>                :            :     enum cpp_deps_style style;</a>
+<a name="539"><span class="lineNum">     539 </span>                :            : </a>
+<a name="540"><span class="lineNum">     540 </span>                :            :     /* Assume missing files are generated files.  */</a>
+<a name="541"><span class="lineNum">     541 </span>                :            :     bool missing_files;</a>
+<a name="542"><span class="lineNum">     542 </span>                :            : </a>
+<a name="543"><span class="lineNum">     543 </span>                :            :     /* Generate phony targets for each dependency apart from the first</a>
+<a name="544"><span class="lineNum">     544 </span>                :            :        one.  */</a>
+<a name="545"><span class="lineNum">     545 </span>                :            :     bool phony_targets;</a>
+<a name="546"><span class="lineNum">     546 </span>                :            : </a>
+<a name="547"><span class="lineNum">     547 </span>                :            :     /* Generate dependency info for modules.  */</a>
+<a name="548"><span class="lineNum">     548 </span>                :            :     bool modules;</a>
+<a name="549"><span class="lineNum">     549 </span>                :            : </a>
+<a name="550"><span class="lineNum">     550 </span>                :            :     /* If true, no dependency is generated on the main file.  */</a>
+<a name="551"><span class="lineNum">     551 </span>                :            :     bool ignore_main_file;</a>
+<a name="552"><span class="lineNum">     552 </span>                :            : </a>
+<a name="553"><span class="lineNum">     553 </span>                :            :     /* If true, intend to use the preprocessor output (e.g., for compilation)</a>
+<a name="554"><span class="lineNum">     554 </span>                :            :        in addition to the dependency info.  */</a>
+<a name="555"><span class="lineNum">     555 </span>                :            :     bool need_preprocessor_output;</a>
+<a name="556"><span class="lineNum">     556 </span>                :            :   } deps;</a>
+<a name="557"><span class="lineNum">     557 </span>                :            : </a>
+<a name="558"><span class="lineNum">     558 </span>                :            :   /* Target-specific features set by the front end or client.  */</a>
+<a name="559"><span class="lineNum">     559 </span>                :            : </a>
+<a name="560"><span class="lineNum">     560 </span>                :            :   /* Precision for target CPP arithmetic, target characters, target</a>
+<a name="561"><span class="lineNum">     561 </span>                :            :      ints and target wide characters, respectively.  */</a>
+<a name="562"><span class="lineNum">     562 </span>                :            :   size_t precision, char_precision, int_precision, wchar_precision;</a>
+<a name="563"><span class="lineNum">     563 </span>                :            : </a>
+<a name="564"><span class="lineNum">     564 </span>                :            :   /* True means chars (wide chars) are unsigned.  */</a>
+<a name="565"><span class="lineNum">     565 </span>                :            :   bool unsigned_char, unsigned_wchar;</a>
+<a name="566"><span class="lineNum">     566 </span>                :            : </a>
+<a name="567"><span class="lineNum">     567 </span>                :            :   /* True if the most significant byte in a word has the lowest</a>
+<a name="568"><span class="lineNum">     568 </span>                :            :      address in memory.  */</a>
+<a name="569"><span class="lineNum">     569 </span>                :            :   bool bytes_big_endian;</a>
+<a name="570"><span class="lineNum">     570 </span>                :            : </a>
+<a name="571"><span class="lineNum">     571 </span>                :            :   /* Nonzero means __STDC__ should have the value 0 in system headers.  */</a>
+<a name="572"><span class="lineNum">     572 </span>                :            :   unsigned char stdc_0_in_system_headers;</a>
+<a name="573"><span class="lineNum">     573 </span>                :            : </a>
+<a name="574"><span class="lineNum">     574 </span>                :            :   /* True disables tokenization outside of preprocessing directives. */</a>
+<a name="575"><span class="lineNum">     575 </span>                :            :   bool directives_only;</a>
+<a name="576"><span class="lineNum">     576 </span>                :            : </a>
+<a name="577"><span class="lineNum">     577 </span>                :            :   /* True enables canonicalization of system header file paths. */</a>
+<a name="578"><span class="lineNum">     578 </span>                :            :   bool canonical_system_headers;</a>
+<a name="579"><span class="lineNum">     579 </span>                :            : </a>
+<a name="580"><span class="lineNum">     580 </span>                :            :   /* The maximum depth of the nested #include.  */</a>
+<a name="581"><span class="lineNum">     581 </span>                :            :   unsigned int max_include_depth;</a>
+<a name="582"><span class="lineNum">     582 </span>                :            : </a>
+<a name="583"><span class="lineNum">     583 </span>                :            :   cpp_main_search main_search : 8;</a>
+<a name="584"><span class="lineNum">     584 </span>                :            : };</a>
+<a name="585"><span class="lineNum">     585 </span>                :            : </a>
+<a name="586"><span class="lineNum">     586 </span>                :            : /* Diagnostic levels.  To get a diagnostic without associating a</a>
+<a name="587"><span class="lineNum">     587 </span>                :            :    position in the translation unit with it, use cpp_error_with_line</a>
+<a name="588"><span class="lineNum">     588 </span>                :            :    with a line number of zero.  */</a>
+<a name="589"><span class="lineNum">     589 </span>                :            : </a>
+<a name="590"><span class="lineNum">     590 </span>                :            : enum cpp_diagnostic_level {</a>
+<a name="591"><span class="lineNum">     591 </span>                :            :   /* Warning, an error with -Werror.  */</a>
+<a name="592"><span class="lineNum">     592 </span>                :            :   CPP_DL_WARNING = 0,</a>
+<a name="593"><span class="lineNum">     593 </span>                :            :   /* Same as CPP_DL_WARNING, except it is not suppressed in system headers.  */</a>
+<a name="594"><span class="lineNum">     594 </span>                :            :   CPP_DL_WARNING_SYSHDR,</a>
+<a name="595"><span class="lineNum">     595 </span>                :            :   /* Warning, an error with -pedantic-errors or -Werror.  */</a>
+<a name="596"><span class="lineNum">     596 </span>                :            :   CPP_DL_PEDWARN,</a>
+<a name="597"><span class="lineNum">     597 </span>                :            :   /* An error.  */</a>
+<a name="598"><span class="lineNum">     598 </span>                :            :   CPP_DL_ERROR,</a>
+<a name="599"><span class="lineNum">     599 </span>                :            :   /* An internal consistency check failed.  Prints &quot;internal error: &quot;,</a>
+<a name="600"><span class="lineNum">     600 </span>                :            :      otherwise the same as CPP_DL_ERROR.  */</a>
+<a name="601"><span class="lineNum">     601 </span>                :            :   CPP_DL_ICE,</a>
+<a name="602"><span class="lineNum">     602 </span>                :            :   /* An informative note following a warning.  */</a>
+<a name="603"><span class="lineNum">     603 </span>                :            :   CPP_DL_NOTE,</a>
+<a name="604"><span class="lineNum">     604 </span>                :            :   /* A fatal error.  */</a>
+<a name="605"><span class="lineNum">     605 </span>                :            :   CPP_DL_FATAL</a>
+<a name="606"><span class="lineNum">     606 </span>                :            : };</a>
+<a name="607"><span class="lineNum">     607 </span>                :            : </a>
+<a name="608"><span class="lineNum">     608 </span>                :            : /* Warning reason codes. Use a reason code of CPP_W_NONE for unclassified</a>
+<a name="609"><span class="lineNum">     609 </span>                :            :    warnings and diagnostics that are not warnings.  */</a>
+<a name="610"><span class="lineNum">     610 </span>                :            : </a>
+<a name="611"><span class="lineNum">     611 </span>                :            : enum cpp_warning_reason {</a>
+<a name="612"><span class="lineNum">     612 </span>                :            :   CPP_W_NONE = 0,</a>
+<a name="613"><span class="lineNum">     613 </span>                :            :   CPP_W_DEPRECATED,</a>
+<a name="614"><span class="lineNum">     614 </span>                :            :   CPP_W_COMMENTS,</a>
+<a name="615"><span class="lineNum">     615 </span>                :            :   CPP_W_MISSING_INCLUDE_DIRS,</a>
+<a name="616"><span class="lineNum">     616 </span>                :            :   CPP_W_TRIGRAPHS,</a>
+<a name="617"><span class="lineNum">     617 </span>                :            :   CPP_W_MULTICHAR,</a>
+<a name="618"><span class="lineNum">     618 </span>                :            :   CPP_W_TRADITIONAL,</a>
+<a name="619"><span class="lineNum">     619 </span>                :            :   CPP_W_LONG_LONG,</a>
+<a name="620"><span class="lineNum">     620 </span>                :            :   CPP_W_ENDIF_LABELS,</a>
+<a name="621"><span class="lineNum">     621 </span>                :            :   CPP_W_NUM_SIGN_CHANGE,</a>
+<a name="622"><span class="lineNum">     622 </span>                :            :   CPP_W_VARIADIC_MACROS,</a>
+<a name="623"><span class="lineNum">     623 </span>                :            :   CPP_W_BUILTIN_MACRO_REDEFINED,</a>
+<a name="624"><span class="lineNum">     624 </span>                :            :   CPP_W_DOLLARS,</a>
+<a name="625"><span class="lineNum">     625 </span>                :            :   CPP_W_UNDEF,</a>
+<a name="626"><span class="lineNum">     626 </span>                :            :   CPP_W_UNUSED_MACROS,</a>
+<a name="627"><span class="lineNum">     627 </span>                :            :   CPP_W_CXX_OPERATOR_NAMES,</a>
+<a name="628"><span class="lineNum">     628 </span>                :            :   CPP_W_NORMALIZE,</a>
+<a name="629"><span class="lineNum">     629 </span>                :            :   CPP_W_INVALID_PCH,</a>
+<a name="630"><span class="lineNum">     630 </span>                :            :   CPP_W_WARNING_DIRECTIVE,</a>
+<a name="631"><span class="lineNum">     631 </span>                :            :   CPP_W_LITERAL_SUFFIX,</a>
+<a name="632"><span class="lineNum">     632 </span>                :            :   CPP_W_SIZE_T_LITERALS,</a>
+<a name="633"><span class="lineNum">     633 </span>                :            :   CPP_W_DATE_TIME,</a>
+<a name="634"><span class="lineNum">     634 </span>                :            :   CPP_W_PEDANTIC,</a>
+<a name="635"><span class="lineNum">     635 </span>                :            :   CPP_W_C90_C99_COMPAT,</a>
+<a name="636"><span class="lineNum">     636 </span>                :            :   CPP_W_C11_C2X_COMPAT,</a>
+<a name="637"><span class="lineNum">     637 </span>                :            :   CPP_W_CXX11_COMPAT,</a>
+<a name="638"><span class="lineNum">     638 </span>                :            :   CPP_W_EXPANSION_TO_DEFINED</a>
+<a name="639"><span class="lineNum">     639 </span>                :            : };</a>
+<a name="640"><span class="lineNum">     640 </span>                :            : </a>
+<a name="641"><span class="lineNum">     641 </span>                :            : /* Callback for header lookup for HEADER, which is the name of a</a>
+<a name="642"><span class="lineNum">     642 </span>                :            :    source file.  It is used as a method of last resort to find headers</a>
+<a name="643"><span class="lineNum">     643 </span>                :            :    that are not otherwise found during the normal include processing.</a>
+<a name="644"><span class="lineNum">     644 </span>                :            :    The return value is the malloced name of a header to try and open,</a>
+<a name="645"><span class="lineNum">     645 </span>                :            :    if any, or NULL otherwise.  This callback is called only if the</a>
+<a name="646"><span class="lineNum">     646 </span>                :            :    header is otherwise unfound.  */</a>
+<a name="647"><span class="lineNum">     647 </span>                :            : typedef const char *(*missing_header_cb)(cpp_reader *, const char *header, cpp_dir **);</a>
+<a name="648"><span class="lineNum">     648 </span>                :            : </a>
+<a name="649"><span class="lineNum">     649 </span>                :            : /* Call backs to cpplib client.  */</a>
+<a name="650"><span class="lineNum">     650 </span>                :            : struct cpp_callbacks</a>
+<a name="651"><span class="lineNum">     651 </span>                :            : {</a>
+<a name="652"><span class="lineNum">     652 </span>                :            :   /* Called when a new line of preprocessed output is started.  */</a>
+<a name="653"><span class="lineNum">     653 </span>                :            :   void (*line_change) (cpp_reader *, const cpp_token *, int);</a>
+<a name="654"><span class="lineNum">     654 </span>                :            : </a>
+<a name="655"><span class="lineNum">     655 </span>                :            :   /* Called when switching to/from a new file.</a>
+<a name="656"><span class="lineNum">     656 </span>                :            :      The line_map is for the new file.  It is NULL if there is no new file.</a>
+<a name="657"><span class="lineNum">     657 </span>                :            :      (In C this happens when done with &lt;built-in&gt;+&lt;command line&gt; and also</a>
+<a name="658"><span class="lineNum">     658 </span>                :            :      when done with a main file.)  This can be used for resource cleanup.  */</a>
+<a name="659"><span class="lineNum">     659 </span>                :            :   void (*file_change) (cpp_reader *, const line_map_ordinary *);</a>
+<a name="660"><span class="lineNum">     660 </span>                :            : </a>
+<a name="661"><span class="lineNum">     661 </span>                :            :   void (*dir_change) (cpp_reader *, const char *);</a>
+<a name="662"><span class="lineNum">     662 </span>                :            :   void (*include) (cpp_reader *, location_t, const unsigned char *,</a>
+<a name="663"><span class="lineNum">     663 </span>                :            :                    const char *, int, const cpp_token **);</a>
+<a name="664"><span class="lineNum">     664 </span>                :            :   void (*define) (cpp_reader *, location_t, cpp_hashnode *);</a>
+<a name="665"><span class="lineNum">     665 </span>                :            :   void (*undef) (cpp_reader *, location_t, cpp_hashnode *);</a>
+<a name="666"><span class="lineNum">     666 </span>                :            :   void (*ident) (cpp_reader *, location_t, const cpp_string *);</a>
+<a name="667"><span class="lineNum">     667 </span>                :            :   void (*def_pragma) (cpp_reader *, location_t);</a>
+<a name="668"><span class="lineNum">     668 </span>                :            :   int (*valid_pch) (cpp_reader *, const char *, int);</a>
+<a name="669"><span class="lineNum">     669 </span>                :            :   void (*read_pch) (cpp_reader *, const char *, int, const char *);</a>
+<a name="670"><span class="lineNum">     670 </span>                :            :   missing_header_cb missing_header;</a>
+<a name="671"><span class="lineNum">     671 </span>                :            : </a>
+<a name="672"><span class="lineNum">     672 </span>                :            :   /* Context-sensitive macro support.  Returns macro (if any) that should</a>
+<a name="673"><span class="lineNum">     673 </span>                :            :      be expanded.  */</a>
+<a name="674"><span class="lineNum">     674 </span>                :            :   cpp_hashnode * (*macro_to_expand) (cpp_reader *, const cpp_token *);</a>
+<a name="675"><span class="lineNum">     675 </span>                :            : </a>
+<a name="676"><span class="lineNum">     676 </span>                :            :   /* Called to emit a diagnostic.  This callback receives the</a>
+<a name="677"><span class="lineNum">     677 </span>                :            :      translated message.  */</a>
+<a name="678"><span class="lineNum">     678 </span>                :            :   bool (*diagnostic) (cpp_reader *,</a>
+<a name="679"><span class="lineNum">     679 </span>                :            :                       enum cpp_diagnostic_level,</a>
+<a name="680"><span class="lineNum">     680 </span>                :            :                       enum cpp_warning_reason,</a>
+<a name="681"><span class="lineNum">     681 </span>                :            :                       rich_location *,</a>
+<a name="682"><span class="lineNum">     682 </span>                :            :                       const char *, va_list *)</a>
+<a name="683"><span class="lineNum">     683 </span>                :            :        ATTRIBUTE_FPTR_PRINTF(5,0);</a>
+<a name="684"><span class="lineNum">     684 </span>                :            : </a>
+<a name="685"><span class="lineNum">     685 </span>                :            :   /* Callbacks for when a macro is expanded, or tested (whether</a>
+<a name="686"><span class="lineNum">     686 </span>                :            :      defined or not at the time) in #ifdef, #ifndef or &quot;defined&quot;.  */</a>
+<a name="687"><span class="lineNum">     687 </span>                :            :   void (*used_define) (cpp_reader *, location_t, cpp_hashnode *);</a>
+<a name="688"><span class="lineNum">     688 </span>                :            :   void (*used_undef) (cpp_reader *, location_t, cpp_hashnode *);</a>
+<a name="689"><span class="lineNum">     689 </span>                :            :   /* Called before #define and #undef or other macro definition</a>
+<a name="690"><span class="lineNum">     690 </span>                :            :      changes are processed.  */</a>
+<a name="691"><span class="lineNum">     691 </span>                :            :   void (*before_define) (cpp_reader *);</a>
+<a name="692"><span class="lineNum">     692 </span>                :            :   /* Called whenever a macro is expanded or tested.</a>
+<a name="693"><span class="lineNum">     693 </span>                :            :      Second argument is the location of the start of the current expansion.  */</a>
+<a name="694"><span class="lineNum">     694 </span>                :            :   void (*used) (cpp_reader *, location_t, cpp_hashnode *);</a>
+<a name="695"><span class="lineNum">     695 </span>                :            : </a>
+<a name="696"><span class="lineNum">     696 </span>                :            :   /* Callback to identify whether an attribute exists.  */</a>
+<a name="697"><span class="lineNum">     697 </span>                :            :   int (*has_attribute) (cpp_reader *, bool);</a>
+<a name="698"><span class="lineNum">     698 </span>                :            : </a>
+<a name="699"><span class="lineNum">     699 </span>                :            :   /* Callback to determine whether a built-in function is recognized.  */</a>
+<a name="700"><span class="lineNum">     700 </span>                :            :   int (*has_builtin) (cpp_reader *);</a>
+<a name="701"><span class="lineNum">     701 </span>                :            : </a>
+<a name="702"><span class="lineNum">     702 </span>                :            :   /* Callback that can change a user lazy into normal macro.  */</a>
+<a name="703"><span class="lineNum">     703 </span>                :            :   void (*user_lazy_macro) (cpp_reader *, cpp_macro *, unsigned);</a>
+<a name="704"><span class="lineNum">     704 </span>                :            : </a>
+<a name="705"><span class="lineNum">     705 </span>                :            :   /* Callback to handle deferred cpp_macros.  */</a>
+<a name="706"><span class="lineNum">     706 </span>                :            :   cpp_macro *(*user_deferred_macro) (cpp_reader *, location_t, cpp_hashnode *);</a>
+<a name="707"><span class="lineNum">     707 </span>                :            : </a>
+<a name="708"><span class="lineNum">     708 </span>                :            :   /* Callback to parse SOURCE_DATE_EPOCH from environment.  */</a>
+<a name="709"><span class="lineNum">     709 </span>                :            :   time_t (*get_source_date_epoch) (cpp_reader *);</a>
+<a name="710"><span class="lineNum">     710 </span>                :            : </a>
+<a name="711"><span class="lineNum">     711 </span>                :            :   /* Callback for providing suggestions for misspelled directives.  */</a>
+<a name="712"><span class="lineNum">     712 </span>                :            :   const char *(*get_suggestion) (cpp_reader *, const char *, const char *const *);</a>
+<a name="713"><span class="lineNum">     713 </span>                :            : </a>
+<a name="714"><span class="lineNum">     714 </span>                :            :   /* Callback for when a comment is encountered, giving the location</a>
+<a name="715"><span class="lineNum">     715 </span>                :            :      of the opening slash, a pointer to the content (which is not</a>
+<a name="716"><span class="lineNum">     716 </span>                :            :      necessarily 0-terminated), and the length of the content.</a>
+<a name="717"><span class="lineNum">     717 </span>                :            :      The content contains the opening slash-star (or slash-slash),</a>
+<a name="718"><span class="lineNum">     718 </span>                :            :      and for C-style comments contains the closing star-slash.  For</a>
+<a name="719"><span class="lineNum">     719 </span>                :            :      C++-style comments it does not include the terminating newline.  */</a>
+<a name="720"><span class="lineNum">     720 </span>                :            :   void (*comment) (cpp_reader *, location_t, const unsigned char *,</a>
+<a name="721"><span class="lineNum">     721 </span>                :            :                    size_t);</a>
+<a name="722"><span class="lineNum">     722 </span>                :            : </a>
+<a name="723"><span class="lineNum">     723 </span>                :            :   /* Callback for filename remapping in __FILE__ and __BASE_FILE__ macro</a>
+<a name="724"><span class="lineNum">     724 </span>                :            :      expansions.  */</a>
+<a name="725"><span class="lineNum">     725 </span>                :            :   const char *(*remap_filename) (const char*);</a>
+<a name="726"><span class="lineNum">     726 </span>                :            : </a>
+<a name="727"><span class="lineNum">     727 </span>                :            :   /* Maybe translate a #include into something else.  Return a</a>
+<a name="728"><span class="lineNum">     728 </span>                :            :      cpp_buffer containing the translation if translating.  */</a>
+<a name="729"><span class="lineNum">     729 </span>                :            :   char *(*translate_include) (cpp_reader *, line_maps *, location_t,</a>
+<a name="730"><span class="lineNum">     730 </span>                :            :                               const char *path);</a>
+<a name="731"><span class="lineNum">     731 </span>                :            : };</a>
+<a name="732"><span class="lineNum">     732 </span>                :            : </a>
+<a name="733"><span class="lineNum">     733 </span>                :            : #ifdef VMS</a>
+<a name="734"><span class="lineNum">     734 </span>                :            : #define INO_T_CPP ino_t ino[3]</a>
+<a name="735"><span class="lineNum">     735 </span>                :            : #else</a>
+<a name="736"><span class="lineNum">     736 </span>                :            : #define INO_T_CPP ino_t ino</a>
+<a name="737"><span class="lineNum">     737 </span>                :            : #endif</a>
+<a name="738"><span class="lineNum">     738 </span>                :            : </a>
+<a name="739"><span class="lineNum">     739 </span>                :            : /* Chain of directories to look for include files in.  */</a>
+<a name="740"><span class="lineNum">     740 </span>                :            : struct cpp_dir</a>
+<a name="741"><span class="lineNum">     741 </span>                :            : {</a>
+<a name="742"><span class="lineNum">     742 </span>                :            :   /* NULL-terminated singly-linked list.  */</a>
+<a name="743"><span class="lineNum">     743 </span>                :            :   struct cpp_dir *next;</a>
+<a name="744"><span class="lineNum">     744 </span>                :            : </a>
+<a name="745"><span class="lineNum">     745 </span>                :            :   /* NAME of the directory, NUL-terminated.  */</a>
+<a name="746"><span class="lineNum">     746 </span>                :            :   char *name;</a>
+<a name="747"><span class="lineNum">     747 </span>                :            :   unsigned int len;</a>
+<a name="748"><span class="lineNum">     748 </span>                :            : </a>
+<a name="749"><span class="lineNum">     749 </span>                :            :   /* One if a system header, two if a system header that has extern</a>
+<a name="750"><span class="lineNum">     750 </span>                :            :      &quot;C&quot; guards for C++.  */</a>
+<a name="751"><span class="lineNum">     751 </span>                :            :   unsigned char sysp;</a>
+<a name="752"><span class="lineNum">     752 </span>                :            : </a>
+<a name="753"><span class="lineNum">     753 </span>                :            :   /* Is this a user-supplied directory? */</a>
+<a name="754"><span class="lineNum">     754 </span>                :            :   bool user_supplied_p;</a>
+<a name="755"><span class="lineNum">     755 </span>                :            : </a>
+<a name="756"><span class="lineNum">     756 </span>                :            :   /* The canonicalized NAME as determined by lrealpath.  This field </a>
+<a name="757"><span class="lineNum">     757 </span>                :            :      is only used by hosts that lack reliable inode numbers.  */</a>
+<a name="758"><span class="lineNum">     758 </span>                :            :   char *canonical_name;</a>
+<a name="759"><span class="lineNum">     759 </span>                :            : </a>
+<a name="760"><span class="lineNum">     760 </span>                :            :   /* Mapping of file names for this directory for MS-DOS and related</a>
+<a name="761"><span class="lineNum">     761 </span>                :            :      platforms.  A NULL-terminated array of (from, to) pairs.  */</a>
+<a name="762"><span class="lineNum">     762 </span>                :            :   const char **name_map;</a>
+<a name="763"><span class="lineNum">     763 </span>                :            : </a>
+<a name="764"><span class="lineNum">     764 </span>                :            :   /* Routine to construct pathname, given the search path name and the</a>
+<a name="765"><span class="lineNum">     765 </span>                :            :      HEADER we are trying to find, return a constructed pathname to</a>
+<a name="766"><span class="lineNum">     766 </span>                :            :      try and open.  If this is NULL, the constructed pathname is as</a>
+<a name="767"><span class="lineNum">     767 </span>                :            :      constructed by append_file_to_dir.  */</a>
+<a name="768"><span class="lineNum">     768 </span>                :            :   char *(*construct) (const char *header, cpp_dir *dir);</a>
+<a name="769"><span class="lineNum">     769 </span>                :            : </a>
+<a name="770"><span class="lineNum">     770 </span>                :            :   /* The C front end uses these to recognize duplicated</a>
+<a name="771"><span class="lineNum">     771 </span>                :            :      directories in the search path.  */</a>
+<a name="772"><span class="lineNum">     772 </span>                :            :   INO_T_CPP;</a>
+<a name="773"><span class="lineNum">     773 </span>                :            :   dev_t dev;</a>
+<a name="774"><span class="lineNum">     774 </span>                :            : };</a>
+<a name="775"><span class="lineNum">     775 </span>                :            : </a>
+<a name="776"><span class="lineNum">     776 </span>                :            : /* The kind of the cpp_macro.  */</a>
+<a name="777"><span class="lineNum">     777 </span>                :            : enum cpp_macro_kind {</a>
+<a name="778"><span class="lineNum">     778 </span>                :            :   cmk_macro,    /* An ISO macro (token expansion).  */</a>
+<a name="779"><span class="lineNum">     779 </span>                :            :   cmk_assert,   /* An assertion.  */</a>
+<a name="780"><span class="lineNum">     780 </span>                :            :   cmk_traditional       /* A traditional macro (text expansion).  */</a>
+<a name="781"><span class="lineNum">     781 </span>                :            : };</a>
+<a name="782"><span class="lineNum">     782 </span>                :            : </a>
+<a name="783"><span class="lineNum">     783 </span>                :            : /* Each macro definition is recorded in a cpp_macro structure.</a>
+<a name="784"><span class="lineNum">     784 </span>                :            :    Variadic macros cannot occur with traditional cpp.  */</a>
+<a name="785"><span class="lineNum">     785 </span>                :            : struct GTY(()) cpp_macro {</a>
+<a name="786"><span class="lineNum">     786 </span>                :            :   union cpp_parm_u </a>
+<a name="787"><span class="lineNum">     787 </span>                :            :   {</a>
+<a name="788"><span class="lineNum">     788 </span>                :            :     /* Parameters, if any.  If parameter names use extended identifiers,</a>
+<a name="789"><span class="lineNum">     789 </span>                :            :        the original spelling of those identifiers, not the canonical</a>
+<a name="790"><span class="lineNum">     790 </span>                :            :        UTF-8 spelling, goes here.  */</a>
+<a name="791"><span class="lineNum">     791 </span>                :            :     cpp_hashnode ** GTY ((tag (&quot;false&quot;),</a>
+<a name="792"><span class="lineNum">     792 </span>                :            :                           nested_ptr (union tree_node,</a>
+<a name="793"><span class="lineNum">     793 </span>                :            :         &quot;%h ? CPP_HASHNODE (GCC_IDENT_TO_HT_IDENT (%h)) : NULL&quot;,</a>
+<a name="794"><span class="lineNum">     794 </span>                :            :         &quot;%h ? HT_IDENT_TO_GCC_IDENT (HT_NODE (%h)) : NULL&quot;),</a>
+<a name="795"><span class="lineNum">     795 </span>                :            :                           length (&quot;%1.paramc&quot;))) params;</a>
+<a name="796"><span class="lineNum">     796 </span>                :            : </a>
+<a name="797"><span class="lineNum">     797 </span>                :            :     /* If this is an assertion, the next one in the chain.  */</a>
+<a name="798"><span class="lineNum">     798 </span>                :            :     cpp_macro *GTY ((tag (&quot;true&quot;))) next;</a>
+<a name="799"><span class="lineNum">     799 </span>                :            :   } GTY ((desc (&quot;%1.kind == cmk_assert&quot;))) parm;</a>
+<a name="800"><span class="lineNum">     800 </span>                :            : </a>
+<a name="801"><span class="lineNum">     801 </span>                :            :   /* Definition line number.  */</a>
+<a name="802"><span class="lineNum">     802 </span>                :            :   location_t line;</a>
+<a name="803"><span class="lineNum">     803 </span>                :            : </a>
+<a name="804"><span class="lineNum">     804 </span>                :            :   /* Number of tokens in body, or bytes for traditional macros.  */</a>
+<a name="805"><span class="lineNum">     805 </span>                :            :   /* Do we really need 2^32-1 range here?  */</a>
+<a name="806"><span class="lineNum">     806 </span>                :            :   unsigned int count;</a>
+<a name="807"><span class="lineNum">     807 </span>                :            : </a>
+<a name="808"><span class="lineNum">     808 </span>                :            :   /* Number of parameters.  */</a>
+<a name="809"><span class="lineNum">     809 </span>                :            :   unsigned short paramc;</a>
+<a name="810"><span class="lineNum">     810 </span>                :            : </a>
+<a name="811"><span class="lineNum">     811 </span>                :            :   /* Non-zero if this is a user-lazy macro, value provided by user.  */</a>
+<a name="812"><span class="lineNum">     812 </span>                :            :   unsigned char lazy;</a>
+<a name="813"><span class="lineNum">     813 </span>                :            : </a>
+<a name="814"><span class="lineNum">     814 </span>                :            :   /* The kind of this macro (ISO, trad or assert) */</a>
+<a name="815"><span class="lineNum">     815 </span>                :            :   unsigned kind : 2;</a>
+<a name="816"><span class="lineNum">     816 </span>                :            : </a>
+<a name="817"><span class="lineNum">     817 </span>                :            :   /* If a function-like macro.  */</a>
+<a name="818"><span class="lineNum">     818 </span>                :            :   unsigned int fun_like : 1;</a>
+<a name="819"><span class="lineNum">     819 </span>                :            : </a>
+<a name="820"><span class="lineNum">     820 </span>                :            :   /* If a variadic macro.  */</a>
+<a name="821"><span class="lineNum">     821 </span>                :            :   unsigned int variadic : 1;</a>
+<a name="822"><span class="lineNum">     822 </span>                :            : </a>
+<a name="823"><span class="lineNum">     823 </span>                :            :   /* If macro defined in system header.  */</a>
+<a name="824"><span class="lineNum">     824 </span>                :            :   unsigned int syshdr   : 1;</a>
+<a name="825"><span class="lineNum">     825 </span>                :            : </a>
+<a name="826"><span class="lineNum">     826 </span>                :            :   /* Nonzero if it has been expanded or had its existence tested.  */</a>
+<a name="827"><span class="lineNum">     827 </span>                :            :   unsigned int used     : 1;</a>
+<a name="828"><span class="lineNum">     828 </span>                :            : </a>
+<a name="829"><span class="lineNum">     829 </span>                :            :   /* Indicate whether the tokens include extra CPP_PASTE tokens at the</a>
+<a name="830"><span class="lineNum">     830 </span>                :            :      end to track invalid redefinitions with consecutive CPP_PASTE</a>
+<a name="831"><span class="lineNum">     831 </span>                :            :      tokens.  */</a>
+<a name="832"><span class="lineNum">     832 </span>                :            :   unsigned int extra_tokens : 1;</a>
+<a name="833"><span class="lineNum">     833 </span>                :            : </a>
+<a name="834"><span class="lineNum">     834 </span>                :            :   /* Imported C++20 macro (from a header unit).  */</a>
+<a name="835"><span class="lineNum">     835 </span>                :            :   unsigned int imported_p : 1;</a>
+<a name="836"><span class="lineNum">     836 </span>                :            : </a>
+<a name="837"><span class="lineNum">     837 </span>                :            :   /* 0 bits spare (32-bit). 32 on 64-bit target.  */</a>
+<a name="838"><span class="lineNum">     838 </span>                :            : </a>
+<a name="839"><span class="lineNum">     839 </span>                :            :   union cpp_exp_u</a>
+<a name="840"><span class="lineNum">     840 </span>                :            :   {</a>
+<a name="841"><span class="lineNum">     841 </span>                :            :     /* Trailing array of replacement tokens (ISO), or assertion body value.  */</a>
+<a name="842"><span class="lineNum">     842 </span>                :            :     cpp_token GTY ((tag (&quot;false&quot;), length (&quot;%1.count&quot;))) tokens[1];</a>
+<a name="843"><span class="lineNum">     843 </span>                :            : </a>
+<a name="844"><span class="lineNum">     844 </span>                :            :     /* Pointer to replacement text (traditional).  See comment at top</a>
+<a name="845"><span class="lineNum">     845 </span>                :            :        of cpptrad.c for how traditional function-like macros are</a>
+<a name="846"><span class="lineNum">     846 </span>                :            :        encoded.  */</a>
+<a name="847"><span class="lineNum">     847 </span>                :            :     const unsigned char *GTY ((tag (&quot;true&quot;))) text;</a>
+<a name="848"><span class="lineNum">     848 </span>                :            :   } GTY ((desc (&quot;%1.kind == cmk_traditional&quot;))) exp;</a>
+<a name="849"><span class="lineNum">     849 </span>                :            : };</a>
+<a name="850"><span class="lineNum">     850 </span>                :            : </a>
+<a name="851"><span class="lineNum">     851 </span>                :            : /* Poisoned identifiers are flagged NODE_POISONED.  NODE_OPERATOR (C++</a>
+<a name="852"><span class="lineNum">     852 </span>                :            :    only) indicates an identifier that behaves like an operator such as</a>
+<a name="853"><span class="lineNum">     853 </span>                :            :    &quot;xor&quot;.  NODE_DIAGNOSTIC is for speed in lex_token: it indicates a</a>
+<a name="854"><span class="lineNum">     854 </span>                :            :    diagnostic may be required for this node.  Currently this only</a>
+<a name="855"><span class="lineNum">     855 </span>                :            :    applies to __VA_ARGS__, poisoned identifiers, and -Wc++-compat</a>
+<a name="856"><span class="lineNum">     856 </span>                :            :    warnings about NODE_OPERATOR.  */</a>
+<a name="857"><span class="lineNum">     857 </span>                :            : </a>
+<a name="858"><span class="lineNum">     858 </span>                :            : /* Hash node flags.  */</a>
+<a name="859"><span class="lineNum">     859 </span>                :            : #define NODE_OPERATOR   (1 &lt;&lt; 0)  /* C++ named operator.  */</a>
+<a name="860"><span class="lineNum">     860 </span>                :            : #define NODE_POISONED   (1 &lt;&lt; 1)  /* Poisoned identifier.  */</a>
+<a name="861"><span class="lineNum">     861 </span>                :            : #define NODE_DIAGNOSTIC (1 &lt;&lt; 2)  /* Possible diagnostic when lexed.  */</a>
+<a name="862"><span class="lineNum">     862 </span>                :            : #define NODE_WARN       (1 &lt;&lt; 3)  /* Warn if redefined or undefined.  */</a>
+<a name="863"><span class="lineNum">     863 </span>                :            : #define NODE_DISABLED   (1 &lt;&lt; 4)  /* A disabled macro.  */</a>
+<a name="864"><span class="lineNum">     864 </span>                :            : #define NODE_USED       (1 &lt;&lt; 5)  /* Dumped with -dU.  */</a>
+<a name="865"><span class="lineNum">     865 </span>                :            : #define NODE_CONDITIONAL (1 &lt;&lt; 6) /* Conditional macro */</a>
+<a name="866"><span class="lineNum">     866 </span>                :            : #define NODE_WARN_OPERATOR (1 &lt;&lt; 7)       /* Warn about C++ named operator.  */</a>
+<a name="867"><span class="lineNum">     867 </span>                :            : #define NODE_MODULE (1 &lt;&lt; 8)              /* C++-20 module-related name.  */</a>
+<a name="868"><span class="lineNum">     868 </span>                :            : </a>
+<a name="869"><span class="lineNum">     869 </span>                :            : /* Different flavors of hash node.  */</a>
+<a name="870"><span class="lineNum">     870 </span>                :            : enum node_type</a>
+<a name="871"><span class="lineNum">     871 </span>                :            : {</a>
+<a name="872"><span class="lineNum">     872 </span>                :            :   NT_VOID = 0,     /* Maybe an assert?  */</a>
+<a name="873"><span class="lineNum">     873 </span>                :            :   NT_MACRO_ARG,    /* A macro arg.  */</a>
+<a name="874"><span class="lineNum">     874 </span>                :            :   NT_USER_MACRO,   /* A user macro.  */</a>
+<a name="875"><span class="lineNum">     875 </span>                :            :   NT_BUILTIN_MACRO, /* A builtin macro.  */</a>
+<a name="876"><span class="lineNum">     876 </span>                :            :   NT_MACRO_MASK = NT_USER_MACRO  /* Mask for either macro kind.  */</a>
+<a name="877"><span class="lineNum">     877 </span>                :            : };</a>
+<a name="878"><span class="lineNum">     878 </span>                :            : </a>
+<a name="879"><span class="lineNum">     879 </span>                :            : /* Different flavors of builtin macro.  _Pragma is an operator, but we</a>
+<a name="880"><span class="lineNum">     880 </span>                :            :    handle it with the builtin code for efficiency reasons.  */</a>
+<a name="881"><span class="lineNum">     881 </span>                :            : enum cpp_builtin_type</a>
+<a name="882"><span class="lineNum">     882 </span>                :            : {</a>
+<a name="883"><span class="lineNum">     883 </span>                :            :   BT_SPECLINE = 0,              /* `__LINE__' */</a>
+<a name="884"><span class="lineNum">     884 </span>                :            :   BT_DATE,                      /* `__DATE__' */</a>
+<a name="885"><span class="lineNum">     885 </span>                :            :   BT_FILE,                      /* `__FILE__' */</a>
+<a name="886"><span class="lineNum">     886 </span>                :            :   BT_BASE_FILE,                 /* `__BASE_FILE__' */</a>
+<a name="887"><span class="lineNum">     887 </span>                :            :   BT_INCLUDE_LEVEL,             /* `__INCLUDE_LEVEL__' */</a>
+<a name="888"><span class="lineNum">     888 </span>                :            :   BT_TIME,                      /* `__TIME__' */</a>
+<a name="889"><span class="lineNum">     889 </span>                :            :   BT_STDC,                      /* `__STDC__' */</a>
+<a name="890"><span class="lineNum">     890 </span>                :            :   BT_PRAGMA,                    /* `_Pragma' operator */</a>
+<a name="891"><span class="lineNum">     891 </span>                :            :   BT_TIMESTAMP,                 /* `__TIMESTAMP__' */</a>
+<a name="892"><span class="lineNum">     892 </span>                :            :   BT_COUNTER,                   /* `__COUNTER__' */</a>
+<a name="893"><span class="lineNum">     893 </span>                :            :   BT_HAS_ATTRIBUTE,             /* `__has_attribute(x)' */</a>
+<a name="894"><span class="lineNum">     894 </span>                :            :   BT_HAS_STD_ATTRIBUTE,         /* `__has_c_attribute(x)' */</a>
+<a name="895"><span class="lineNum">     895 </span>                :            :   BT_HAS_BUILTIN,               /* `__has_builtin(x)' */</a>
+<a name="896"><span class="lineNum">     896 </span>                :            :   BT_HAS_INCLUDE,               /* `__has_include(x)' */</a>
+<a name="897"><span class="lineNum">     897 </span>                :            :   BT_HAS_INCLUDE_NEXT           /* `__has_include_next(x)' */</a>
+<a name="898"><span class="lineNum">     898 </span>                :            : };</a>
+<a name="899"><span class="lineNum">     899 </span>                :            : </a>
+<a name="900"><span class="lineNum">     900 </span>                :            : #define CPP_HASHNODE(HNODE)     ((cpp_hashnode *) (HNODE))</a>
+<a name="901"><span class="lineNum">     901 </span>                :            : #define HT_NODE(NODE)           (&amp;(NODE)-&gt;ident)</a>
+<a name="902"><span class="lineNum">     902 </span>                :            : #define NODE_LEN(NODE)          HT_LEN (HT_NODE (NODE))</a>
+<a name="903"><span class="lineNum">     903 </span>                :            : #define NODE_NAME(NODE)         HT_STR (HT_NODE (NODE))</a>
+<a name="904"><span class="lineNum">     904 </span>                :            : </a>
+<a name="905"><span class="lineNum">     905 </span>                :            : /* The common part of an identifier node shared amongst all 3 C front</a>
+<a name="906"><span class="lineNum">     906 </span>                :            :    ends.  Also used to store CPP identifiers, which are a superset of</a>
+<a name="907"><span class="lineNum">     907 </span>                :            :    identifiers in the grammatical sense.  */</a>
+<a name="908"><span class="lineNum">     908 </span>                :            : </a>
+<a name="909"><span class="lineNum">     909 </span>                :            : union GTY(()) _cpp_hashnode_value {</a>
+<a name="910"><span class="lineNum">     910 </span>                :            :   /* Assert (maybe NULL) */</a>
+<a name="911"><span class="lineNum">     911 </span>                :            :   cpp_macro * GTY((tag (&quot;NT_VOID&quot;))) answers;</a>
+<a name="912"><span class="lineNum">     912 </span>                :            :   /* Macro (maybe NULL) */</a>
+<a name="913"><span class="lineNum">     913 </span>                :            :   cpp_macro * GTY((tag (&quot;NT_USER_MACRO&quot;))) macro;</a>
+<a name="914"><span class="lineNum">     914 </span>                :            :   /* Code for a builtin macro.  */</a>
+<a name="915"><span class="lineNum">     915 </span>                :            :   enum cpp_builtin_type GTY ((tag (&quot;NT_BUILTIN_MACRO&quot;))) builtin;</a>
+<a name="916"><span class="lineNum">     916 </span>                :            :   /* Macro argument index.  */</a>
+<a name="917"><span class="lineNum">     917 </span>                :            :   unsigned short GTY ((tag (&quot;NT_MACRO_ARG&quot;))) arg_index;</a>
+<a name="918"><span class="lineNum">     918 </span>                :            : };</a>
+<a name="919"><span class="lineNum">     919 </span>                :            : </a>
+<a name="920"><span class="lineNum">     920 </span>                :            : struct GTY(()) cpp_hashnode {</a>
+<a name="921"><span class="lineNum">     921 </span>                :            :   struct ht_identifier ident;</a>
+<a name="922"><span class="lineNum">     922 </span>                :            :   unsigned int is_directive : 1;</a>
+<a name="923"><span class="lineNum">     923 </span>                :            :   unsigned int directive_index : 7;     /* If is_directive,</a>
+<a name="924"><span class="lineNum">     924 </span>                :            :                                            then index into directive table.</a>
+<a name="925"><span class="lineNum">     925 </span>                :            :                                            Otherwise, a NODE_OPERATOR.  */</a>
+<a name="926"><span class="lineNum">     926 </span>                :            :   unsigned int rid_code : 8;            /* Rid code - for front ends.  */</a>
+<a name="927"><span class="lineNum">     927 </span>                :            :   unsigned int flags : 9;               /* CPP flags.  */</a>
+<a name="928"><span class="lineNum">     928 </span>                :            :   ENUM_BITFIELD(node_type) type : 2;    /* CPP node type.  */</a>
+<a name="929"><span class="lineNum">     929 </span>                :            : </a>
+<a name="930"><span class="lineNum">     930 </span>                :            :   /* 5 bits spare.  */</a>
+<a name="931"><span class="lineNum">     931 </span>                :            : </a>
+<a name="932"><span class="lineNum">     932 </span>                :            :   /* The deferred cookie is applicable to NT_USER_MACRO or NT_VOID.</a>
+<a name="933"><span class="lineNum">     933 </span>                :            :      The latter for when a macro had a prevailing undef.</a>
+<a name="934"><span class="lineNum">     934 </span>                :            :      On a 64-bit system there would be 32-bits of padding to the value</a>
+<a name="935"><span class="lineNum">     935 </span>                :            :      field.  So placing the deferred index here is not costly.   */</a>
+<a name="936"><span class="lineNum">     936 </span>                :            :   unsigned deferred;                    /* Deferred cookie  */</a>
+<a name="937"><span class="lineNum">     937 </span>                :            : </a>
+<a name="938"><span class="lineNum">     938 </span>                :            :   union _cpp_hashnode_value GTY ((desc (&quot;%1.type&quot;))) value;</a>
+<a name="939"><span class="lineNum">     939 </span>                :            : };</a>
+<a name="940"><span class="lineNum">     940 </span>                :            : </a>
+<a name="941"><span class="lineNum">     941 </span>                :            : /* A class for iterating through the source locations within a</a>
+<a name="942"><span class="lineNum">     942 </span>                :            :    string token (before escapes are interpreted, and before</a>
+<a name="943"><span class="lineNum">     943 </span>                :            :    concatenation).  */</a>
+<a name="944"><span class="lineNum">     944 </span>                :            : </a>
+<a name="945"><span class="lineNum">     945 </span>                :            : class cpp_string_location_reader {</a>
+<a name="946"><span class="lineNum">     946 </span>                :            :  public:</a>
+<a name="947"><span class="lineNum">     947 </span>                :            :   cpp_string_location_reader (location_t src_loc,</a>
+<a name="948"><span class="lineNum">     948 </span>                :            :                               line_maps *line_table);</a>
+<a name="949"><span class="lineNum">     949 </span>                :            : </a>
+<a name="950"><span class="lineNum">     950 </span>                :            :   source_range get_next ();</a>
+<a name="951"><span class="lineNum">     951 </span>                :            : </a>
+<a name="952"><span class="lineNum">     952 </span>                :            :  private:</a>
+<a name="953"><span class="lineNum">     953 </span>                :            :   location_t m_loc;</a>
+<a name="954"><span class="lineNum">     954 </span>                :            :   int m_offset_per_column;</a>
+<a name="955"><span class="lineNum">     955 </span>                :            : };</a>
+<a name="956"><span class="lineNum">     956 </span>                :            : </a>
+<a name="957"><span class="lineNum">     957 </span>                :            : /* A class for storing the source ranges of all of the characters within</a>
+<a name="958"><span class="lineNum">     958 </span>                :            :    a string literal, after escapes are interpreted, and after</a>
+<a name="959"><span class="lineNum">     959 </span>                :            :    concatenation.</a>
+<a name="960"><span class="lineNum">     960 </span>                :            : </a>
+<a name="961"><span class="lineNum">     961 </span>                :            :    This is not GTY-marked, as instances are intended to be temporary.  */</a>
+<a name="962"><span class="lineNum">     962 </span>                :            : </a>
+<a name="963"><span class="lineNum">     963 </span>                :            : class cpp_substring_ranges</a>
+<a name="964"><span class="lineNum">     964 </span>                :            : {</a>
+<a name="965"><span class="lineNum">     965 </span>                :            :  public:</a>
+<a name="966"><span class="lineNum">     966 </span>                :            :   cpp_substring_ranges ();</a>
+<a name="967"><span class="lineNum">     967 </span>                :            :   ~cpp_substring_ranges ();</a>
+<a name="968"><span class="lineNum">     968 </span>                :            : </a>
+<a name="969"><span class="lineNum">     969 </span>                :<span class="lineCov">       2058 :   int get_num_ranges () const { return m_num_ranges; }</span></a>
+<a name="970"><span class="lineNum">     970 </span>                :<span class="lineCov">       2058 :   source_range get_range (int idx) const</span></a>
+<a name="971"><span class="lineNum">     971 </span>                :            :   {</a>
+<a name="972"><span class="lineNum">     972 </span>                :            :     linemap_assert (idx &lt; m_num_ranges);</a>
+<a name="973"><span class="lineNum">     973 </span>                :<span class="lineCov">       2058 :     return m_ranges[idx];</span></a>
+<a name="974"><span class="lineNum">     974 </span>                :            :   }</a>
+<a name="975"><span class="lineNum">     975 </span>                :            : </a>
+<a name="976"><span class="lineNum">     976 </span>                :            :   void add_range (source_range range);</a>
+<a name="977"><span class="lineNum">     977 </span>                :            :   void add_n_ranges (int num, cpp_string_location_reader &amp;loc_reader);</a>
+<a name="978"><span class="lineNum">     978 </span>                :            : </a>
+<a name="979"><span class="lineNum">     979 </span>                :            :  private:</a>
+<a name="980"><span class="lineNum">     980 </span>                :            :   source_range *m_ranges;</a>
+<a name="981"><span class="lineNum">     981 </span>                :            :   int m_num_ranges;</a>
+<a name="982"><span class="lineNum">     982 </span>                :            :   int m_alloc_ranges;</a>
+<a name="983"><span class="lineNum">     983 </span>                :            : };</a>
+<a name="984"><span class="lineNum">     984 </span>                :            : </a>
+<a name="985"><span class="lineNum">     985 </span>                :            : /* Call this first to get a handle to pass to other functions.</a>
+<a name="986"><span class="lineNum">     986 </span>                :            : </a>
+<a name="987"><span class="lineNum">     987 </span>                :            :    If you want cpplib to manage its own hashtable, pass in a NULL</a>
+<a name="988"><span class="lineNum">     988 </span>                :            :    pointer.  Otherwise you should pass in an initialized hash table</a>
+<a name="989"><span class="lineNum">     989 </span>                :            :    that cpplib will share; this technique is used by the C front</a>
+<a name="990"><span class="lineNum">     990 </span>                :            :    ends.  */</a>
+<a name="991"><span class="lineNum">     991 </span>                :            : extern cpp_reader *cpp_create_reader (enum c_lang, struct ht *,</a>
+<a name="992"><span class="lineNum">     992 </span>                :            :                                       class line_maps *);</a>
+<a name="993"><span class="lineNum">     993 </span>                :            : </a>
+<a name="994"><span class="lineNum">     994 </span>                :            : /* Reset the cpp_reader's line_map.  This is only used after reading a</a>
+<a name="995"><span class="lineNum">     995 </span>                :            :    PCH file.  */</a>
+<a name="996"><span class="lineNum">     996 </span>                :            : extern void cpp_set_line_map (cpp_reader *, class line_maps *);</a>
+<a name="997"><span class="lineNum">     997 </span>                :            : </a>
+<a name="998"><span class="lineNum">     998 </span>                :            : /* Call this to change the selected language standard (e.g. because of</a>
+<a name="999"><span class="lineNum">     999 </span>                :            :    command line options).  */</a>
+<a name="1000"><span class="lineNum">    1000 </span>                :            : extern void cpp_set_lang (cpp_reader *, enum c_lang);</a>
+<a name="1001"><span class="lineNum">    1001 </span>                :            : </a>
+<a name="1002"><span class="lineNum">    1002 </span>                :            : /* Set the include paths.  */</a>
+<a name="1003"><span class="lineNum">    1003 </span>                :            : extern void cpp_set_include_chains (cpp_reader *, cpp_dir *, cpp_dir *, int);</a>
+<a name="1004"><span class="lineNum">    1004 </span>                :            : </a>
+<a name="1005"><span class="lineNum">    1005 </span>                :            : /* Call these to get pointers to the options, callback, and deps</a>
+<a name="1006"><span class="lineNum">    1006 </span>                :            :    structures for a given reader.  These pointers are good until you</a>
+<a name="1007"><span class="lineNum">    1007 </span>                :            :    call cpp_finish on that reader.  You can either edit the callbacks</a>
+<a name="1008"><span class="lineNum">    1008 </span>                :            :    through the pointer returned from cpp_get_callbacks, or set them</a>
+<a name="1009"><span class="lineNum">    1009 </span>                :            :    with cpp_set_callbacks.  */</a>
+<a name="1010"><span class="lineNum">    1010 </span>                :            : extern cpp_options *cpp_get_options (cpp_reader *) ATTRIBUTE_PURE;</a>
+<a name="1011"><span class="lineNum">    1011 </span>                :            : extern cpp_callbacks *cpp_get_callbacks (cpp_reader *) ATTRIBUTE_PURE;</a>
+<a name="1012"><span class="lineNum">    1012 </span>                :            : extern void cpp_set_callbacks (cpp_reader *, cpp_callbacks *);</a>
+<a name="1013"><span class="lineNum">    1013 </span>                :            : extern class mkdeps *cpp_get_deps (cpp_reader *) ATTRIBUTE_PURE;</a>
+<a name="1014"><span class="lineNum">    1014 </span>                :            : </a>
+<a name="1015"><span class="lineNum">    1015 </span>                :            : extern const char *cpp_probe_header_unit (cpp_reader *, const char *file,</a>
+<a name="1016"><span class="lineNum">    1016 </span>                :            :                                           bool angle_p,  location_t);</a>
+<a name="1017"><span class="lineNum">    1017 </span>                :            : </a>
+<a name="1018"><span class="lineNum">    1018 </span>                :            : /* Call these to get name data about the various compile-time</a>
+<a name="1019"><span class="lineNum">    1019 </span>                :            :    charsets.  */</a>
+<a name="1020"><span class="lineNum">    1020 </span>                :            : extern const char *cpp_get_narrow_charset_name (cpp_reader *) ATTRIBUTE_PURE;</a>
+<a name="1021"><span class="lineNum">    1021 </span>                :            : extern const char *cpp_get_wide_charset_name (cpp_reader *) ATTRIBUTE_PURE;</a>
+<a name="1022"><span class="lineNum">    1022 </span>                :            : </a>
+<a name="1023"><span class="lineNum">    1023 </span>                :            : /* This function reads the file, but does not start preprocessing.  It</a>
+<a name="1024"><span class="lineNum">    1024 </span>                :            :    returns the name of the original file; this is the same as the</a>
+<a name="1025"><span class="lineNum">    1025 </span>                :            :    input file, except for preprocessed input.  This will generate at</a>
+<a name="1026"><span class="lineNum">    1026 </span>                :            :    least one file change callback, and possibly a line change callback</a>
+<a name="1027"><span class="lineNum">    1027 </span>                :            :    too.  If there was an error opening the file, it returns NULL.  */</a>
+<a name="1028"><span class="lineNum">    1028 </span>                :            : extern const char *cpp_read_main_file (cpp_reader *, const char *,</a>
+<a name="1029"><span class="lineNum">    1029 </span>                :            :                                        bool injecting = false);</a>
+<a name="1030"><span class="lineNum">    1030 </span>                :            : extern location_t cpp_main_loc (const cpp_reader *);</a>
+<a name="1031"><span class="lineNum">    1031 </span>                :            : </a>
+<a name="1032"><span class="lineNum">    1032 </span>                :            : /* Adjust for the main file to be an include.  */</a>
+<a name="1033"><span class="lineNum">    1033 </span>                :            : extern void cpp_retrofit_as_include (cpp_reader *);</a>
+<a name="1034"><span class="lineNum">    1034 </span>                :            : </a>
+<a name="1035"><span class="lineNum">    1035 </span>                :            : /* Set up built-ins with special behavior.  Use cpp_init_builtins()</a>
+<a name="1036"><span class="lineNum">    1036 </span>                :            :    instead unless your know what you are doing.  */</a>
+<a name="1037"><span class="lineNum">    1037 </span>                :            : extern void cpp_init_special_builtins (cpp_reader *);</a>
+<a name="1038"><span class="lineNum">    1038 </span>                :            : </a>
+<a name="1039"><span class="lineNum">    1039 </span>                :            : /* Set up built-ins like __FILE__.  */</a>
+<a name="1040"><span class="lineNum">    1040 </span>                :            : extern void cpp_init_builtins (cpp_reader *, int);</a>
+<a name="1041"><span class="lineNum">    1041 </span>                :            : </a>
+<a name="1042"><span class="lineNum">    1042 </span>                :            : /* This is called after options have been parsed, and partially</a>
+<a name="1043"><span class="lineNum">    1043 </span>                :            :    processed.  */</a>
+<a name="1044"><span class="lineNum">    1044 </span>                :            : extern void cpp_post_options (cpp_reader *);</a>
+<a name="1045"><span class="lineNum">    1045 </span>                :            : </a>
+<a name="1046"><span class="lineNum">    1046 </span>                :            : /* Set up translation to the target character set.  */</a>
+<a name="1047"><span class="lineNum">    1047 </span>                :            : extern void cpp_init_iconv (cpp_reader *);</a>
+<a name="1048"><span class="lineNum">    1048 </span>                :            : </a>
+<a name="1049"><span class="lineNum">    1049 </span>                :            : /* Call this to finish preprocessing.  If you requested dependency</a>
+<a name="1050"><span class="lineNum">    1050 </span>                :            :    generation, pass an open stream to write the information to,</a>
+<a name="1051"><span class="lineNum">    1051 </span>                :            :    otherwise NULL.  It is your responsibility to close the stream.  */</a>
+<a name="1052"><span class="lineNum">    1052 </span>                :            : extern void cpp_finish (cpp_reader *, FILE *deps_stream);</a>
+<a name="1053"><span class="lineNum">    1053 </span>                :            : </a>
+<a name="1054"><span class="lineNum">    1054 </span>                :            : /* Call this to release the handle at the end of preprocessing.  Any</a>
+<a name="1055"><span class="lineNum">    1055 </span>                :            :    use of the handle after this function returns is invalid.  */</a>
+<a name="1056"><span class="lineNum">    1056 </span>                :            : extern void cpp_destroy (cpp_reader *);</a>
+<a name="1057"><span class="lineNum">    1057 </span>                :            : </a>
+<a name="1058"><span class="lineNum">    1058 </span>                :            : extern unsigned int cpp_token_len (const cpp_token *);</a>
+<a name="1059"><span class="lineNum">    1059 </span>                :            : extern unsigned char *cpp_token_as_text (cpp_reader *, const cpp_token *);</a>
+<a name="1060"><span class="lineNum">    1060 </span>                :            : extern unsigned char *cpp_spell_token (cpp_reader *, const cpp_token *,</a>
+<a name="1061"><span class="lineNum">    1061 </span>                :            :                                        unsigned char *, bool);</a>
+<a name="1062"><span class="lineNum">    1062 </span>                :            : extern void cpp_register_pragma (cpp_reader *, const char *, const char *,</a>
+<a name="1063"><span class="lineNum">    1063 </span>                :            :                                  void (*) (cpp_reader *), bool);</a>
+<a name="1064"><span class="lineNum">    1064 </span>                :            : extern void cpp_register_deferred_pragma (cpp_reader *, const char *,</a>
+<a name="1065"><span class="lineNum">    1065 </span>                :            :                                           const char *, unsigned, bool, bool);</a>
+<a name="1066"><span class="lineNum">    1066 </span>                :            : extern int cpp_avoid_paste (cpp_reader *, const cpp_token *,</a>
+<a name="1067"><span class="lineNum">    1067 </span>                :            :                             const cpp_token *);</a>
+<a name="1068"><span class="lineNum">    1068 </span>                :            : extern const cpp_token *cpp_get_token (cpp_reader *);</a>
+<a name="1069"><span class="lineNum">    1069 </span>                :            : extern const cpp_token *cpp_get_token_with_location (cpp_reader *,</a>
+<a name="1070"><span class="lineNum">    1070 </span>                :            :                                                      location_t *);</a>
+<a name="1071"><span class="lineNum">    1071 </span>                :<span class="lineCov">    1096998 : inline bool cpp_user_macro_p (const cpp_hashnode *node)</span></a>
+<a name="1072"><span class="lineNum">    1072 </span>                :            : {</a>
+<a name="1073"><span class="lineNum">    1073 </span>                :<span class="lineCov">    1096998 :   return node-&gt;type == NT_USER_MACRO;</span></a>
+<a name="1074"><span class="lineNum">    1074 </span>                :            : }</a>
+<a name="1075"><span class="lineNum">    1075 </span>                :            : inline bool cpp_builtin_macro_p (const cpp_hashnode *node)</a>
+<a name="1076"><span class="lineNum">    1076 </span>                :            : {</a>
+<a name="1077"><span class="lineNum">    1077 </span>                :            :   return node-&gt;type == NT_BUILTIN_MACRO;</a>
+<a name="1078"><span class="lineNum">    1078 </span>                :            : }</a>
+<a name="1079"><span class="lineNum">    1079 </span>                :<span class="lineCov">    7318710 : inline bool cpp_macro_p (const cpp_hashnode *node)</span></a>
+<a name="1080"><span class="lineNum">    1080 </span>                :            : {</a>
+<a name="1081"><span class="lineNum">    1081 </span>                :<span class="lineCov">    7318710 :   return node-&gt;type &amp; NT_MACRO_MASK;</span></a>
+<a name="1082"><span class="lineNum">    1082 </span>                :            : }</a>
+<a name="1083"><span class="lineNum">    1083 </span>                :<span class="lineNoCov">          0 : inline cpp_macro *cpp_set_deferred_macro (cpp_hashnode *node,</span></a>
+<a name="1084"><span class="lineNum">    1084 </span>                :            :                                           cpp_macro *forced = NULL)</a>
+<a name="1085"><span class="lineNum">    1085 </span>                :            : {</a>
+<a name="1086"><span class="lineNum">    1086 </span>                :<span class="lineNoCov">          0 :   cpp_macro *old = node-&gt;value.macro;</span></a>
+<a name="1087"><span class="lineNum">    1087 </span>                :            : </a>
+<a name="1088"><span class="lineNum">    1088 </span>                :<span class="lineNoCov">          0 :   node-&gt;value.macro = forced;</span></a>
+<a name="1089"><span class="lineNum">    1089 </span>                :<span class="lineNoCov">          0 :   node-&gt;type = NT_USER_MACRO;</span></a>
+<a name="1090"><span class="lineNum">    1090 </span>                :<span class="lineNoCov">          0 :   node-&gt;flags &amp;= ~NODE_USED;</span></a>
+<a name="1091"><span class="lineNum">    1091 </span>                :            : </a>
+<a name="1092"><span class="lineNum">    1092 </span>                :<span class="lineNoCov">          0 :   return old;</span></a>
+<a name="1093"><span class="lineNum">    1093 </span>                :            : }</a>
+<a name="1094"><span class="lineNum">    1094 </span>                :            : cpp_macro *cpp_get_deferred_macro (cpp_reader *, cpp_hashnode *, location_t);</a>
+<a name="1095"><span class="lineNum">    1095 </span>                :            : </a>
+<a name="1096"><span class="lineNum">    1096 </span>                :            : /* Returns true if NODE is a function-like user macro.  */</a>
+<a name="1097"><span class="lineNum">    1097 </span>                :<span class="lineCov">          5 : inline bool cpp_fun_like_macro_p (cpp_hashnode *node)</span></a>
+<a name="1098"><span class="lineNum">    1098 </span>                :            : {</a>
+<a name="1099"><span class="lineNum">    1099 </span>  [<span class="branchCov" title="Branch 0 was taken 5 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 5 times"> + </span>]:<span class="lineCov">          5 :   return cpp_user_macro_p (node) &amp;&amp; node-&gt;value.macro-&gt;fun_like;</span></a>
+<a name="1100"><span class="lineNum">    1100 </span>                :            : }</a>
+<a name="1101"><span class="lineNum">    1101 </span>                :            : </a>
+<a name="1102"><span class="lineNum">    1102 </span>                :            : extern const unsigned char *cpp_macro_definition (cpp_reader *, cpp_hashnode *);</a>
+<a name="1103"><span class="lineNum">    1103 </span>                :            : extern const unsigned char *cpp_macro_definition (cpp_reader *, cpp_hashnode *,</a>
+<a name="1104"><span class="lineNum">    1104 </span>                :            :                                                   const cpp_macro *);</a>
+<a name="1105"><span class="lineNum">    1105 </span>                :<span class="lineNoCov">          0 : inline location_t cpp_macro_definition_location (cpp_hashnode *node)</span></a>
+<a name="1106"><span class="lineNum">    1106 </span>                :            : {</a>
+<a name="1107"><span class="lineNum">    1107 </span>                :<span class="lineNoCov">          0 :   const cpp_macro *macro = node-&gt;value.macro;</span></a>
+<a name="1108"><span class="lineNum">    1108 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   return macro ? macro-&gt;line : 0;</span></a>
+<a name="1109"><span class="lineNum">    1109 </span>                :            : }</a>
+<a name="1110"><span class="lineNum">    1110 </span>                :            : /* Return an idempotent time stamp (possibly from SOURCE_DATE_EPOCH).  */</a>
+<a name="1111"><span class="lineNum">    1111 </span>                :            : enum class CPP_time_kind </a>
+<a name="1112"><span class="lineNum">    1112 </span>                :            : {</a>
+<a name="1113"><span class="lineNum">    1113 </span>                :            :   FIXED = -1,   /* Fixed time via source epoch.  */</a>
+<a name="1114"><span class="lineNum">    1114 </span>                :            :   DYNAMIC = -2, /* Dynamic via time(2).  */</a>
+<a name="1115"><span class="lineNum">    1115 </span>                :            :   UNKNOWN = -3  /* Wibbly wobbly, timey wimey.  */</a>
+<a name="1116"><span class="lineNum">    1116 </span>                :            : };</a>
+<a name="1117"><span class="lineNum">    1117 </span>                :            : extern CPP_time_kind cpp_get_date (cpp_reader *, time_t *);</a>
+<a name="1118"><span class="lineNum">    1118 </span>                :            : </a>
+<a name="1119"><span class="lineNum">    1119 </span>                :            : extern void _cpp_backup_tokens (cpp_reader *, unsigned int);</a>
+<a name="1120"><span class="lineNum">    1120 </span>                :            : extern const cpp_token *cpp_peek_token (cpp_reader *, int);</a>
+<a name="1121"><span class="lineNum">    1121 </span>                :            : </a>
+<a name="1122"><span class="lineNum">    1122 </span>                :            : /* Evaluate a CPP_*CHAR* token.  */</a>
+<a name="1123"><span class="lineNum">    1123 </span>                :            : extern cppchar_t cpp_interpret_charconst (cpp_reader *, const cpp_token *,</a>
+<a name="1124"><span class="lineNum">    1124 </span>                :            :                                           unsigned int *, int *);</a>
+<a name="1125"><span class="lineNum">    1125 </span>                :            : /* Evaluate a vector of CPP_*STRING* tokens.  */</a>
+<a name="1126"><span class="lineNum">    1126 </span>                :            : extern bool cpp_interpret_string (cpp_reader *,</a>
+<a name="1127"><span class="lineNum">    1127 </span>                :            :                                   const cpp_string *, size_t,</a>
+<a name="1128"><span class="lineNum">    1128 </span>                :            :                                   cpp_string *, enum cpp_ttype);</a>
+<a name="1129"><span class="lineNum">    1129 </span>                :            : extern const char *cpp_interpret_string_ranges (cpp_reader *pfile,</a>
+<a name="1130"><span class="lineNum">    1130 </span>                :            :                                                 const cpp_string *from,</a>
+<a name="1131"><span class="lineNum">    1131 </span>                :            :                                                 cpp_string_location_reader *,</a>
+<a name="1132"><span class="lineNum">    1132 </span>                :            :                                                 size_t count,</a>
+<a name="1133"><span class="lineNum">    1133 </span>                :            :                                                 cpp_substring_ranges *out,</a>
+<a name="1134"><span class="lineNum">    1134 </span>                :            :                                                 enum cpp_ttype type);</a>
+<a name="1135"><span class="lineNum">    1135 </span>                :            : extern bool cpp_interpret_string_notranslate (cpp_reader *,</a>
+<a name="1136"><span class="lineNum">    1136 </span>                :            :                                               const cpp_string *, size_t,</a>
+<a name="1137"><span class="lineNum">    1137 </span>                :            :                                               cpp_string *, enum cpp_ttype);</a>
+<a name="1138"><span class="lineNum">    1138 </span>                :            : </a>
+<a name="1139"><span class="lineNum">    1139 </span>                :            : /* Convert a host character constant to the execution character set.  */</a>
+<a name="1140"><span class="lineNum">    1140 </span>                :            : extern cppchar_t cpp_host_to_exec_charset (cpp_reader *, cppchar_t);</a>
+<a name="1141"><span class="lineNum">    1141 </span>                :            : </a>
+<a name="1142"><span class="lineNum">    1142 </span>                :            : /* Used to register macros and assertions, perhaps from the command line.</a>
+<a name="1143"><span class="lineNum">    1143 </span>                :            :    The text is the same as the command line argument.  */</a>
+<a name="1144"><span class="lineNum">    1144 </span>                :            : extern void cpp_define (cpp_reader *, const char *);</a>
+<a name="1145"><span class="lineNum">    1145 </span>                :            : extern void cpp_define_unused (cpp_reader *, const char *);</a>
+<a name="1146"><span class="lineNum">    1146 </span>                :            : extern void cpp_define_formatted (cpp_reader *pfile, </a>
+<a name="1147"><span class="lineNum">    1147 </span>                :            :                                   const char *fmt, ...) ATTRIBUTE_PRINTF_2;</a>
+<a name="1148"><span class="lineNum">    1148 </span>                :            : extern void cpp_define_formatted_unused (cpp_reader *pfile,</a>
+<a name="1149"><span class="lineNum">    1149 </span>                :            :                                          const char *fmt,</a>
+<a name="1150"><span class="lineNum">    1150 </span>                :            :                                          ...) ATTRIBUTE_PRINTF_2;</a>
+<a name="1151"><span class="lineNum">    1151 </span>                :            : extern void cpp_assert (cpp_reader *, const char *);</a>
+<a name="1152"><span class="lineNum">    1152 </span>                :            : extern void cpp_undef (cpp_reader *, const char *);</a>
+<a name="1153"><span class="lineNum">    1153 </span>                :            : extern void cpp_unassert (cpp_reader *, const char *);</a>
+<a name="1154"><span class="lineNum">    1154 </span>                :            : </a>
+<a name="1155"><span class="lineNum">    1155 </span>                :            : /* Mark a node as a lazily defined macro.  */</a>
+<a name="1156"><span class="lineNum">    1156 </span>                :            : extern void cpp_define_lazily (cpp_reader *, cpp_hashnode *node, unsigned N);</a>
+<a name="1157"><span class="lineNum">    1157 </span>                :            : </a>
+<a name="1158"><span class="lineNum">    1158 </span>                :            : /* Undefine all macros and assertions.  */</a>
+<a name="1159"><span class="lineNum">    1159 </span>                :            : extern void cpp_undef_all (cpp_reader *);</a>
+<a name="1160"><span class="lineNum">    1160 </span>                :            : </a>
+<a name="1161"><span class="lineNum">    1161 </span>                :            : extern cpp_buffer *cpp_push_buffer (cpp_reader *, const unsigned char *,</a>
+<a name="1162"><span class="lineNum">    1162 </span>                :            :                                     size_t, int);</a>
+<a name="1163"><span class="lineNum">    1163 </span>                :            : extern int cpp_defined (cpp_reader *, const unsigned char *, int);</a>
+<a name="1164"><span class="lineNum">    1164 </span>                :            : </a>
+<a name="1165"><span class="lineNum">    1165 </span>                :            : /* A preprocessing number.  Code assumes that any unused high bits of</a>
+<a name="1166"><span class="lineNum">    1166 </span>                :            :    the double integer are set to zero.  */</a>
+<a name="1167"><span class="lineNum">    1167 </span>                :            : </a>
+<a name="1168"><span class="lineNum">    1168 </span>                :            : /* This type has to be equal to unsigned HOST_WIDE_INT, see</a>
+<a name="1169"><span class="lineNum">    1169 </span>                :            :    gcc/c-family/c-lex.c.  */</a>
+<a name="1170"><span class="lineNum">    1170 </span>                :            : typedef uint64_t cpp_num_part;</a>
+<a name="1171"><span class="lineNum">    1171 </span>                :            : typedef struct cpp_num cpp_num;</a>
+<a name="1172"><span class="lineNum">    1172 </span>                :            : struct cpp_num</a>
+<a name="1173"><span class="lineNum">    1173 </span>                :            : {</a>
+<a name="1174"><span class="lineNum">    1174 </span>                :            :   cpp_num_part high;</a>
+<a name="1175"><span class="lineNum">    1175 </span>                :            :   cpp_num_part low;</a>
+<a name="1176"><span class="lineNum">    1176 </span>                :            :   bool unsignedp;  /* True if value should be treated as unsigned.  */</a>
+<a name="1177"><span class="lineNum">    1177 </span>                :            :   bool overflow;   /* True if the most recent calculation overflowed.  */</a>
+<a name="1178"><span class="lineNum">    1178 </span>                :            : };</a>
+<a name="1179"><span class="lineNum">    1179 </span>                :            : </a>
+<a name="1180"><span class="lineNum">    1180 </span>                :            : /* cpplib provides two interfaces for interpretation of preprocessing</a>
+<a name="1181"><span class="lineNum">    1181 </span>                :            :    numbers.</a>
+<a name="1182"><span class="lineNum">    1182 </span>                :            : </a>
+<a name="1183"><span class="lineNum">    1183 </span>                :            :    cpp_classify_number categorizes numeric constants according to</a>
+<a name="1184"><span class="lineNum">    1184 </span>                :            :    their field (integer, floating point, or invalid), radix (decimal,</a>
+<a name="1185"><span class="lineNum">    1185 </span>                :            :    octal, hexadecimal), and type suffixes.  */</a>
+<a name="1186"><span class="lineNum">    1186 </span>                :            : </a>
+<a name="1187"><span class="lineNum">    1187 </span>                :            : #define CPP_N_CATEGORY  0x000F</a>
+<a name="1188"><span class="lineNum">    1188 </span>                :            : #define CPP_N_INVALID   0x0000</a>
+<a name="1189"><span class="lineNum">    1189 </span>                :            : #define CPP_N_INTEGER   0x0001</a>
+<a name="1190"><span class="lineNum">    1190 </span>                :            : #define CPP_N_FLOATING  0x0002</a>
+<a name="1191"><span class="lineNum">    1191 </span>                :            : </a>
+<a name="1192"><span class="lineNum">    1192 </span>                :            : #define CPP_N_WIDTH     0x00F0</a>
+<a name="1193"><span class="lineNum">    1193 </span>                :            : #define CPP_N_SMALL     0x0010  /* int, float, short _Fract/Accum  */</a>
+<a name="1194"><span class="lineNum">    1194 </span>                :            : #define CPP_N_MEDIUM    0x0020  /* long, double, long _Fract/_Accum.  */</a>
+<a name="1195"><span class="lineNum">    1195 </span>                :            : #define CPP_N_LARGE     0x0040  /* long long, long double,</a>
+<a name="1196"><span class="lineNum">    1196 </span>                :            :                                    long long _Fract/Accum.  */</a>
+<a name="1197"><span class="lineNum">    1197 </span>                :            : </a>
+<a name="1198"><span class="lineNum">    1198 </span>                :            : #define CPP_N_WIDTH_MD  0xF0000 /* machine defined.  */</a>
+<a name="1199"><span class="lineNum">    1199 </span>                :            : #define CPP_N_MD_W      0x10000</a>
+<a name="1200"><span class="lineNum">    1200 </span>                :            : #define CPP_N_MD_Q      0x20000</a>
+<a name="1201"><span class="lineNum">    1201 </span>                :            : </a>
+<a name="1202"><span class="lineNum">    1202 </span>                :            : #define CPP_N_RADIX     0x0F00</a>
+<a name="1203"><span class="lineNum">    1203 </span>                :            : #define CPP_N_DECIMAL   0x0100</a>
+<a name="1204"><span class="lineNum">    1204 </span>                :            : #define CPP_N_HEX       0x0200</a>
+<a name="1205"><span class="lineNum">    1205 </span>                :            : #define CPP_N_OCTAL     0x0400</a>
+<a name="1206"><span class="lineNum">    1206 </span>                :            : #define CPP_N_BINARY    0x0800</a>
+<a name="1207"><span class="lineNum">    1207 </span>                :            : </a>
+<a name="1208"><span class="lineNum">    1208 </span>                :            : #define CPP_N_UNSIGNED  0x1000  /* Properties.  */</a>
+<a name="1209"><span class="lineNum">    1209 </span>                :            : #define CPP_N_IMAGINARY 0x2000</a>
+<a name="1210"><span class="lineNum">    1210 </span>                :            : #define CPP_N_DFLOAT    0x4000</a>
+<a name="1211"><span class="lineNum">    1211 </span>                :            : #define CPP_N_DEFAULT   0x8000</a>
+<a name="1212"><span class="lineNum">    1212 </span>                :            : </a>
+<a name="1213"><span class="lineNum">    1213 </span>                :            : #define CPP_N_FRACT     0x100000 /* Fract types.  */</a>
+<a name="1214"><span class="lineNum">    1214 </span>                :            : #define CPP_N_ACCUM     0x200000 /* Accum types.  */</a>
+<a name="1215"><span class="lineNum">    1215 </span>                :            : #define CPP_N_FLOATN    0x400000 /* _FloatN types.  */</a>
+<a name="1216"><span class="lineNum">    1216 </span>                :            : #define CPP_N_FLOATNX   0x800000 /* _FloatNx types.  */</a>
+<a name="1217"><span class="lineNum">    1217 </span>                :            : </a>
+<a name="1218"><span class="lineNum">    1218 </span>                :            : #define CPP_N_USERDEF   0x1000000 /* C++11 user-defined literal.  */</a>
+<a name="1219"><span class="lineNum">    1219 </span>                :            : </a>
+<a name="1220"><span class="lineNum">    1220 </span>                :            : #define CPP_N_SIZE_T    0x2000000 /* C++23 size_t literal.  */</a>
+<a name="1221"><span class="lineNum">    1221 </span>                :            : </a>
+<a name="1222"><span class="lineNum">    1222 </span>                :            : #define CPP_N_WIDTH_FLOATN_NX   0xF0000000 /* _FloatN / _FloatNx value</a>
+<a name="1223"><span class="lineNum">    1223 </span>                :            :                                               of N, divided by 16.  */</a>
+<a name="1224"><span class="lineNum">    1224 </span>                :            : #define CPP_FLOATN_SHIFT        24</a>
+<a name="1225"><span class="lineNum">    1225 </span>                :            : #define CPP_FLOATN_MAX  0xF0</a>
+<a name="1226"><span class="lineNum">    1226 </span>                :            : </a>
+<a name="1227"><span class="lineNum">    1227 </span>                :            : /* Classify a CPP_NUMBER token.  The return value is a combination of</a>
+<a name="1228"><span class="lineNum">    1228 </span>                :            :    the flags from the above sets.  */</a>
+<a name="1229"><span class="lineNum">    1229 </span>                :            : extern unsigned cpp_classify_number (cpp_reader *, const cpp_token *,</a>
+<a name="1230"><span class="lineNum">    1230 </span>                :            :                                      const char **, location_t);</a>
+<a name="1231"><span class="lineNum">    1231 </span>                :            : </a>
+<a name="1232"><span class="lineNum">    1232 </span>                :            : /* Return the classification flags for a float suffix.  */</a>
+<a name="1233"><span class="lineNum">    1233 </span>                :            : extern unsigned int cpp_interpret_float_suffix (cpp_reader *, const char *,</a>
+<a name="1234"><span class="lineNum">    1234 </span>                :            :                                                 size_t);</a>
+<a name="1235"><span class="lineNum">    1235 </span>                :            : </a>
+<a name="1236"><span class="lineNum">    1236 </span>                :            : /* Return the classification flags for an int suffix.  */</a>
+<a name="1237"><span class="lineNum">    1237 </span>                :            : extern unsigned int cpp_interpret_int_suffix (cpp_reader *, const char *,</a>
+<a name="1238"><span class="lineNum">    1238 </span>                :            :                                               size_t);</a>
+<a name="1239"><span class="lineNum">    1239 </span>                :            : </a>
+<a name="1240"><span class="lineNum">    1240 </span>                :            : /* Evaluate a token classified as category CPP_N_INTEGER.  */</a>
+<a name="1241"><span class="lineNum">    1241 </span>                :            : extern cpp_num cpp_interpret_integer (cpp_reader *, const cpp_token *,</a>
+<a name="1242"><span class="lineNum">    1242 </span>                :            :                                       unsigned int);</a>
+<a name="1243"><span class="lineNum">    1243 </span>                :            : </a>
+<a name="1244"><span class="lineNum">    1244 </span>                :            : /* Sign extend a number, with PRECISION significant bits and all</a>
+<a name="1245"><span class="lineNum">    1245 </span>                :            :    others assumed clear, to fill out a cpp_num structure.  */</a>
+<a name="1246"><span class="lineNum">    1246 </span>                :            : cpp_num cpp_num_sign_extend (cpp_num, size_t);</a>
+<a name="1247"><span class="lineNum">    1247 </span>                :            : </a>
+<a name="1248"><span class="lineNum">    1248 </span>                :            : /* Output a diagnostic of some kind.  */</a>
+<a name="1249"><span class="lineNum">    1249 </span>                :            : extern bool cpp_error (cpp_reader *, enum cpp_diagnostic_level,</a>
+<a name="1250"><span class="lineNum">    1250 </span>                :            :                        const char *msgid, ...)</a>
+<a name="1251"><span class="lineNum">    1251 </span>                :            :   ATTRIBUTE_PRINTF_3;</a>
+<a name="1252"><span class="lineNum">    1252 </span>                :            : extern bool cpp_warning (cpp_reader *, enum cpp_warning_reason,</a>
+<a name="1253"><span class="lineNum">    1253 </span>                :            :                          const char *msgid, ...)</a>
+<a name="1254"><span class="lineNum">    1254 </span>                :            :   ATTRIBUTE_PRINTF_3;</a>
+<a name="1255"><span class="lineNum">    1255 </span>                :            : extern bool cpp_pedwarning (cpp_reader *, enum cpp_warning_reason,</a>
+<a name="1256"><span class="lineNum">    1256 </span>                :            :                             const char *msgid, ...)</a>
+<a name="1257"><span class="lineNum">    1257 </span>                :            :   ATTRIBUTE_PRINTF_3;</a>
+<a name="1258"><span class="lineNum">    1258 </span>                :            : extern bool cpp_warning_syshdr (cpp_reader *, enum cpp_warning_reason reason,</a>
+<a name="1259"><span class="lineNum">    1259 </span>                :            :                                 const char *msgid, ...)</a>
+<a name="1260"><span class="lineNum">    1260 </span>                :            :   ATTRIBUTE_PRINTF_3;</a>
+<a name="1261"><span class="lineNum">    1261 </span>                :            : </a>
+<a name="1262"><span class="lineNum">    1262 </span>                :            : /* Output a diagnostic with &quot;MSGID: &quot; preceding the</a>
+<a name="1263"><span class="lineNum">    1263 </span>                :            :    error string of errno.  No location is printed.  */</a>
+<a name="1264"><span class="lineNum">    1264 </span>                :            : extern bool cpp_errno (cpp_reader *, enum cpp_diagnostic_level,</a>
+<a name="1265"><span class="lineNum">    1265 </span>                :            :                        const char *msgid);</a>
+<a name="1266"><span class="lineNum">    1266 </span>                :            : /* Similarly, but with &quot;FILENAME: &quot; instead of &quot;MSGID: &quot;, where</a>
+<a name="1267"><span class="lineNum">    1267 </span>                :            :    the filename is not localized.  */</a>
+<a name="1268"><span class="lineNum">    1268 </span>                :            : extern bool cpp_errno_filename (cpp_reader *, enum cpp_diagnostic_level,</a>
+<a name="1269"><span class="lineNum">    1269 </span>                :            :                                 const char *filename, location_t loc);</a>
+<a name="1270"><span class="lineNum">    1270 </span>                :            : </a>
+<a name="1271"><span class="lineNum">    1271 </span>                :            : /* Same as cpp_error, except additionally specifies a position as a</a>
+<a name="1272"><span class="lineNum">    1272 </span>                :            :    (translation unit) physical line and physical column.  If the line is</a>
+<a name="1273"><span class="lineNum">    1273 </span>                :            :    zero, then no location is printed.  */</a>
+<a name="1274"><span class="lineNum">    1274 </span>                :            : extern bool cpp_error_with_line (cpp_reader *, enum cpp_diagnostic_level,</a>
+<a name="1275"><span class="lineNum">    1275 </span>                :            :                                  location_t, unsigned,</a>
+<a name="1276"><span class="lineNum">    1276 </span>                :            :                                  const char *msgid, ...)</a>
+<a name="1277"><span class="lineNum">    1277 </span>                :            :   ATTRIBUTE_PRINTF_5;</a>
+<a name="1278"><span class="lineNum">    1278 </span>                :            : extern bool cpp_warning_with_line (cpp_reader *, enum cpp_warning_reason,</a>
+<a name="1279"><span class="lineNum">    1279 </span>                :            :                                    location_t, unsigned,</a>
+<a name="1280"><span class="lineNum">    1280 </span>                :            :                                    const char *msgid, ...)</a>
+<a name="1281"><span class="lineNum">    1281 </span>                :            :   ATTRIBUTE_PRINTF_5;</a>
+<a name="1282"><span class="lineNum">    1282 </span>                :            : extern bool cpp_pedwarning_with_line (cpp_reader *, enum cpp_warning_reason,</a>
+<a name="1283"><span class="lineNum">    1283 </span>                :            :                                       location_t, unsigned,</a>
+<a name="1284"><span class="lineNum">    1284 </span>                :            :                                       const char *msgid, ...)</a>
+<a name="1285"><span class="lineNum">    1285 </span>                :            :   ATTRIBUTE_PRINTF_5;</a>
+<a name="1286"><span class="lineNum">    1286 </span>                :            : extern bool cpp_warning_with_line_syshdr (cpp_reader *, enum cpp_warning_reason,</a>
+<a name="1287"><span class="lineNum">    1287 </span>                :            :                                           location_t, unsigned,</a>
+<a name="1288"><span class="lineNum">    1288 </span>                :            :                                           const char *msgid, ...)</a>
+<a name="1289"><span class="lineNum">    1289 </span>                :            :   ATTRIBUTE_PRINTF_5;</a>
+<a name="1290"><span class="lineNum">    1290 </span>                :            : </a>
+<a name="1291"><span class="lineNum">    1291 </span>                :            : extern bool cpp_error_at (cpp_reader * pfile, enum cpp_diagnostic_level,</a>
+<a name="1292"><span class="lineNum">    1292 </span>                :            :                           location_t src_loc, const char *msgid, ...)</a>
+<a name="1293"><span class="lineNum">    1293 </span>                :            :   ATTRIBUTE_PRINTF_4;</a>
+<a name="1294"><span class="lineNum">    1294 </span>                :            : </a>
+<a name="1295"><span class="lineNum">    1295 </span>                :            : extern bool cpp_error_at (cpp_reader * pfile, enum cpp_diagnostic_level,</a>
+<a name="1296"><span class="lineNum">    1296 </span>                :            :                           rich_location *richloc, const char *msgid, ...)</a>
+<a name="1297"><span class="lineNum">    1297 </span>                :            :   ATTRIBUTE_PRINTF_4;</a>
+<a name="1298"><span class="lineNum">    1298 </span>                :            : </a>
+<a name="1299"><span class="lineNum">    1299 </span>                :            : /* In lex.c */</a>
+<a name="1300"><span class="lineNum">    1300 </span>                :            : extern int cpp_ideq (const cpp_token *, const char *);</a>
+<a name="1301"><span class="lineNum">    1301 </span>                :            : extern void cpp_output_line (cpp_reader *, FILE *);</a>
+<a name="1302"><span class="lineNum">    1302 </span>                :            : extern unsigned char *cpp_output_line_to_string (cpp_reader *,</a>
+<a name="1303"><span class="lineNum">    1303 </span>                :            :                                                  const unsigned char *);</a>
+<a name="1304"><span class="lineNum">    1304 </span>                :            : extern const unsigned char *cpp_alloc_token_string</a>
+<a name="1305"><span class="lineNum">    1305 </span>                :            :   (cpp_reader *, const unsigned char *, unsigned);</a>
+<a name="1306"><span class="lineNum">    1306 </span>                :            : extern void cpp_output_token (const cpp_token *, FILE *);</a>
+<a name="1307"><span class="lineNum">    1307 </span>                :            : extern const char *cpp_type2name (enum cpp_ttype, unsigned char flags);</a>
+<a name="1308"><span class="lineNum">    1308 </span>                :            : /* Returns the value of an escape sequence, truncated to the correct</a>
+<a name="1309"><span class="lineNum">    1309 </span>                :            :    target precision.  PSTR points to the input pointer, which is just</a>
+<a name="1310"><span class="lineNum">    1310 </span>                :            :    after the backslash.  LIMIT is how much text we have.  WIDE is true</a>
+<a name="1311"><span class="lineNum">    1311 </span>                :            :    if the escape sequence is part of a wide character constant or</a>
+<a name="1312"><span class="lineNum">    1312 </span>                :            :    string literal.  Handles all relevant diagnostics.  */</a>
+<a name="1313"><span class="lineNum">    1313 </span>                :            : extern cppchar_t cpp_parse_escape (cpp_reader *, const unsigned char ** pstr,</a>
+<a name="1314"><span class="lineNum">    1314 </span>                :            :                                    const unsigned char *limit, int wide);</a>
+<a name="1315"><span class="lineNum">    1315 </span>                :            : </a>
+<a name="1316"><span class="lineNum">    1316 </span>                :            : /* Structure used to hold a comment block at a given location in the</a>
+<a name="1317"><span class="lineNum">    1317 </span>                :            :    source code.  */</a>
+<a name="1318"><span class="lineNum">    1318 </span>                :            : </a>
+<a name="1319"><span class="lineNum">    1319 </span>                :            : typedef struct</a>
+<a name="1320"><span class="lineNum">    1320 </span>                :            : {</a>
+<a name="1321"><span class="lineNum">    1321 </span>                :            :   /* Text of the comment including the terminators.  */</a>
+<a name="1322"><span class="lineNum">    1322 </span>                :            :   char *comment;</a>
+<a name="1323"><span class="lineNum">    1323 </span>                :            : </a>
+<a name="1324"><span class="lineNum">    1324 </span>                :            :   /* source location for the given comment.  */</a>
+<a name="1325"><span class="lineNum">    1325 </span>                :            :   location_t sloc;</a>
+<a name="1326"><span class="lineNum">    1326 </span>                :            : } cpp_comment;</a>
+<a name="1327"><span class="lineNum">    1327 </span>                :            : </a>
+<a name="1328"><span class="lineNum">    1328 </span>                :            : /* Structure holding all comments for a given cpp_reader.  */</a>
+<a name="1329"><span class="lineNum">    1329 </span>                :            : </a>
+<a name="1330"><span class="lineNum">    1330 </span>                :            : typedef struct</a>
+<a name="1331"><span class="lineNum">    1331 </span>                :            : {</a>
+<a name="1332"><span class="lineNum">    1332 </span>                :            :   /* table of comment entries.  */</a>
+<a name="1333"><span class="lineNum">    1333 </span>                :            :   cpp_comment *entries;</a>
+<a name="1334"><span class="lineNum">    1334 </span>                :            : </a>
+<a name="1335"><span class="lineNum">    1335 </span>                :            :   /* number of actual entries entered in the table.  */</a>
+<a name="1336"><span class="lineNum">    1336 </span>                :            :   int count;</a>
+<a name="1337"><span class="lineNum">    1337 </span>                :            : </a>
+<a name="1338"><span class="lineNum">    1338 </span>                :            :   /* number of entries allocated currently.  */</a>
+<a name="1339"><span class="lineNum">    1339 </span>                :            :   int allocated;</a>
+<a name="1340"><span class="lineNum">    1340 </span>                :            : } cpp_comment_table;</a>
+<a name="1341"><span class="lineNum">    1341 </span>                :            : </a>
+<a name="1342"><span class="lineNum">    1342 </span>                :            : /* Returns the table of comments encountered by the preprocessor. This</a>
+<a name="1343"><span class="lineNum">    1343 </span>                :            :    table is only populated when pfile-&gt;state.save_comments is true. */</a>
+<a name="1344"><span class="lineNum">    1344 </span>                :            : extern cpp_comment_table *cpp_get_comments (cpp_reader *);</a>
+<a name="1345"><span class="lineNum">    1345 </span>                :            : </a>
+<a name="1346"><span class="lineNum">    1346 </span>                :            : /* In hash.c */</a>
+<a name="1347"><span class="lineNum">    1347 </span>                :            : </a>
+<a name="1348"><span class="lineNum">    1348 </span>                :            : /* Lookup an identifier in the hashtable.  Puts the identifier in the</a>
+<a name="1349"><span class="lineNum">    1349 </span>                :            :    table if it is not already there.  */</a>
+<a name="1350"><span class="lineNum">    1350 </span>                :            : extern cpp_hashnode *cpp_lookup (cpp_reader *, const unsigned char *,</a>
+<a name="1351"><span class="lineNum">    1351 </span>                :            :                                  unsigned int);</a>
+<a name="1352"><span class="lineNum">    1352 </span>                :            : </a>
+<a name="1353"><span class="lineNum">    1353 </span>                :            : typedef int (*cpp_cb) (cpp_reader *, cpp_hashnode *, void *);</a>
+<a name="1354"><span class="lineNum">    1354 </span>                :            : extern void cpp_forall_identifiers (cpp_reader *, cpp_cb, void *);</a>
+<a name="1355"><span class="lineNum">    1355 </span>                :            : </a>
+<a name="1356"><span class="lineNum">    1356 </span>                :            : /* In macro.c */</a>
+<a name="1357"><span class="lineNum">    1357 </span>                :            : extern void cpp_scan_nooutput (cpp_reader *);</a>
+<a name="1358"><span class="lineNum">    1358 </span>                :            : extern int  cpp_sys_macro_p (cpp_reader *);</a>
+<a name="1359"><span class="lineNum">    1359 </span>                :            : extern unsigned char *cpp_quote_string (unsigned char *, const unsigned char *,</a>
+<a name="1360"><span class="lineNum">    1360 </span>                :            :                                         unsigned int);</a>
+<a name="1361"><span class="lineNum">    1361 </span>                :            : extern bool cpp_compare_macros (const cpp_macro *macro1,</a>
+<a name="1362"><span class="lineNum">    1362 </span>                :            :                                 const cpp_macro *macro2);</a>
+<a name="1363"><span class="lineNum">    1363 </span>                :            : </a>
+<a name="1364"><span class="lineNum">    1364 </span>                :            : /* In files.c */</a>
+<a name="1365"><span class="lineNum">    1365 </span>                :            : extern bool cpp_included (cpp_reader *, const char *);</a>
+<a name="1366"><span class="lineNum">    1366 </span>                :            : extern bool cpp_included_before (cpp_reader *, const char *, location_t);</a>
+<a name="1367"><span class="lineNum">    1367 </span>                :            : extern void cpp_make_system_header (cpp_reader *, int, int);</a>
+<a name="1368"><span class="lineNum">    1368 </span>                :            : extern bool cpp_push_include (cpp_reader *, const char *);</a>
+<a name="1369"><span class="lineNum">    1369 </span>                :            : extern bool cpp_push_default_include (cpp_reader *, const char *);</a>
+<a name="1370"><span class="lineNum">    1370 </span>                :            : extern void cpp_change_file (cpp_reader *, enum lc_reason, const char *);</a>
+<a name="1371"><span class="lineNum">    1371 </span>                :            : extern const char *cpp_get_path (struct _cpp_file *);</a>
+<a name="1372"><span class="lineNum">    1372 </span>                :            : extern cpp_dir *cpp_get_dir (struct _cpp_file *);</a>
+<a name="1373"><span class="lineNum">    1373 </span>                :            : extern cpp_buffer *cpp_get_buffer (cpp_reader *);</a>
+<a name="1374"><span class="lineNum">    1374 </span>                :            : extern struct _cpp_file *cpp_get_file (cpp_buffer *);</a>
+<a name="1375"><span class="lineNum">    1375 </span>                :            : extern cpp_buffer *cpp_get_prev (cpp_buffer *);</a>
+<a name="1376"><span class="lineNum">    1376 </span>                :            : extern void cpp_clear_file_cache (cpp_reader *);</a>
+<a name="1377"><span class="lineNum">    1377 </span>                :            : </a>
+<a name="1378"><span class="lineNum">    1378 </span>                :            : /* In pch.c */</a>
+<a name="1379"><span class="lineNum">    1379 </span>                :            : struct save_macro_data;</a>
+<a name="1380"><span class="lineNum">    1380 </span>                :            : extern int cpp_save_state (cpp_reader *, FILE *);</a>
+<a name="1381"><span class="lineNum">    1381 </span>                :            : extern int cpp_write_pch_deps (cpp_reader *, FILE *);</a>
+<a name="1382"><span class="lineNum">    1382 </span>                :            : extern int cpp_write_pch_state (cpp_reader *, FILE *);</a>
+<a name="1383"><span class="lineNum">    1383 </span>                :            : extern int cpp_valid_state (cpp_reader *, const char *, int);</a>
+<a name="1384"><span class="lineNum">    1384 </span>                :            : extern void cpp_prepare_state (cpp_reader *, struct save_macro_data **);</a>
+<a name="1385"><span class="lineNum">    1385 </span>                :            : extern int cpp_read_state (cpp_reader *, const char *, FILE *,</a>
+<a name="1386"><span class="lineNum">    1386 </span>                :            :                            struct save_macro_data *);</a>
+<a name="1387"><span class="lineNum">    1387 </span>                :            : </a>
+<a name="1388"><span class="lineNum">    1388 </span>                :            : /* In lex.c */</a>
+<a name="1389"><span class="lineNum">    1389 </span>                :            : extern void cpp_force_token_locations (cpp_reader *, location_t);</a>
+<a name="1390"><span class="lineNum">    1390 </span>                :            : extern void cpp_stop_forcing_token_locations (cpp_reader *);</a>
+<a name="1391"><span class="lineNum">    1391 </span>                :            : enum CPP_DO_task</a>
+<a name="1392"><span class="lineNum">    1392 </span>                :            : {</a>
+<a name="1393"><span class="lineNum">    1393 </span>                :            :   CPP_DO_print,</a>
+<a name="1394"><span class="lineNum">    1394 </span>                :            :   CPP_DO_location,</a>
+<a name="1395"><span class="lineNum">    1395 </span>                :            :   CPP_DO_token</a>
+<a name="1396"><span class="lineNum">    1396 </span>                :            : };</a>
+<a name="1397"><span class="lineNum">    1397 </span>                :            : </a>
+<a name="1398"><span class="lineNum">    1398 </span>                :            : extern void cpp_directive_only_process (cpp_reader *pfile,</a>
+<a name="1399"><span class="lineNum">    1399 </span>                :            :                                         void *data,</a>
+<a name="1400"><span class="lineNum">    1400 </span>                :            :                                         void (*cb) (cpp_reader *,</a>
+<a name="1401"><span class="lineNum">    1401 </span>                :            :                                                     CPP_DO_task,</a>
+<a name="1402"><span class="lineNum">    1402 </span>                :            :                                                     void *data, ...));</a>
+<a name="1403"><span class="lineNum">    1403 </span>                :            : </a>
+<a name="1404"><span class="lineNum">    1404 </span>                :            : /* In expr.c */</a>
+<a name="1405"><span class="lineNum">    1405 </span>                :            : extern enum cpp_ttype cpp_userdef_string_remove_type</a>
+<a name="1406"><span class="lineNum">    1406 </span>                :            :   (enum cpp_ttype type);</a>
+<a name="1407"><span class="lineNum">    1407 </span>                :            : extern enum cpp_ttype cpp_userdef_string_add_type</a>
+<a name="1408"><span class="lineNum">    1408 </span>                :            :   (enum cpp_ttype type);</a>
+<a name="1409"><span class="lineNum">    1409 </span>                :            : extern enum cpp_ttype cpp_userdef_char_remove_type</a>
+<a name="1410"><span class="lineNum">    1410 </span>                :            :   (enum cpp_ttype type);</a>
+<a name="1411"><span class="lineNum">    1411 </span>                :            : extern enum cpp_ttype cpp_userdef_char_add_type</a>
+<a name="1412"><span class="lineNum">    1412 </span>                :            :   (enum cpp_ttype type);</a>
+<a name="1413"><span class="lineNum">    1413 </span>                :            : extern bool cpp_userdef_string_p</a>
+<a name="1414"><span class="lineNum">    1414 </span>                :            :   (enum cpp_ttype type);</a>
+<a name="1415"><span class="lineNum">    1415 </span>                :            : extern bool cpp_userdef_char_p</a>
+<a name="1416"><span class="lineNum">    1416 </span>                :            :   (enum cpp_ttype type);</a>
+<a name="1417"><span class="lineNum">    1417 </span>                :            : extern const char * cpp_get_userdef_suffix</a>
+<a name="1418"><span class="lineNum">    1418 </span>                :            :   (const cpp_token *);</a>
+<a name="1419"><span class="lineNum">    1419 </span>                :            : </a>
+<a name="1420"><span class="lineNum">    1420 </span>                :            : /* In charset.c */</a>
+<a name="1421"><span class="lineNum">    1421 </span>                :            : </a>
+<a name="1422"><span class="lineNum">    1422 </span>                :            : /* A class to manage the state while converting a UTF-8 sequence to cppchar_t</a>
+<a name="1423"><span class="lineNum">    1423 </span>                :            :    and computing the display width one character at a time.  */</a>
+<a name="1424"><span class="lineNum">    1424 </span>                :            : class cpp_display_width_computation {</a>
+<a name="1425"><span class="lineNum">    1425 </span>                :            :  public:</a>
+<a name="1426"><span class="lineNum">    1426 </span>                :            :   cpp_display_width_computation (const char *data, int data_length,</a>
+<a name="1427"><span class="lineNum">    1427 </span>                :            :                                  int tabstop);</a>
+<a name="1428"><span class="lineNum">    1428 </span>                :<span class="lineCov">      25635 :   const char *next_byte () const { return m_next; }</span></a>
+<a name="1429"><span class="lineNum">    1429 </span>                :<span class="lineCov">       8553 :   int bytes_processed () const { return m_next - m_begin; }</span></a>
+<a name="1430"><span class="lineNum">    1430 </span>                :<span class="lineCov">       8908 :   int bytes_left () const { return m_bytes_left; }</span></a>
+<a name="1431"><span class="lineNum">    1431 </span>                :<span class="lineCov">       8908 :   bool done () const { return !bytes_left (); }</span></a>
+<a name="1432"><span class="lineNum">    1432 </span>                :<span class="lineCov">      15896 :   int display_cols_processed () const { return m_display_cols; }</span></a>
+<a name="1433"><span class="lineNum">    1433 </span>                :            : </a>
+<a name="1434"><span class="lineNum">    1434 </span>                :            :   int process_next_codepoint ();</a>
+<a name="1435"><span class="lineNum">    1435 </span>                :            :   int advance_display_cols (int n);</a>
+<a name="1436"><span class="lineNum">    1436 </span>                :            : </a>
+<a name="1437"><span class="lineNum">    1437 </span>                :            :  private:</a>
+<a name="1438"><span class="lineNum">    1438 </span>                :            :   const char *const m_begin;</a>
+<a name="1439"><span class="lineNum">    1439 </span>                :            :   const char *m_next;</a>
+<a name="1440"><span class="lineNum">    1440 </span>                :            :   size_t m_bytes_left;</a>
+<a name="1441"><span class="lineNum">    1441 </span>                :            :   const int m_tabstop;</a>
+<a name="1442"><span class="lineNum">    1442 </span>                :            :   int m_display_cols;</a>
+<a name="1443"><span class="lineNum">    1443 </span>                :            : };</a>
+<a name="1444"><span class="lineNum">    1444 </span>                :            : </a>
+<a name="1445"><span class="lineNum">    1445 </span>                :            : /* Convenience functions that are simple use cases for class</a>
+<a name="1446"><span class="lineNum">    1446 </span>                :            :    cpp_display_width_computation.  Tab characters will be expanded to spaces</a>
+<a name="1447"><span class="lineNum">    1447 </span>                :            :    as determined by TABSTOP.  */</a>
+<a name="1448"><span class="lineNum">    1448 </span>                :            : int cpp_byte_column_to_display_column (const char *data, int data_length,</a>
+<a name="1449"><span class="lineNum">    1449 </span>                :            :                                        int column, int tabstop);</a>
+<a name="1450"><span class="lineNum">    1450 </span>                :<span class="lineCov">        320 : inline int cpp_display_width (const char *data, int data_length,</span></a>
+<a name="1451"><span class="lineNum">    1451 </span>                :            :                               int tabstop)</a>
+<a name="1452"><span class="lineNum">    1452 </span>                :            : {</a>
+<a name="1453"><span class="lineNum">    1453 </span>                :<span class="lineCov">        320 :   return cpp_byte_column_to_display_column (data, data_length, data_length,</span></a>
+<a name="1454"><span class="lineNum">    1454 </span>                :<span class="lineCov">        320 :                                             tabstop);</span></a>
+<a name="1455"><span class="lineNum">    1455 </span>                :            : }</a>
+<a name="1456"><span class="lineNum">    1456 </span>                :            : int cpp_display_column_to_byte_column (const char *data, int data_length,</a>
+<a name="1457"><span class="lineNum">    1457 </span>                :            :                                        int display_col, int tabstop);</a>
+<a name="1458"><span class="lineNum">    1458 </span>                :            : int cpp_wcwidth (cppchar_t c);</a>
+<a name="1459"><span class="lineNum">    1459 </span>                :            : </a>
+<a name="1460"><span class="lineNum">    1460 </span>                :            : #endif /* ! LIBCPP_CPPLIB_H */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

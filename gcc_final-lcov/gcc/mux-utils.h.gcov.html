@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/mux-utils.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - mux-utils.h<span style="font-size: 80%;"> (source / <a href="mux-utils.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">25</td>
+            <td class="headerCovTableEntryMed">76.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">52</td>
+            <td class="headerCovTableEntry">59</td>
+            <td class="headerCovTableEntryMed">88.1 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : // Multiplexer utilities</a>
+<a name="2"><span class="lineNum">       2 </span>                :            : // Copyright (C) 2020-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : //</a>
+<a name="4"><span class="lineNum">       4 </span>                :            : // This file is part of GCC.</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : //</a>
+<a name="6"><span class="lineNum">       6 </span>                :            : // GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : // the terms of the GNU General Public License as published by the Free</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : // Software Foundation; either version 3, or (at your option) any later</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : // version.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : //</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : // GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : // WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : // FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : // for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : //</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : // You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : // along with GCC; see the file COPYING3.  If not see</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : // &lt;http://www.gnu.org/licenses/&gt;.</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #ifndef GCC_MUX_UTILS_H</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #define GCC_MUX_UTILS_H 1</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : </a>
+<a name="23"><span class="lineNum">      23 </span>                :            : // A class that stores a choice &quot;A or B&quot;, where A has type T1 * and B has</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : // type T2 *.  Both T1 and T2 must have an alignment greater than 1, since</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : // the low bit is used to identify B over A.  T1 and T2 can be the same.</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : //</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : // A can be a null pointer but B cannot.</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : //</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : // Barring the requirement that B must be nonnull, using the class is</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : // equivalent to using:</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : //</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : //     union { T1 *A; T2 *B; };</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : //</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : // and having a separate tag bit to indicate which alternative is active.</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : // However, using this class can have two advantages over a union:</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : //</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : // - It avoides the need to find somewhere to store the tag bit.</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : //</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : // - The compiler is aware that B cannot be null, which can make checks</a>
+<a name="40"><span class="lineNum">      40 </span>                :            : //   of the form:</a>
+<a name="41"><span class="lineNum">      41 </span>                :            : //</a>
+<a name="42"><span class="lineNum">      42 </span>                :            : //       if (auto *B = mux.dyn_cast&lt;T2 *&gt; ())</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : //</a>
+<a name="44"><span class="lineNum">      44 </span>                :            : //   more efficient.  With a union-based representation, the dyn_cast</a>
+<a name="45"><span class="lineNum">      45 </span>                :            : //   check could fail either because MUX is an A or because MUX is a</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : //   null B, both of which require a run-time test.  With a pointer_mux,</a>
+<a name="47"><span class="lineNum">      47 </span>                :            : //   only a check for MUX being A is needed.</a>
+<a name="48"><span class="lineNum">      48 </span>                :            : template&lt;typename T1, typename T2 = T1&gt;</a>
+<a name="49"><span class="lineNum">      49 </span>                :            : class pointer_mux</a>
+<a name="50"><span class="lineNum">      50 </span>                :            : {</a>
+<a name="51"><span class="lineNum">      51 </span>                :            : public:</a>
+<a name="52"><span class="lineNum">      52 </span>                :            :   // Return an A pointer with the given value.</a>
+<a name="53"><span class="lineNum">      53 </span>                :            :   static pointer_mux first (T1 *);</a>
+<a name="54"><span class="lineNum">      54 </span>                :            : </a>
+<a name="55"><span class="lineNum">      55 </span>                :            :   // Return a B pointer with the given (nonnull) value.</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :   static pointer_mux second (T2 *);</a>
+<a name="57"><span class="lineNum">      57 </span>                :            : </a>
+<a name="58"><span class="lineNum">      58 </span>                :            :   pointer_mux () = default;</a>
+<a name="59"><span class="lineNum">      59 </span>                :            : </a>
+<a name="60"><span class="lineNum">      60 </span>                :            :   // Create a null A pointer.</a>
+<a name="61"><span class="lineNum">      61 </span>                :<span class="lineCov">   74204040 :   pointer_mux (std::nullptr_t) : m_ptr (nullptr) {}</span></a>
+<a name="62"><span class="lineNum">      62 </span>                :            : </a>
+<a name="63"><span class="lineNum">      63 </span>                :            :   // Create an A or B pointer with the given value.  This is only valid</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :   // if T1 and T2 are distinct and if T can be resolved to exactly one</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :   // of them.</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :   template&lt;typename T,</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :            typename Enable = typename</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :              std::enable_if&lt;std::is_convertible&lt;T *, T1 *&gt;::value</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :                             != std::is_convertible&lt;T *, T2 *&gt;::value&gt;::type&gt;</a>
+<a name="70"><span class="lineNum">      70 </span>                :            :   pointer_mux (T *ptr);</a>
+<a name="71"><span class="lineNum">      71 </span>                :            : </a>
+<a name="72"><span class="lineNum">      72 </span>                :            :   // Return true unless the pointer is a null A pointer.</a>
+<a name="73"><span class="lineNum">      73 </span>                :<span class="lineCov">       8020 :   explicit operator bool () const { return m_ptr; }</span></a>
+<a name="74"><span class="lineNum">      74 </span>                :            : </a>
+<a name="75"><span class="lineNum">      75 </span>                :            :   // Assign A and B pointers respectively.</a>
+<a name="76"><span class="lineNum">      76 </span>                :<span class="lineCov">   64306880 :   void set_first (T1 *ptr) { *this = first (ptr); }</span></a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineCov">   33179510 :   void set_second (T2 *ptr) { *this = second (ptr); }</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :            : </a>
+<a name="79"><span class="lineNum">      79 </span>                :            :   // Return true if the pointer is an A pointer.</a>
+<a name="80"><span class="lineNum">      80 </span>                :<span class="lineCov">   53824687 :   bool is_first () const { return !(uintptr_t (m_ptr) &amp; 1); }</span></a>
+<a name="81"><span class="lineNum">      81 </span>                :            : </a>
+<a name="82"><span class="lineNum">      82 </span>                :            :   // Return true if the pointer is a B pointer.</a>
+<a name="83"><span class="lineNum">      83 </span>                :<span class="lineCov">   37209700 :   bool is_second () const { return uintptr_t (m_ptr) &amp; 1; }</span></a>
+<a name="84"><span class="lineNum">      84 </span>                :            : </a>
+<a name="85"><span class="lineNum">      85 </span>                :            :   // Return the contents of the pointer, given that it is known to be</a>
+<a name="86"><span class="lineNum">      86 </span>                :            :   // an A pointer.</a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineCov">  112727523 :   T1 *known_first () const { return reinterpret_cast&lt;T1 *&gt; (m_ptr); }</span></a>
+<a name="88"><span class="lineNum">      88 </span>                :            : </a>
+<a name="89"><span class="lineNum">      89 </span>                :            :   // Return the contents of the pointer, given that it is known to be</a>
+<a name="90"><span class="lineNum">      90 </span>                :            :   // a B pointer.</a>
+<a name="91"><span class="lineNum">      91 </span>                :<span class="lineCov">   26517591 :   T2 *known_second () const { return reinterpret_cast&lt;T2 *&gt; (m_ptr - 1); }</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :            : </a>
+<a name="93"><span class="lineNum">      93 </span>                :            :   // If the pointer is an A pointer, return its contents, otherwise</a>
+<a name="94"><span class="lineNum">      94 </span>                :            :   // return null.  Thus a null return can mean that the pointer is</a>
+<a name="95"><span class="lineNum">      95 </span>                :            :   // either a null A pointer or a B pointer.</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :   //</a>
+<a name="97"><span class="lineNum">      97 </span>                :            :   // If all A pointers are nonnull, it is more efficient to use:</a>
+<a name="98"><span class="lineNum">      98 </span>                :            :   //</a>
+<a name="99"><span class="lineNum">      99 </span>                :            :   //    if (ptr.is_first ())</a>
+<a name="100"><span class="lineNum">     100 </span>                :            :   //      ...use ptr.known_first ()...</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :   //</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :   // over:</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :   //</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :   //    if (T1 *a = ptr.first_or_null ())</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :   //      ...use a...</a>
+<a name="106"><span class="lineNum">     106 </span>                :            :   T1 *first_or_null () const;</a>
+<a name="107"><span class="lineNum">     107 </span>                :            : </a>
+<a name="108"><span class="lineNum">     108 </span>                :            :   // If the pointer is a B pointer, return its contents, otherwise</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :   // return null.  Using:</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :   //</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :   //    if (T1 *b = ptr.second_or_null ())</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :   //      ...use b...</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :   //</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :   // should be at least as efficient as:</a>
+<a name="115"><span class="lineNum">     115 </span>                :            :   //</a>
+<a name="116"><span class="lineNum">     116 </span>                :            :   //    if (ptr.is_second ())</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :   //      ...use ptr.known_second ()...</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :   T2 *second_or_null () const;</a>
+<a name="119"><span class="lineNum">     119 </span>                :            : </a>
+<a name="120"><span class="lineNum">     120 </span>                :            :   // Return true if the pointer is a T.</a>
+<a name="121"><span class="lineNum">     121 </span>                :            :   //</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :   // This is only valid if T1 and T2 are distinct and if T can be</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :   // resolved to exactly one of them.  The condition is checked using</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :   // a static assertion rather than SFINAE because it gives a clearer</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :   // error message.</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :   template&lt;typename T&gt;</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :   bool is_a () const;</a>
+<a name="128"><span class="lineNum">     128 </span>                :            : </a>
+<a name="129"><span class="lineNum">     129 </span>                :            :   // Assert that the pointer is a T and return it as such.  See is_a</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :   // for the restrictions on T.</a>
+<a name="131"><span class="lineNum">     131 </span>                :            :   template&lt;typename T&gt;</a>
+<a name="132"><span class="lineNum">     132 </span>                :            :   T as_a () const;</a>
+<a name="133"><span class="lineNum">     133 </span>                :            : </a>
+<a name="134"><span class="lineNum">     134 </span>                :            :   // If the pointer is a T, return it as such, otherwise return null.</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :   // See is_a for the restrictions on T.</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :   template&lt;typename T&gt;</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :   T dyn_cast () const;</a>
+<a name="138"><span class="lineNum">     138 </span>                :            : </a>
+<a name="139"><span class="lineNum">     139 </span>                :            : private:</a>
+<a name="140"><span class="lineNum">     140 </span>                :<span class="lineCov">   97495900 :   pointer_mux (char *ptr) : m_ptr (ptr) {}</span></a>
+<a name="141"><span class="lineNum">     141 </span>                :            : </a>
+<a name="142"><span class="lineNum">     142 </span>                :            :   // Points to the first byte of an object for A pointers or the second</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :   // byte of an object for B pointers.  Using a pointer rather than a</a>
+<a name="144"><span class="lineNum">     144 </span>                :            :   // uintptr_t tells the compiler that second () can never return null,</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :   // and that second_or_null () is only null if is_first ().</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :   char *m_ptr;</a>
+<a name="147"><span class="lineNum">     147 </span>                :            : };</a>
+<a name="148"><span class="lineNum">     148 </span>                :            : </a>
+<a name="149"><span class="lineNum">     149 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="150"><span class="lineNum">     150 </span>                :            : inline pointer_mux&lt;T1, T2&gt;</a>
+<a name="151"><span class="lineNum">     151 </span>                :<span class="lineCov">   64314310 : pointer_mux&lt;T1, T2&gt;::first (T1 *ptr)</span></a>
+<a name="152"><span class="lineNum">     152 </span>                :            : {</a>
+<a name="153"><span class="lineNum">     153 </span>                :            :   gcc_checking_assert (!(uintptr_t (ptr) &amp; 1));</a>
+<a name="154"><span class="lineNum">     154 </span>                :<span class="lineCov">   64314310 :   return reinterpret_cast&lt;char *&gt; (ptr);</span></a>
+<a name="155"><span class="lineNum">     155 </span>                :            : }</a>
+<a name="156"><span class="lineNum">     156 </span>                :            : </a>
+<a name="157"><span class="lineNum">     157 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="158"><span class="lineNum">     158 </span>                :            : inline pointer_mux&lt;T1, T2&gt;</a>
+<a name="159"><span class="lineNum">     159 </span>                :<span class="lineCov">   33181450 : pointer_mux&lt;T1, T2&gt;::second (T2 *ptr)</span></a>
+<a name="160"><span class="lineNum">     160 </span>                :            : {</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :   gcc_checking_assert (ptr &amp;&amp; !(uintptr_t (ptr) &amp; 1));</a>
+<a name="162"><span class="lineNum">     162 </span>                :<span class="lineCov">   33181450 :   return reinterpret_cast&lt;char *&gt; (ptr) + 1;</span></a>
+<a name="163"><span class="lineNum">     163 </span>                :            : }</a>
+<a name="164"><span class="lineNum">     164 </span>                :            : </a>
+<a name="165"><span class="lineNum">     165 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="166"><span class="lineNum">     166 </span>                :            : template&lt;typename T, typename Enable&gt;</a>
+<a name="167"><span class="lineNum">     167 </span>                :<span class="lineCov">   21001883 : inline pointer_mux&lt;T1, T2&gt;::pointer_mux (T *ptr)</span></a>
+<a name="168"><span class="lineNum">     168 </span>                :<span class="lineCov">   21001883 :   : m_ptr (reinterpret_cast&lt;char *&gt; (ptr))</span></a>
+<a name="169"><span class="lineNum">     169 </span>                :            : {</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :   if (std::is_convertible&lt;T *, T2 *&gt;::value)</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :     {</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :       gcc_checking_assert (m_ptr);</a>
+<a name="173"><span class="lineNum">     173 </span>                :<span class="lineCov">    7082970 :       m_ptr += 1;</span></a>
+<a name="174"><span class="lineNum">     174 </span>                :            :     }</a>
+<a name="175"><span class="lineNum">     175 </span>                :<span class="lineCov">   21001883 : }</span></a>
+<a name="176"><span class="lineNum">     176 </span>                :            : </a>
+<a name="177"><span class="lineNum">     177 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="178"><span class="lineNum">     178 </span>                :            : inline T1 *</a>
+<a name="179"><span class="lineNum">     179 </span>                :            : pointer_mux&lt;T1, T2&gt;::first_or_null () const</a>
+<a name="180"><span class="lineNum">     180 </span>                :            : {</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :   return is_first () ? known_first () : nullptr;</a>
+<a name="182"><span class="lineNum">     182 </span>                :            : }</a>
+<a name="183"><span class="lineNum">     183 </span>                :            : </a>
+<a name="184"><span class="lineNum">     184 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="185"><span class="lineNum">     185 </span>                :            : inline T2 *</a>
+<a name="186"><span class="lineNum">     186 </span>                :<span class="lineCov">   40791610 : pointer_mux&lt;T1, T2&gt;::second_or_null () const</span></a>
+<a name="187"><span class="lineNum">     187 </span>                :            : {</a>
+<a name="188"><span class="lineNum">     188 </span>                :            :   // Micro optimization that's effective as of GCC 11: compute the value</a>
+<a name="189"><span class="lineNum">     189 </span>                :            :   // of the second pointer as an integer and test that, so that the integer</a>
+<a name="190"><span class="lineNum">     190 </span>                :            :   // result can be reused as the pointer and so that all computation can</a>
+<a name="191"><span class="lineNum">     191 </span>                :            :   // happen before a branch on null.  This reduces the number of branches</a>
+<a name="192"><span class="lineNum">     192 </span>                :            :   // needed for loops.</a>
+<a name="193"><span class="lineNum">     193 </span>        [<span class="branchCov" title="Branch 0 was taken 17881030 times"> + </span><span class="branchCov" title="Branch 1 was taken 22910576 times"> + </span>]:<span class="lineCov">   40791610 :   return (uintptr_t (m_ptr) - 1) &amp; 1 ? nullptr : known_second ();</span></a>
+<a name="194"><span class="lineNum">     194 </span>                :            : }</a>
+<a name="195"><span class="lineNum">     195 </span>                :            : </a>
+<a name="196"><span class="lineNum">     196 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="197"><span class="lineNum">     197 </span>                :            : template&lt;typename T&gt;</a>
+<a name="198"><span class="lineNum">     198 </span>                :            : inline bool</a>
+<a name="199"><span class="lineNum">     199 </span>                :            : pointer_mux&lt;T1, T2&gt;::is_a () const</a>
+<a name="200"><span class="lineNum">     200 </span>                :            : {</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :   static_assert (std::is_convertible&lt;T1 *, T&gt;::value</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :                  != std::is_convertible&lt;T2 *, T&gt;::value,</a>
+<a name="203"><span class="lineNum">     203 </span>                :            :                  &quot;Ambiguous pointer type&quot;);</a>
+<a name="204"><span class="lineNum">     204 </span>                :            :   if (std::is_convertible&lt;T2 *, T&gt;::value)</a>
+<a name="205"><span class="lineNum">     205 </span>                :            :     return is_second ();</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :   else</a>
+<a name="207"><span class="lineNum">     207 </span>                :            :     return is_first ();</a>
+<a name="208"><span class="lineNum">     208 </span>                :            : }</a>
+<a name="209"><span class="lineNum">     209 </span>                :            : </a>
+<a name="210"><span class="lineNum">     210 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="211"><span class="lineNum">     211 </span>                :            : template&lt;typename T&gt;</a>
+<a name="212"><span class="lineNum">     212 </span>                :            : inline T</a>
+<a name="213"><span class="lineNum">     213 </span>                :<span class="lineNoCov">          0 : pointer_mux&lt;T1, T2&gt;::as_a () const</span></a>
+<a name="214"><span class="lineNum">     214 </span>                :            : {</a>
+<a name="215"><span class="lineNum">     215 </span>                :            :   static_assert (std::is_convertible&lt;T1 *, T&gt;::value</a>
+<a name="216"><span class="lineNum">     216 </span>                :            :                  != std::is_convertible&lt;T2 *, T&gt;::value,</a>
+<a name="217"><span class="lineNum">     217 </span>                :            :                  &quot;Ambiguous pointer type&quot;);</a>
+<a name="218"><span class="lineNum">     218 </span>                :            :   if (std::is_convertible&lt;T2 *, T&gt;::value)</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :     {</a>
+<a name="220"><span class="lineNum">     220 </span>                :            :       gcc_checking_assert (is_second ());</a>
+<a name="221"><span class="lineNum">     221 </span>                :            :       return reinterpret_cast&lt;T&gt; (m_ptr - 1);</a>
+<a name="222"><span class="lineNum">     222 </span>                :            :     }</a>
+<a name="223"><span class="lineNum">     223 </span>                :            :   else</a>
+<a name="224"><span class="lineNum">     224 </span>                :            :     {</a>
+<a name="225"><span class="lineNum">     225 </span>                :            :       gcc_checking_assert (is_first ());</a>
+<a name="226"><span class="lineNum">     226 </span>                :<span class="lineNoCov">          0 :       return reinterpret_cast&lt;T&gt; (m_ptr);</span></a>
+<a name="227"><span class="lineNum">     227 </span>                :            :     }</a>
+<a name="228"><span class="lineNum">     228 </span>                :            : }</a>
+<a name="229"><span class="lineNum">     229 </span>                :            : </a>
+<a name="230"><span class="lineNum">     230 </span>                :            : template&lt;typename T1, typename T2&gt;</a>
+<a name="231"><span class="lineNum">     231 </span>                :            : template&lt;typename T&gt;</a>
+<a name="232"><span class="lineNum">     232 </span>                :            : inline T</a>
+<a name="233"><span class="lineNum">     233 </span>                :<span class="lineNoCov">          0 : pointer_mux&lt;T1, T2&gt;::dyn_cast () const</span></a>
+<a name="234"><span class="lineNum">     234 </span>                :            : {</a>
+<a name="235"><span class="lineNum">     235 </span>                :            :   static_assert (std::is_convertible&lt;T1 *, T&gt;::value</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :                  != std::is_convertible&lt;T2 *, T&gt;::value,</a>
+<a name="237"><span class="lineNum">     237 </span>                :            :                  &quot;Ambiguous pointer type&quot;);</a>
+<a name="238"><span class="lineNum">     238 </span>                :            :   if (std::is_convertible&lt;T2 *, T&gt;::value)</a>
+<a name="239"><span class="lineNum">     239 </span>                :            :     {</a>
+<a name="240"><span class="lineNum">     240 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (is_second ())</span></a>
+<a name="241"><span class="lineNum">     241 </span>                :<span class="lineNoCov">          0 :         return reinterpret_cast&lt;T&gt; (m_ptr - 1);</span></a>
+<a name="242"><span class="lineNum">     242 </span>                :            :     }</a>
+<a name="243"><span class="lineNum">     243 </span>                :            :   else</a>
+<a name="244"><span class="lineNum">     244 </span>                :            :     {</a>
+<a name="245"><span class="lineNum">     245 </span>                :            :       if (is_first ())</a>
+<a name="246"><span class="lineNum">     246 </span>                :            :         return reinterpret_cast&lt;T&gt; (m_ptr);</a>
+<a name="247"><span class="lineNum">     247 </span>                :            :     }</a>
+<a name="248"><span class="lineNum">     248 </span>                :<span class="lineNoCov">          0 :   return nullptr;</span></a>
+<a name="249"><span class="lineNum">     249 </span>                :            : }</a>
+<a name="250"><span class="lineNum">     250 </span>                :            : </a>
+<a name="251"><span class="lineNum">     251 </span>                :            : #endif</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

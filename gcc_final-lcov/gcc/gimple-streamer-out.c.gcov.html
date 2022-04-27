@@ -1,0 +1,354 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/gimple-streamer-out.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - gimple-streamer-out.c<span style="font-size: 80%;"> (source / <a href="gimple-streamer-out.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">91</td>
+            <td class="headerCovTableEntry">116</td>
+            <td class="headerCovTableEntryMed">78.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">56</td>
+            <td class="headerCovTableEntry">66</td>
+            <td class="headerCovTableEntryMed">84.8 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Routines for emitting GIMPLE to a file stream.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            : </a>
+<a name="3"><span class="lineNum">       3 </span>                :            :    Copyright (C) 2011-2021 Free Software Foundation, Inc.</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :    Contributed by Diego Novillo &lt;dnovillo@google.com&gt;</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : This file is part of GCC.</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : </a>
+<a name="8"><span class="lineNum">       8 </span>                :            : GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : the terms of the GNU General Public License as published by the Free</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : Software Foundation; either version 3, or (at your option) any later</a>
+<a name="11"><span class="lineNum">      11 </span>                :            : version.</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : </a>
+<a name="13"><span class="lineNum">      13 </span>                :            : GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="16"><span class="lineNum">      16 </span>                :            : for more details.</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : </a>
+<a name="18"><span class="lineNum">      18 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : </a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &quot;config.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &quot;system.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;coretypes.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &quot;backend.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &quot;tree.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &quot;gimple.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &quot;gimple-ssa.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : #include &quot;gimple-streamer.h&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : #include &quot;tree-eh.h&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : #include &quot;gimple-iterator.h&quot;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : #include &quot;cgraph.h&quot;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : #include &quot;value-prof.h&quot;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : #include &quot;gimple-pretty-print.h&quot;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : </a>
+<a name="36"><span class="lineNum">      36 </span>                :            : /* Output PHI function PHI to the main stream in OB.  */</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : </a>
+<a name="38"><span class="lineNum">      38 </span>                :            : static void</a>
+<a name="39"><span class="lineNum">      39 </span>                :<span class="lineCov">      10910 : output_phi (struct output_block *ob, gphi *phi)</span></a>
+<a name="40"><span class="lineNum">      40 </span>                :            : {</a>
+<a name="41"><span class="lineNum">      41 </span>                :<span class="lineCov">      10910 :   unsigned i, len = gimple_phi_num_args (phi);</span></a>
+<a name="42"><span class="lineNum">      42 </span>                :            : </a>
+<a name="43"><span class="lineNum">      43 </span>                :<span class="lineCov">      10910 :   streamer_write_record_start (ob, lto_gimple_code_to_tag (GIMPLE_PHI));</span></a>
+<a name="44"><span class="lineNum">      44 </span>                :<span class="lineCov">      10910 :   streamer_write_uhwi (ob, SSA_NAME_VERSION (PHI_RESULT (phi)));</span></a>
+<a name="45"><span class="lineNum">      45 </span>                :            : </a>
+<a name="46"><span class="lineNum">      46 </span>        [<span class="branchCov" title="Branch 0 was taken 71336 times"> + </span><span class="branchCov" title="Branch 1 was taken 10910 times"> + </span>]:<span class="lineCov">      82246 :   for (i = 0; i &lt; len; i++)</span></a>
+<a name="47"><span class="lineNum">      47 </span>                :            :     {</a>
+<a name="48"><span class="lineNum">      48 </span>                :<span class="lineCov">      71336 :       stream_write_tree (ob, gimple_phi_arg_def (phi, i), true);</span></a>
+<a name="49"><span class="lineNum">      49 </span>                :<span class="lineCov">      71336 :       streamer_write_uhwi (ob, gimple_phi_arg_edge (phi, i)-&gt;src-&gt;index);</span></a>
+<a name="50"><span class="lineNum">      50 </span>                :<span class="lineCov">      71336 :       bitpack_d bp = bitpack_create (ob-&gt;main_stream);</span></a>
+<a name="51"><span class="lineNum">      51 </span>                :<span class="lineCov">      71336 :       location_t loc = gimple_phi_arg_location (phi, i);</span></a>
+<a name="52"><span class="lineNum">      52 </span>                :<span class="lineCov">      71336 :       stream_output_location_and_block (ob, &amp;bp, loc);</span></a>
+<a name="53"><span class="lineNum">      53 </span>                :            :     }</a>
+<a name="54"><span class="lineNum">      54 </span>                :<span class="lineCov">      10910 : }</span></a>
+<a name="55"><span class="lineNum">      55 </span>                :            : </a>
+<a name="56"><span class="lineNum">      56 </span>                :            : </a>
+<a name="57"><span class="lineNum">      57 </span>                :            : /* Emit statement STMT on the main stream of output block OB.  */</a>
+<a name="58"><span class="lineNum">      58 </span>                :            : </a>
+<a name="59"><span class="lineNum">      59 </span>                :            : static void</a>
+<a name="60"><span class="lineNum">      60 </span>                :<span class="lineCov">     240389 : output_gimple_stmt (struct output_block *ob, struct function *fn, gimple *stmt)</span></a>
+<a name="61"><span class="lineNum">      61 </span>                :            : {</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :   unsigned i;</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :   enum gimple_code code;</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :   enum LTO_tags tag;</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :   struct bitpack_d bp;</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :   histogram_value hist;</a>
+<a name="67"><span class="lineNum">      67 </span>                :            : </a>
+<a name="68"><span class="lineNum">      68 </span>                :            :   /* Emit identifying tag.  */</a>
+<a name="69"><span class="lineNum">      69 </span>                :<span class="lineCov">     240389 :   code = gimple_code (stmt);</span></a>
+<a name="70"><span class="lineNum">      70 </span>                :<span class="lineCov">     240389 :   tag = lto_gimple_code_to_tag (code);</span></a>
+<a name="71"><span class="lineNum">      71 </span>                :<span class="lineCov">     240389 :   streamer_write_record_start (ob, tag);</span></a>
+<a name="72"><span class="lineNum">      72 </span>                :            : </a>
+<a name="73"><span class="lineNum">      73 </span>                :            :   /* Emit the tuple header.  */</a>
+<a name="74"><span class="lineNum">      74 </span>                :<span class="lineCov">     240389 :   bp = bitpack_create (ob-&gt;main_stream);</span></a>
+<a name="75"><span class="lineNum">      75 </span>                :<span class="lineCov">     240389 :   bp_pack_var_len_unsigned (&amp;bp, gimple_num_ops (stmt));</span></a>
+<a name="76"><span class="lineNum">      76 </span>                :<span class="lineCov">     240389 :   bp_pack_value (&amp;bp, gimple_no_warning_p (stmt), 1);</span></a>
+<a name="77"><span class="lineNum">      77 </span>        [<span class="branchCov" title="Branch 0 was taken 87176 times"> + </span><span class="branchCov" title="Branch 1 was taken 153213 times"> + </span>]:<span class="lineCov">     240389 :   if (is_gimple_assign (stmt))</span></a>
+<a name="78"><span class="lineNum">      78 </span>                :<span class="lineCov">      87176 :     bp_pack_value (&amp;bp,</span></a>
+<a name="79"><span class="lineNum">      79 </span>                :<span class="lineCov">      87176 :                    gimple_assign_nontemporal_move_p (</span></a>
+<a name="80"><span class="lineNum">      80 </span>                :<span class="lineCov">      87176 :                      as_a &lt;gassign *&gt; (stmt)),</span></a>
+<a name="81"><span class="lineNum">      81 </span>                :            :                    1);</a>
+<a name="82"><span class="lineNum">      82 </span>                :<span class="lineCov">     240389 :   bp_pack_value (&amp;bp, gimple_has_volatile_ops (stmt), 1);</span></a>
+<a name="83"><span class="lineNum">      83 </span>                :<span class="lineCov">     240389 :   hist = gimple_histogram_value (fn, stmt);</span></a>
+<a name="84"><span class="lineNum">      84 </span>                :<span class="lineCov">     240389 :   bp_pack_value (&amp;bp, hist != NULL, 1);</span></a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineCov">     240389 :   bp_pack_var_len_unsigned (&amp;bp, stmt-&gt;subcode);</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :            : </a>
+<a name="87"><span class="lineNum">      87 </span>                :            :   /* Emit location information for the statement, including gimple_block.  */</a>
+<a name="88"><span class="lineNum">      88 </span>                :<span class="lineCov">     240389 :   stream_output_location_and_block (ob, &amp;bp, gimple_location (stmt));</span></a>
+<a name="89"><span class="lineNum">      89 </span>                :            : </a>
+<a name="90"><span class="lineNum">      90 </span>                :            :   /* Emit the operands.  */</a>
+<a name="91"><span class="lineNum">      91 </span>  [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 364 times"> + </span> :<span class="lineCov">     240389 :   switch (gimple_code (stmt))</span></a>
+<span class="lineNum">         </span>   <span class="branchCov" title="Branch 4 was taken 190369 times"> + </span><span class="branchCov" title="Branch 5 was taken 49656 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchNoCov" title="Branch 7 was not taken"> - </span>]
+<a name="92"><span class="lineNum">      92 </span>                :            :     {</a>
+<a name="93"><span class="lineNum">      93 </span>                :<span class="lineNoCov">          0 :     case GIMPLE_RESX:</span></a>
+<a name="94"><span class="lineNum">      94 </span>                :<span class="lineNoCov">          0 :       streamer_write_hwi (ob, gimple_resx_region (as_a &lt;gresx *&gt; (stmt)));</span></a>
+<a name="95"><span class="lineNum">      95 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="96"><span class="lineNum">      96 </span>                :            : </a>
+<a name="97"><span class="lineNum">      97 </span>                :<span class="lineNoCov">          0 :     case GIMPLE_EH_MUST_NOT_THROW:</span></a>
+<a name="98"><span class="lineNum">      98 </span>                :<span class="lineNoCov">          0 :       stream_write_tree (ob,</span></a>
+<a name="99"><span class="lineNum">      99 </span>                :            :                          gimple_eh_must_not_throw_fndecl (</a>
+<a name="100"><span class="lineNum">     100 </span>                :            :                            as_a &lt;geh_mnt *&gt; (stmt)),</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :                          true);</a>
+<a name="102"><span class="lineNum">     102 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="103"><span class="lineNum">     103 </span>                :            : </a>
+<a name="104"><span class="lineNum">     104 </span>                :<span class="lineNoCov">          0 :     case GIMPLE_EH_DISPATCH:</span></a>
+<a name="105"><span class="lineNum">     105 </span>                :<span class="lineNoCov">          0 :       streamer_write_hwi (ob,</span></a>
+<a name="106"><span class="lineNum">     106 </span>                :<span class="lineNoCov">          0 :                           gimple_eh_dispatch_region (</span></a>
+<a name="107"><span class="lineNum">     107 </span>                :<span class="lineNoCov">          0 :                             as_a &lt;geh_dispatch *&gt; (stmt)));</span></a>
+<a name="108"><span class="lineNum">     108 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="109"><span class="lineNum">     109 </span>                :            : </a>
+<a name="110"><span class="lineNum">     110 </span>                :<span class="lineCov">        364 :     case GIMPLE_ASM:</span></a>
+<a name="111"><span class="lineNum">     111 </span>                :            :       {</a>
+<a name="112"><span class="lineNum">     112 </span>                :<span class="lineCov">        364 :         gasm *asm_stmt = as_a &lt;gasm *&gt; (stmt);</span></a>
+<a name="113"><span class="lineNum">     113 </span>                :<span class="lineCov">        364 :         streamer_write_uhwi (ob, gimple_asm_ninputs (asm_stmt));</span></a>
+<a name="114"><span class="lineNum">     114 </span>                :<span class="lineCov">        364 :         streamer_write_uhwi (ob, gimple_asm_noutputs (asm_stmt));</span></a>
+<a name="115"><span class="lineNum">     115 </span>                :<span class="lineCov">        364 :         streamer_write_uhwi (ob, gimple_asm_nclobbers (asm_stmt));</span></a>
+<a name="116"><span class="lineNum">     116 </span>                :<span class="lineCov">        364 :         streamer_write_uhwi (ob, gimple_asm_nlabels (asm_stmt));</span></a>
+<a name="117"><span class="lineNum">     117 </span>                :<span class="lineCov">        364 :         streamer_write_string (ob, ob-&gt;main_stream,</span></a>
+<a name="118"><span class="lineNum">     118 </span>                :            :                                gimple_asm_string (asm_stmt), true);</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :       }</a>
+<a name="120"><span class="lineNum">     120 </span>                :            :       /* Fallthru  */</a>
+<a name="121"><span class="lineNum">     121 </span>                :            : </a>
+<a name="122"><span class="lineNum">     122 </span>                :<span class="lineCov">     190733 :     case GIMPLE_ASSIGN:</span></a>
+<a name="123"><span class="lineNum">     123 </span>                :            :     case GIMPLE_CALL:</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :     case GIMPLE_RETURN:</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :     case GIMPLE_SWITCH:</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :     case GIMPLE_LABEL:</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :     case GIMPLE_COND:</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :     case GIMPLE_GOTO:</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :     case GIMPLE_DEBUG:</a>
+<a name="130"><span class="lineNum">     130 </span>        [<span class="branchCov" title="Branch 0 was taken 601424 times"> + </span><span class="branchCov" title="Branch 1 was taken 190733 times"> + </span>]:<span class="lineCov">     792157 :       for (i = 0; i &lt; gimple_num_ops (stmt); i++)</span></a>
+<a name="131"><span class="lineNum">     131 </span>                :            :         {</a>
+<a name="132"><span class="lineNum">     132 </span>                :<span class="lineCov">     601424 :           tree op = gimple_op (stmt, i);</span></a>
+<a name="133"><span class="lineNum">     133 </span>                :<span class="lineCov">     601424 :           tree *basep = NULL;</span></a>
+<a name="134"><span class="lineNum">     134 </span>                :            :           /* Wrap all uses of non-automatic variables inside MEM_REFs</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :              so that we do not have to deal with type mismatches on</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :              merged symbols during IL read in.  The first operand</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :              of GIMPLE_DEBUG must be a decl, not MEM_REF, though.  */</a>
+<a name="138"><span class="lineNum">     138 </span>  [<span class="branchCov" title="Branch 0 was taken 601156 times"> + </span><span class="branchCov" title="Branch 1 was taken 268 times"> + </span><span class="branchCov" title="Branch 2 was taken 413264 times"> + </span><span class="branchCov" title="Branch 3 was taken 187892 times"> + </span> :<span class="lineCov">     601424 :           if (!flag_wpa &amp;&amp; op &amp;&amp; (i || !is_gimple_debug (stmt)))</span></a>
+<span class="lineNum">         </span><span class="branchCov" title="Branch 4 was taken 170062 times"> + </span><span class="branchCov" title="Branch 5 was taken 243202 times"> + </span><span class="branchCov" title="Branch 6 was taken 170022 times"> + </span><span class="branchCov" title="Branch 7 was taken 40 times"> + </span><span class="branchCov" title="Branch 8 was taken 413224 times"> + </span> 
+<span class="lineNum">         </span>            <span class="branchCov" title="Branch 9 was taken 188200 times"> + </span>]
+<a name="139"><span class="lineNum">     139 </span>                :            :             {</a>
+<a name="140"><span class="lineNum">     140 </span>                :<span class="lineCov">     413224 :               basep = &amp;op;</span></a>
+<a name="141"><span class="lineNum">     141 </span>        [<span class="branchCov" title="Branch 0 was taken 32914 times"> + </span><span class="branchCov" title="Branch 1 was taken 380310 times"> + </span>]:<span class="lineCov">     413224 :               if (TREE_CODE (*basep) == ADDR_EXPR)</span></a>
+<a name="142"><span class="lineNum">     142 </span>                :<span class="lineCov">      32914 :                 basep = &amp;TREE_OPERAND (*basep, 0);</span></a>
+<a name="143"><span class="lineNum">     143 </span>        [<span class="branchCov" title="Branch 0 was taken 17902 times"> + </span><span class="branchCov" title="Branch 1 was taken 413224 times"> + </span>]:<span class="lineCov">     431126 :               while (handled_component_p (*basep))</span></a>
+<a name="144"><span class="lineNum">     144 </span>                :<span class="lineCov">      17902 :                 basep = &amp;TREE_OPERAND (*basep, 0);</span></a>
+<a name="145"><span class="lineNum">     145 </span>                :<span class="lineCov">     826448 :               if (VAR_P (*basep)</span></a>
+<a name="146"><span class="lineNum">     146 </span>        [<span class="branchCov" title="Branch 0 was taken 23300 times"> + </span><span class="branchCov" title="Branch 1 was taken 8706 times"> + </span>]:<span class="lineCov">      32006 :                   &amp;&amp; !auto_var_in_fn_p (*basep, fn-&gt;decl)</span></a>
+<a name="147"><span class="lineNum">     147 </span>  [<span class="branchCov" title="Branch 0 was taken 32006 times"> + </span><span class="branchCov" title="Branch 1 was taken 381218 times"> + </span><span class="branchCov" title="Branch 2 was taken 23288 times"> + </span><span class="branchCov" title="Branch 3 was taken 12 times"> + </span> :<span class="lineCov">     445230 :                   &amp;&amp; !DECL_REGISTER (*basep))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 23288 times"> + </span><span class="branchCov" title="Branch 5 was taken 389936 times"> + </span>]
+<a name="148"><span class="lineNum">     148 </span>                :            :                 {</a>
+<a name="149"><span class="lineNum">     149 </span>                :<span class="lineCov">      23288 :                   bool volatilep = TREE_THIS_VOLATILE (*basep);</span></a>
+<a name="150"><span class="lineNum">     150 </span>                :<span class="lineCov">      23288 :                   tree ptrtype = build_pointer_type (TREE_TYPE (*basep));</span></a>
+<a name="151"><span class="lineNum">     151 </span>                :<span class="lineCov">      23288 :                   *basep = build2 (MEM_REF, TREE_TYPE (*basep),</span></a>
+<a name="152"><span class="lineNum">     152 </span>                :            :                                    build1 (ADDR_EXPR, ptrtype, *basep),</a>
+<a name="153"><span class="lineNum">     153 </span>                :<span class="lineCov">      23288 :                                    build_int_cst (ptrtype, 0));</span></a>
+<a name="154"><span class="lineNum">     154 </span>                :<span class="lineCov">      23288 :                   TREE_THIS_VOLATILE (*basep) = volatilep;</span></a>
+<a name="155"><span class="lineNum">     155 </span>                :            :                 }</a>
+<a name="156"><span class="lineNum">     156 </span>                :            :               else</a>
+<a name="157"><span class="lineNum">     157 </span>                :<span class="lineCov">     389936 :                 basep = NULL;</span></a>
+<a name="158"><span class="lineNum">     158 </span>                :            :             }</a>
+<a name="159"><span class="lineNum">     159 </span>                :<span class="lineCov">     601424 :           stream_write_tree (ob, op, true);</span></a>
+<a name="160"><span class="lineNum">     160 </span>                :            :           /* Restore the original base if we wrapped it inside a MEM_REF.  */</a>
+<a name="161"><span class="lineNum">     161 </span>        [<span class="branchCov" title="Branch 0 was taken 23288 times"> + </span><span class="branchCov" title="Branch 1 was taken 578136 times"> + </span>]:<span class="lineCov">     601424 :           if (basep)</span></a>
+<a name="162"><span class="lineNum">     162 </span>                :<span class="lineCov">      23288 :             *basep = TREE_OPERAND (TREE_OPERAND (*basep, 0), 0);</span></a>
+<a name="163"><span class="lineNum">     163 </span>                :            :         }</a>
+<a name="164"><span class="lineNum">     164 </span>        [<span class="branchCov" title="Branch 0 was taken 21478 times"> + </span><span class="branchCov" title="Branch 1 was taken 169255 times"> + </span>]:<span class="lineCov">     190733 :       if (is_gimple_call (stmt))</span></a>
+<a name="165"><span class="lineNum">     165 </span>                :            :         {</a>
+<a name="166"><span class="lineNum">     166 </span>        [<span class="branchCov" title="Branch 0 was taken 168 times"> + </span><span class="branchCov" title="Branch 1 was taken 21310 times"> + </span>]:<span class="lineCov">      21478 :           if (gimple_call_internal_p (stmt))</span></a>
+<a name="167"><span class="lineNum">     167 </span>                :<span class="lineCov">        168 :             streamer_write_enum (ob-&gt;main_stream, internal_fn,</span></a>
+<a name="168"><span class="lineNum">     168 </span>                :            :                                  IFN_LAST, gimple_call_internal_fn (stmt));</a>
+<a name="169"><span class="lineNum">     169 </span>                :            :           else</a>
+<a name="170"><span class="lineNum">     170 </span>                :<span class="lineCov">      21310 :             stream_write_tree (ob, gimple_call_fntype (stmt), true);</span></a>
+<a name="171"><span class="lineNum">     171 </span>                :            :         }</a>
+<a name="172"><span class="lineNum">     172 </span>                :<span class="lineCov">     190733 :       break;</span></a>
+<a name="173"><span class="lineNum">     173 </span>                :            : </a>
+<a name="174"><span class="lineNum">     174 </span>                :<span class="lineCov">      49656 :     case GIMPLE_NOP:</span></a>
+<a name="175"><span class="lineNum">     175 </span>                :            :     case GIMPLE_PREDICT:</a>
+<a name="176"><span class="lineNum">     176 </span>                :<span class="lineCov">      49656 :       break;</span></a>
+<a name="177"><span class="lineNum">     177 </span>                :            : </a>
+<a name="178"><span class="lineNum">     178 </span>                :<span class="lineNoCov">          0 :     case GIMPLE_TRANSACTION:</span></a>
+<a name="179"><span class="lineNum">     179 </span>                :            :       {</a>
+<a name="180"><span class="lineNum">     180 </span>                :<span class="lineNoCov">          0 :         gtransaction *txn = as_a &lt;gtransaction *&gt; (stmt);</span></a>
+<a name="181"><span class="lineNum">     181 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :         gcc_assert (gimple_transaction_body (txn) == NULL);</span></a>
+<a name="182"><span class="lineNum">     182 </span>                :<span class="lineNoCov">          0 :         stream_write_tree (ob, gimple_transaction_label_norm (txn), true);</span></a>
+<a name="183"><span class="lineNum">     183 </span>                :<span class="lineNoCov">          0 :         stream_write_tree (ob, gimple_transaction_label_uninst (txn), true);</span></a>
+<a name="184"><span class="lineNum">     184 </span>                :<span class="lineNoCov">          0 :         stream_write_tree (ob, gimple_transaction_label_over (txn), true);</span></a>
+<a name="185"><span class="lineNum">     185 </span>                :            :       }</a>
+<a name="186"><span class="lineNum">     186 </span>                :<span class="lineNoCov">          0 :       break;</span></a>
+<a name="187"><span class="lineNum">     187 </span>                :            : </a>
+<a name="188"><span class="lineNum">     188 </span>                :<span class="lineNoCov">          0 :     default:</span></a>
+<a name="189"><span class="lineNum">     189 </span>                :<span class="lineNoCov">          0 :       gcc_unreachable ();</span></a>
+<a name="190"><span class="lineNum">     190 </span>                :            :     }</a>
+<a name="191"><span class="lineNum">     191 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 240389 times"> + </span>]:<span class="lineCov">     240389 :   if (hist)</span></a>
+<a name="192"><span class="lineNum">     192 </span>                :<span class="lineNoCov">          0 :     stream_out_histogram_value (ob, hist);</span></a>
+<a name="193"><span class="lineNum">     193 </span>                :<span class="lineCov">     240389 : }</span></a>
+<a name="194"><span class="lineNum">     194 </span>                :            : </a>
+<a name="195"><span class="lineNum">     195 </span>                :            : </a>
+<a name="196"><span class="lineNum">     196 </span>                :            : /* Output a basic block BB to the main stream in OB for this FN.  */</a>
+<a name="197"><span class="lineNum">     197 </span>                :            : </a>
+<a name="198"><span class="lineNum">     198 </span>                :            : void</a>
+<a name="199"><span class="lineNum">     199 </span>                :<span class="lineCov">     177725 : output_bb (struct output_block *ob, basic_block bb, struct function *fn)</span></a>
+<a name="200"><span class="lineNum">     200 </span>                :            : {</a>
+<a name="201"><span class="lineNum">     201 </span>                :<span class="lineCov">     177725 :   gimple_stmt_iterator bsi = gsi_start_bb (bb);</span></a>
+<a name="202"><span class="lineNum">     202 </span>                :            : </a>
+<a name="203"><span class="lineNum">     203 </span>                :<span class="lineCov">     177725 :   streamer_write_record_start (ob,</span></a>
+<a name="204"><span class="lineNum">     204 </span>  [<span class="branchCov" title="Branch 0 was taken 34408 times"> + </span><span class="branchCov" title="Branch 1 was taken 143317 times"> + </span><span class="branchCov" title="Branch 2 was taken 720 times"> + </span><span class="branchCov" title="Branch 3 was taken 33688 times"> + </span>]:<span class="lineCov">     177725 :                                (!gsi_end_p (bsi)) || phi_nodes (bb)</span></a>
+<a name="205"><span class="lineNum">     205 </span>                :            :                                 ? LTO_bb1</a>
+<a name="206"><span class="lineNum">     206 </span>                :            :                                 : LTO_bb0);</a>
+<a name="207"><span class="lineNum">     207 </span>                :            : </a>
+<a name="208"><span class="lineNum">     208 </span>                :<span class="lineCov">     177725 :   streamer_write_uhwi (ob, bb-&gt;index);</span></a>
+<a name="209"><span class="lineNum">     209 </span>                :<span class="lineCov">     177725 :   bb-&gt;count.stream_out (ob);</span></a>
+<a name="210"><span class="lineNum">     210 </span>                :<span class="lineCov">     177725 :   streamer_write_hwi (ob, bb-&gt;flags);</span></a>
+<a name="211"><span class="lineNum">     211 </span>                :<span class="lineCov">     177725 :   streamer_write_hwi (ob, bb-&gt;discriminator);</span></a>
+<a name="212"><span class="lineNum">     212 </span>                :            : </a>
+<a name="213"><span class="lineNum">     213 </span>  [<span class="branchCov" title="Branch 0 was taken 34408 times"> + </span><span class="branchCov" title="Branch 1 was taken 143317 times"> + </span><span class="branchCov" title="Branch 2 was taken 720 times"> + </span><span class="branchCov" title="Branch 3 was taken 33688 times"> + </span> :<span class="lineCov">     177725 :   if (!gsi_end_p (bsi) || phi_nodes (bb))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 144037 times"> + </span><span class="branchCov" title="Branch 5 was taken 33688 times"> + </span>]
+<a name="214"><span class="lineNum">     214 </span>                :            :     {</a>
+<a name="215"><span class="lineNum">     215 </span>                :            :       /* Output the statements.  The list of statements is terminated</a>
+<a name="216"><span class="lineNum">     216 </span>                :            :          with a zero.  */</a>
+<a name="217"><span class="lineNum">     217 </span>        [<span class="branchCov" title="Branch 0 was taken 240389 times"> + </span><span class="branchCov" title="Branch 1 was taken 144037 times"> + </span>]:<span class="lineCov">     384426 :       for (bsi = gsi_start_bb (bb); !gsi_end_p (bsi); gsi_next (&amp;bsi))</span></a>
+<a name="218"><span class="lineNum">     218 </span>                :            :         {</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :           int region;</a>
+<a name="220"><span class="lineNum">     220 </span>                :<span class="lineCov">     240389 :           gimple *stmt = gsi_stmt (bsi);</span></a>
+<a name="221"><span class="lineNum">     221 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 240389 times"> + </span>]:<span class="lineCov">     240389 :           if (streamer_dump_file)</span></a>
+<a name="222"><span class="lineNum">     222 </span>                :            :             {</a>
+<a name="223"><span class="lineNum">     223 </span>                :<span class="lineNoCov">          0 :               fprintf (streamer_dump_file, &quot;  Streaming gimple stmt &quot;);</span></a>
+<a name="224"><span class="lineNum">     224 </span>                :<span class="lineNoCov">          0 :               print_gimple_stmt (streamer_dump_file, stmt, 0, TDF_SLIM);</span></a>
+<a name="225"><span class="lineNum">     225 </span>                :            :             }</a>
+<a name="226"><span class="lineNum">     226 </span>                :            : </a>
+<a name="227"><span class="lineNum">     227 </span>                :<span class="lineCov">     240389 :           output_gimple_stmt (ob, fn, stmt);</span></a>
+<a name="228"><span class="lineNum">     228 </span>                :            : </a>
+<a name="229"><span class="lineNum">     229 </span>                :            :           /* Emit the EH region holding STMT.  */</a>
+<a name="230"><span class="lineNum">     230 </span>                :<span class="lineCov">     240389 :           region = lookup_stmt_eh_lp_fn (fn, stmt);</span></a>
+<a name="231"><span class="lineNum">     231 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 240389 times"> + </span>]:<span class="lineCov">     240389 :           if (region != 0)</span></a>
+<a name="232"><span class="lineNum">     232 </span>                :            :             {</a>
+<a name="233"><span class="lineNum">     233 </span>                :<span class="lineNoCov">          0 :               streamer_write_record_start (ob, LTO_eh_region);</span></a>
+<a name="234"><span class="lineNum">     234 </span>                :<span class="lineNoCov">          0 :               streamer_write_hwi (ob, region);</span></a>
+<a name="235"><span class="lineNum">     235 </span>                :            :             }</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :           else</a>
+<a name="237"><span class="lineNum">     237 </span>                :<span class="lineCov">     240389 :             streamer_write_record_start (ob, LTO_null);</span></a>
+<a name="238"><span class="lineNum">     238 </span>                :            :         }</a>
+<a name="239"><span class="lineNum">     239 </span>                :            : </a>
+<a name="240"><span class="lineNum">     240 </span>                :<span class="lineCov">     144037 :       streamer_write_record_start (ob, LTO_null);</span></a>
+<a name="241"><span class="lineNum">     241 </span>                :            : </a>
+<a name="242"><span class="lineNum">     242 </span>                :<span class="lineCov">     160125 :       for (gphi_iterator psi = gsi_start_phis (bb);</span></a>
+<a name="243"><span class="lineNum">     243 </span>        [<span class="branchCov" title="Branch 0 was taken 16088 times"> + </span><span class="branchCov" title="Branch 1 was taken 144037 times"> + </span>]:<span class="lineCov">     160125 :            !gsi_end_p (psi);</span></a>
+<a name="244"><span class="lineNum">     244 </span>                :<span class="lineCov">      16088 :            gsi_next (&amp;psi))</span></a>
+<a name="245"><span class="lineNum">     245 </span>                :            :         {</a>
+<a name="246"><span class="lineNum">     246 </span>                :<span class="lineCov">      16088 :           gphi *phi = psi.phi ();</span></a>
+<a name="247"><span class="lineNum">     247 </span>                :            : </a>
+<a name="248"><span class="lineNum">     248 </span>                :            :           /* Only emit PHIs for gimple registers.  PHI nodes for .MEM</a>
+<a name="249"><span class="lineNum">     249 </span>                :            :              will be filled in on reading when the SSA form is</a>
+<a name="250"><span class="lineNum">     250 </span>                :            :              updated.  */</a>
+<a name="251"><span class="lineNum">     251 </span>        [<span class="branchCov" title="Branch 0 was taken 10910 times"> + </span><span class="branchCov" title="Branch 1 was taken 5178 times"> + </span>]:<span class="lineCov">      16088 :           if (!virtual_operand_p (gimple_phi_result (phi)))</span></a>
+<a name="252"><span class="lineNum">     252 </span>                :<span class="lineCov">      10910 :             output_phi (ob, phi);</span></a>
+<a name="253"><span class="lineNum">     253 </span>                :            :         }</a>
+<a name="254"><span class="lineNum">     254 </span>                :            : </a>
+<a name="255"><span class="lineNum">     255 </span>                :<span class="lineCov">     144037 :       streamer_write_record_start (ob, LTO_null);</span></a>
+<a name="256"><span class="lineNum">     256 </span>                :            :     }</a>
+<a name="257"><span class="lineNum">     257 </span>                :<span class="lineCov">     177725 : }</span></a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

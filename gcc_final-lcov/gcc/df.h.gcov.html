@@ -1,0 +1,1344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/df.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - df.h<span style="font-size: 80%;"> (source / <a href="df.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntry">48</td>
+            <td class="headerCovTableEntryMed">79.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryHi">93.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntryLo">69.2 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Form lists of pseudo register references for autoinc optimization</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    for GNU compiler.  This is part of flow optimization.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            :    Copyright (C) 1999-2021 Free Software Foundation, Inc.</a>
+<a name="4"><span class="lineNum">       4 </span>                :            :    Originally contributed by Michael P. Hayes</a>
+<a name="5"><span class="lineNum">       5 </span>                :            :              (m.hayes@elec.canterbury.ac.nz, mhayes@redhat.com)</a>
+<a name="6"><span class="lineNum">       6 </span>                :            :    Major rewrite contributed by Danny Berlin (dberlin@dberlin.org)</a>
+<a name="7"><span class="lineNum">       7 </span>                :            :              and Kenneth Zadeck (zadeck@naturalbridge.com).</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : </a>
+<a name="9"><span class="lineNum">       9 </span>                :            : This file is part of GCC.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : </a>
+<a name="11"><span class="lineNum">      11 </span>                :            : GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : the terms of the GNU General Public License as published by the Free</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : Software Foundation; either version 3, or (at your option) any later</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : version.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : for more details.</a>
+<a name="20"><span class="lineNum">      20 </span>                :            : </a>
+<a name="21"><span class="lineNum">      21 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : </a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #ifndef GCC_DF_H</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #define GCC_DF_H</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : </a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &quot;regset.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : #include &quot;alloc-pool.h&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : #include &quot;timevar.h&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : </a>
+<a name="32"><span class="lineNum">      32 </span>                :            : struct dataflow;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : class df_d;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : struct df_problem;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : struct df_link;</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : struct df_insn_info;</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : union df_ref_d;</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : </a>
+<a name="39"><span class="lineNum">      39 </span>                :            : /* Data flow problems.  All problems must have a unique id here.  */</a>
+<a name="40"><span class="lineNum">      40 </span>                :            : </a>
+<a name="41"><span class="lineNum">      41 </span>                :            : /* Scanning is not really a dataflow problem, but it is useful to have</a>
+<a name="42"><span class="lineNum">      42 </span>                :            :    the basic block functions in the vector so that things get done in</a>
+<a name="43"><span class="lineNum">      43 </span>                :            :    a uniform manner.  The last four problems can be added or deleted</a>
+<a name="44"><span class="lineNum">      44 </span>                :            :    at any time are always defined (though LIVE is always there at -O2</a>
+<a name="45"><span class="lineNum">      45 </span>                :            :    or higher); the others are always there.  */</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : enum df_problem_id</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :   {</a>
+<a name="48"><span class="lineNum">      48 </span>                :            :     DF_SCAN,</a>
+<a name="49"><span class="lineNum">      49 </span>                :            :     DF_LR,                /* Live Registers backward. */</a>
+<a name="50"><span class="lineNum">      50 </span>                :            :     DF_LIVE,              /* Live Registers &amp; Uninitialized Registers */</a>
+<a name="51"><span class="lineNum">      51 </span>                :            :     DF_RD,                /* Reaching Defs. */</a>
+<a name="52"><span class="lineNum">      52 </span>                :            :     DF_CHAIN,             /* Def-Use and/or Use-Def Chains. */</a>
+<a name="53"><span class="lineNum">      53 </span>                :            :     DF_WORD_LR,           /* Subreg tracking lr.  */</a>
+<a name="54"><span class="lineNum">      54 </span>                :            :     DF_NOTE,              /* REG_DEAD and REG_UNUSED notes.  */</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :     DF_MD,                /* Multiple Definitions. */</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :     DF_MIR,               /* Must-initialized Registers.  */</a>
+<a name="57"><span class="lineNum">      57 </span>                :            : </a>
+<a name="58"><span class="lineNum">      58 </span>                :            :     DF_LAST_PROBLEM_PLUS1</a>
+<a name="59"><span class="lineNum">      59 </span>                :            :   };</a>
+<a name="60"><span class="lineNum">      60 </span>                :            : </a>
+<a name="61"><span class="lineNum">      61 </span>                :            : /* Dataflow direction.  */</a>
+<a name="62"><span class="lineNum">      62 </span>                :            : enum df_flow_dir</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :   {</a>
+<a name="64"><span class="lineNum">      64 </span>                :            :     DF_NONE,</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :     DF_FORWARD,</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :     DF_BACKWARD</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :   };</a>
+<a name="68"><span class="lineNum">      68 </span>                :            : </a>
+<a name="69"><span class="lineNum">      69 </span>                :            : /* Descriminator for the various df_ref types.  */</a>
+<a name="70"><span class="lineNum">      70 </span>                :            : enum df_ref_class {DF_REF_BASE, DF_REF_ARTIFICIAL, DF_REF_REGULAR};</a>
+<a name="71"><span class="lineNum">      71 </span>                :            : </a>
+<a name="72"><span class="lineNum">      72 </span>                :            : /* The first of these us a set of a registers.  The remaining three</a>
+<a name="73"><span class="lineNum">      73 </span>                :            :    are all uses of a register (the mem_load and mem_store relate to</a>
+<a name="74"><span class="lineNum">      74 </span>                :            :    how the register as an addressing operand).  */</a>
+<a name="75"><span class="lineNum">      75 </span>                :            : enum df_ref_type {DF_REF_REG_DEF, DF_REF_REG_USE,</a>
+<a name="76"><span class="lineNum">      76 </span>                :            :                   DF_REF_REG_MEM_LOAD, DF_REF_REG_MEM_STORE};</a>
+<a name="77"><span class="lineNum">      77 </span>                :            : </a>
+<a name="78"><span class="lineNum">      78 </span>                :            : enum df_ref_flags</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :   {</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :     /* This flag is set if this ref occurs inside of a conditional</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :        execution instruction.  */</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :     DF_REF_CONDITIONAL = 1 &lt;&lt; 0,</a>
+<a name="83"><span class="lineNum">      83 </span>                :            : </a>
+<a name="84"><span class="lineNum">      84 </span>                :            :     /* If this flag is set for an artificial use or def, that ref</a>
+<a name="85"><span class="lineNum">      85 </span>                :            :        logically happens at the top of the block.  If it is not set</a>
+<a name="86"><span class="lineNum">      86 </span>                :            :        for an artificial use or def, that ref logically happens at the</a>
+<a name="87"><span class="lineNum">      87 </span>                :            :        bottom of the block.  This is never set for regular refs.  */</a>
+<a name="88"><span class="lineNum">      88 </span>                :            :     DF_REF_AT_TOP = 1 &lt;&lt; 1,</a>
+<a name="89"><span class="lineNum">      89 </span>                :            : </a>
+<a name="90"><span class="lineNum">      90 </span>                :            :     /* This flag is set if the use is inside a REG_EQUAL or REG_EQUIV</a>
+<a name="91"><span class="lineNum">      91 </span>                :            :        note.  */</a>
+<a name="92"><span class="lineNum">      92 </span>                :            :     DF_REF_IN_NOTE = 1 &lt;&lt; 2,</a>
+<a name="93"><span class="lineNum">      93 </span>                :            : </a>
+<a name="94"><span class="lineNum">      94 </span>                :            :     /* This bit is true if this ref can make regs_ever_live true for</a>
+<a name="95"><span class="lineNum">      95 </span>                :            :        this regno.  */</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :     DF_HARD_REG_LIVE = 1 &lt;&lt; 3,</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :            : </a>
+<a name="99"><span class="lineNum">      99 </span>                :            :     /* This flag is set if this ref is a partial use or def of the</a>
+<a name="100"><span class="lineNum">     100 </span>                :            :        associated register.  */</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :     DF_REF_PARTIAL = 1 &lt;&lt; 4,</a>
+<a name="102"><span class="lineNum">     102 </span>                :            : </a>
+<a name="103"><span class="lineNum">     103 </span>                :            :     /* Read-modify-write refs generate both a use and a def and</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :        these are marked with this flag to show that they are not</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :        independent.  */</a>
+<a name="106"><span class="lineNum">     106 </span>                :            :     DF_REF_READ_WRITE = 1 &lt;&lt; 5,</a>
+<a name="107"><span class="lineNum">     107 </span>                :            : </a>
+<a name="108"><span class="lineNum">     108 </span>                :            :     /* This flag is set if this ref, generally a def, may clobber the</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :        referenced register.  This is generally only set for hard</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :        registers that cross a call site.  With better information</a>
+<a name="111"><span class="lineNum">     111 </span>                :            :        about calls, some of these could be changed in the future to</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :        DF_REF_MUST_CLOBBER.  */</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :     DF_REF_MAY_CLOBBER = 1 &lt;&lt; 6,</a>
+<a name="114"><span class="lineNum">     114 </span>                :            : </a>
+<a name="115"><span class="lineNum">     115 </span>                :            :     /* This flag is set if this ref, generally a def, is a real</a>
+<a name="116"><span class="lineNum">     116 </span>                :            :        clobber. This is not currently set for registers live across a</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :        call because that clobbering may or may not happen.</a>
+<a name="118"><span class="lineNum">     118 </span>                :            : </a>
+<a name="119"><span class="lineNum">     119 </span>                :            :        Most of the uses of this are with sets that have a</a>
+<a name="120"><span class="lineNum">     120 </span>                :            :        GET_CODE(..)==CLOBBER.  Note that this is set even if the</a>
+<a name="121"><span class="lineNum">     121 </span>                :            :        clobber is to a subreg.  So in order to tell if the clobber</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :        wipes out the entire register, it is necessary to also check</a>
+<a name="123"><span class="lineNum">     123 </span>                :            :        the DF_REF_PARTIAL flag.  */</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :     DF_REF_MUST_CLOBBER = 1 &lt;&lt; 7,</a>
+<a name="125"><span class="lineNum">     125 </span>                :            : </a>
+<a name="126"><span class="lineNum">     126 </span>                :            : </a>
+<a name="127"><span class="lineNum">     127 </span>                :            :     /* If the ref has one of the following two flags set, then the</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :        struct df_ref can be cast to struct df_ref_extract to access</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :        the width and offset fields.  */</a>
+<a name="130"><span class="lineNum">     130 </span>                :            : </a>
+<a name="131"><span class="lineNum">     131 </span>                :            :     /* This flag is set if the ref contains a SIGN_EXTRACT.  */</a>
+<a name="132"><span class="lineNum">     132 </span>                :            :     DF_REF_SIGN_EXTRACT = 1 &lt;&lt; 8,</a>
+<a name="133"><span class="lineNum">     133 </span>                :            : </a>
+<a name="134"><span class="lineNum">     134 </span>                :            :     /* This flag is set if the ref contains a ZERO_EXTRACT.  */</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :     DF_REF_ZERO_EXTRACT = 1 &lt;&lt; 9,</a>
+<a name="136"><span class="lineNum">     136 </span>                :            : </a>
+<a name="137"><span class="lineNum">     137 </span>                :            :     /* This flag is set if the ref contains a STRICT_LOW_PART.  */</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :     DF_REF_STRICT_LOW_PART = 1 &lt;&lt; 10,</a>
+<a name="139"><span class="lineNum">     139 </span>                :            : </a>
+<a name="140"><span class="lineNum">     140 </span>                :            :     /* This flag is set if the ref contains a SUBREG.  */</a>
+<a name="141"><span class="lineNum">     141 </span>                :            :     DF_REF_SUBREG = 1 &lt;&lt; 11,</a>
+<a name="142"><span class="lineNum">     142 </span>                :            : </a>
+<a name="143"><span class="lineNum">     143 </span>                :            : </a>
+<a name="144"><span class="lineNum">     144 </span>                :            :     /* This bit is true if this ref is part of a multiword hardreg.  */</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :     DF_REF_MW_HARDREG = 1 &lt;&lt; 12,</a>
+<a name="146"><span class="lineNum">     146 </span>                :            : </a>
+<a name="147"><span class="lineNum">     147 </span>                :            :     /* This flag is set if this ref is a usage of the stack pointer by</a>
+<a name="148"><span class="lineNum">     148 </span>                :            :        a function call.  */</a>
+<a name="149"><span class="lineNum">     149 </span>                :            :     DF_REF_CALL_STACK_USAGE = 1 &lt;&lt; 13,</a>
+<a name="150"><span class="lineNum">     150 </span>                :            : </a>
+<a name="151"><span class="lineNum">     151 </span>                :            :     /* This flag is used for verification of existing refs. */</a>
+<a name="152"><span class="lineNum">     152 </span>                :            :     DF_REF_REG_MARKER = 1 &lt;&lt; 14,</a>
+<a name="153"><span class="lineNum">     153 </span>                :            : </a>
+<a name="154"><span class="lineNum">     154 </span>                :            :     /* This flag is set if this ref is inside a pre/post modify.  */</a>
+<a name="155"><span class="lineNum">     155 </span>                :            :     DF_REF_PRE_POST_MODIFY = 1 &lt;&lt; 15</a>
+<a name="156"><span class="lineNum">     156 </span>                :            : </a>
+<a name="157"><span class="lineNum">     157 </span>                :            :   };</a>
+<a name="158"><span class="lineNum">     158 </span>                :            : </a>
+<a name="159"><span class="lineNum">     159 </span>                :            : /* The possible ordering of refs within the df_ref_info.  */</a>
+<a name="160"><span class="lineNum">     160 </span>                :            : enum df_ref_order</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :   {</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :     /* There is not table.  */</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :     DF_REF_ORDER_NO_TABLE,</a>
+<a name="164"><span class="lineNum">     164 </span>                :            : </a>
+<a name="165"><span class="lineNum">     165 </span>                :            :     /* There is a table of refs but it is not (or no longer) organized</a>
+<a name="166"><span class="lineNum">     166 </span>                :            :        by one of the following methods.  */</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :     DF_REF_ORDER_UNORDERED,</a>
+<a name="168"><span class="lineNum">     168 </span>                :            :     DF_REF_ORDER_UNORDERED_WITH_NOTES,</a>
+<a name="169"><span class="lineNum">     169 </span>                :            : </a>
+<a name="170"><span class="lineNum">     170 </span>                :            :     /* Organize the table by reg order, all of the refs with regno 0</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :        followed by all of the refs with regno 1 ... .  Within all of</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :        the regs for a particular regno, the refs are unordered.  */</a>
+<a name="173"><span class="lineNum">     173 </span>                :            :     DF_REF_ORDER_BY_REG,</a>
+<a name="174"><span class="lineNum">     174 </span>                :            : </a>
+<a name="175"><span class="lineNum">     175 </span>                :            :     /* For uses, the refs within eq notes may be added for</a>
+<a name="176"><span class="lineNum">     176 </span>                :            :        DF_REF_ORDER_BY_REG.  */</a>
+<a name="177"><span class="lineNum">     177 </span>                :            :     DF_REF_ORDER_BY_REG_WITH_NOTES,</a>
+<a name="178"><span class="lineNum">     178 </span>                :            : </a>
+<a name="179"><span class="lineNum">     179 </span>                :            :     /* Organize the refs in insn order.  The insns are ordered within a</a>
+<a name="180"><span class="lineNum">     180 </span>                :            :        block, and the blocks are ordered by FOR_ALL_BB_FN.  */</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :     DF_REF_ORDER_BY_INSN,</a>
+<a name="182"><span class="lineNum">     182 </span>                :            : </a>
+<a name="183"><span class="lineNum">     183 </span>                :            :     /* For uses, the refs within eq notes may be added for</a>
+<a name="184"><span class="lineNum">     184 </span>                :            :        DF_REF_ORDER_BY_INSN.  */</a>
+<a name="185"><span class="lineNum">     185 </span>                :            :     DF_REF_ORDER_BY_INSN_WITH_NOTES</a>
+<a name="186"><span class="lineNum">     186 </span>                :            :   };</a>
+<a name="187"><span class="lineNum">     187 </span>                :            : </a>
+<a name="188"><span class="lineNum">     188 </span>                :            : /* Function prototypes added to df_problem instance.  */</a>
+<a name="189"><span class="lineNum">     189 </span>                :            : </a>
+<a name="190"><span class="lineNum">     190 </span>                :            : /* Allocate the problem specific data.  */</a>
+<a name="191"><span class="lineNum">     191 </span>                :            : typedef void (*df_alloc_function) (bitmap);</a>
+<a name="192"><span class="lineNum">     192 </span>                :            : </a>
+<a name="193"><span class="lineNum">     193 </span>                :            : /* This function is called if the problem has global data that needs</a>
+<a name="194"><span class="lineNum">     194 </span>                :            :    to be cleared when ever the set of blocks changes.  The bitmap</a>
+<a name="195"><span class="lineNum">     195 </span>                :            :    contains the set of blocks that may require special attention.</a>
+<a name="196"><span class="lineNum">     196 </span>                :            :    This call is only made if some of the blocks are going to change.</a>
+<a name="197"><span class="lineNum">     197 </span>                :            :    If everything is to be deleted, the wholesale deletion mechanisms</a>
+<a name="198"><span class="lineNum">     198 </span>                :            :    apply. */</a>
+<a name="199"><span class="lineNum">     199 </span>                :            : typedef void (*df_reset_function) (bitmap);</a>
+<a name="200"><span class="lineNum">     200 </span>                :            : </a>
+<a name="201"><span class="lineNum">     201 </span>                :            : /* Free the basic block info.  Called from the block reordering code</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :    to get rid of the blocks that have been squished down.   */</a>
+<a name="203"><span class="lineNum">     203 </span>                :            : typedef void (*df_free_bb_function) (basic_block, void *);</a>
+<a name="204"><span class="lineNum">     204 </span>                :            : </a>
+<a name="205"><span class="lineNum">     205 </span>                :            : /* Local compute function.  */</a>
+<a name="206"><span class="lineNum">     206 </span>                :            : typedef void (*df_local_compute_function) (bitmap);</a>
+<a name="207"><span class="lineNum">     207 </span>                :            : </a>
+<a name="208"><span class="lineNum">     208 </span>                :            : /* Init the solution specific data.  */</a>
+<a name="209"><span class="lineNum">     209 </span>                :            : typedef void (*df_init_function) (bitmap);</a>
+<a name="210"><span class="lineNum">     210 </span>                :            : </a>
+<a name="211"><span class="lineNum">     211 </span>                :            : /* Iterative dataflow function.  */</a>
+<a name="212"><span class="lineNum">     212 </span>                :            : typedef void (*df_dataflow_function) (struct dataflow *, bitmap, int *, int);</a>
+<a name="213"><span class="lineNum">     213 </span>                :            : </a>
+<a name="214"><span class="lineNum">     214 </span>                :            : /* Confluence operator for blocks with 0 out (or in) edges.  */</a>
+<a name="215"><span class="lineNum">     215 </span>                :            : typedef void (*df_confluence_function_0) (basic_block);</a>
+<a name="216"><span class="lineNum">     216 </span>                :            : </a>
+<a name="217"><span class="lineNum">     217 </span>                :            : /* Confluence operator for blocks with 1 or more out (or in) edges.</a>
+<a name="218"><span class="lineNum">     218 </span>                :            :    Return true if BB input data has changed.  */</a>
+<a name="219"><span class="lineNum">     219 </span>                :            : typedef bool (*df_confluence_function_n) (edge);</a>
+<a name="220"><span class="lineNum">     220 </span>                :            : </a>
+<a name="221"><span class="lineNum">     221 </span>                :            : /* Transfer function for blocks. </a>
+<a name="222"><span class="lineNum">     222 </span>                :            :    Return true if BB output data has changed.  */</a>
+<a name="223"><span class="lineNum">     223 </span>                :            : typedef bool (*df_transfer_function) (int);</a>
+<a name="224"><span class="lineNum">     224 </span>                :            : </a>
+<a name="225"><span class="lineNum">     225 </span>                :            : /* Function to massage the information after the problem solving.  */</a>
+<a name="226"><span class="lineNum">     226 </span>                :            : typedef void (*df_finalizer_function) (bitmap);</a>
+<a name="227"><span class="lineNum">     227 </span>                :            : </a>
+<a name="228"><span class="lineNum">     228 </span>                :            : /* Function to free all of the problem specific datastructures.  */</a>
+<a name="229"><span class="lineNum">     229 </span>                :            : typedef void (*df_free_function) (void);</a>
+<a name="230"><span class="lineNum">     230 </span>                :            : </a>
+<a name="231"><span class="lineNum">     231 </span>                :            : /* Function to remove this problem from the stack of dataflow problems</a>
+<a name="232"><span class="lineNum">     232 </span>                :            :    without effecting the other problems in the stack except for those</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :    that depend on this problem.  */</a>
+<a name="234"><span class="lineNum">     234 </span>                :            : typedef void (*df_remove_problem_function) (void);</a>
+<a name="235"><span class="lineNum">     235 </span>                :            : </a>
+<a name="236"><span class="lineNum">     236 </span>                :            : /* Function to dump basic block independent results to FILE.  */</a>
+<a name="237"><span class="lineNum">     237 </span>                :            : typedef void (*df_dump_problem_function) (FILE *);</a>
+<a name="238"><span class="lineNum">     238 </span>                :            : </a>
+<a name="239"><span class="lineNum">     239 </span>                :            : /* Function to dump top or bottom of basic block results to FILE.  */</a>
+<a name="240"><span class="lineNum">     240 </span>                :            : typedef void (*df_dump_bb_problem_function) (basic_block, FILE *);</a>
+<a name="241"><span class="lineNum">     241 </span>                :            : </a>
+<a name="242"><span class="lineNum">     242 </span>                :            : /* Function to dump before or after an insn to FILE.  */</a>
+<a name="243"><span class="lineNum">     243 </span>                :            : typedef void (*df_dump_insn_problem_function) (const rtx_insn *, FILE *);</a>
+<a name="244"><span class="lineNum">     244 </span>                :            : </a>
+<a name="245"><span class="lineNum">     245 </span>                :            : /* Function to dump top or bottom of basic block results to FILE.  */</a>
+<a name="246"><span class="lineNum">     246 </span>                :            : typedef void (*df_verify_solution_start) (void);</a>
+<a name="247"><span class="lineNum">     247 </span>                :            : </a>
+<a name="248"><span class="lineNum">     248 </span>                :            : /* Function to dump top or bottom of basic block results to FILE.  */</a>
+<a name="249"><span class="lineNum">     249 </span>                :            : typedef void (*df_verify_solution_end) (void);</a>
+<a name="250"><span class="lineNum">     250 </span>                :            : </a>
+<a name="251"><span class="lineNum">     251 </span>                :            : /* The static description of a dataflow problem to solve.  See above</a>
+<a name="252"><span class="lineNum">     252 </span>                :            :    typedefs for doc for the function fields.  */</a>
+<a name="253"><span class="lineNum">     253 </span>                :            : </a>
+<a name="254"><span class="lineNum">     254 </span>                :            : struct df_problem {</a>
+<a name="255"><span class="lineNum">     255 </span>                :            :   /* The unique id of the problem.  This is used it index into</a>
+<a name="256"><span class="lineNum">     256 </span>                :            :      df-&gt;defined_problems to make accessing the problem data easy.  */</a>
+<a name="257"><span class="lineNum">     257 </span>                :            :   enum df_problem_id id;</a>
+<a name="258"><span class="lineNum">     258 </span>                :            :   enum df_flow_dir dir;                 /* Dataflow direction.  */</a>
+<a name="259"><span class="lineNum">     259 </span>                :            :   df_alloc_function alloc_fun;</a>
+<a name="260"><span class="lineNum">     260 </span>                :            :   df_reset_function reset_fun;</a>
+<a name="261"><span class="lineNum">     261 </span>                :            :   df_free_bb_function free_bb_fun;</a>
+<a name="262"><span class="lineNum">     262 </span>                :            :   df_local_compute_function local_compute_fun;</a>
+<a name="263"><span class="lineNum">     263 </span>                :            :   df_init_function init_fun;</a>
+<a name="264"><span class="lineNum">     264 </span>                :            :   df_dataflow_function dataflow_fun;</a>
+<a name="265"><span class="lineNum">     265 </span>                :            :   df_confluence_function_0 con_fun_0;</a>
+<a name="266"><span class="lineNum">     266 </span>                :            :   df_confluence_function_n con_fun_n;</a>
+<a name="267"><span class="lineNum">     267 </span>                :            :   df_transfer_function trans_fun;</a>
+<a name="268"><span class="lineNum">     268 </span>                :            :   df_finalizer_function finalize_fun;</a>
+<a name="269"><span class="lineNum">     269 </span>                :            :   df_free_function free_fun;</a>
+<a name="270"><span class="lineNum">     270 </span>                :            :   df_remove_problem_function remove_problem_fun;</a>
+<a name="271"><span class="lineNum">     271 </span>                :            :   df_dump_problem_function dump_start_fun;</a>
+<a name="272"><span class="lineNum">     272 </span>                :            :   df_dump_bb_problem_function dump_top_fun;</a>
+<a name="273"><span class="lineNum">     273 </span>                :            :   df_dump_bb_problem_function dump_bottom_fun;</a>
+<a name="274"><span class="lineNum">     274 </span>                :            :   df_dump_insn_problem_function dump_insn_top_fun;</a>
+<a name="275"><span class="lineNum">     275 </span>                :            :   df_dump_insn_problem_function dump_insn_bottom_fun;</a>
+<a name="276"><span class="lineNum">     276 </span>                :            :   df_verify_solution_start verify_start_fun;</a>
+<a name="277"><span class="lineNum">     277 </span>                :            :   df_verify_solution_end verify_end_fun;</a>
+<a name="278"><span class="lineNum">     278 </span>                :            :   const struct df_problem *dependent_problem;</a>
+<a name="279"><span class="lineNum">     279 </span>                :            :   unsigned int block_info_elt_size;</a>
+<a name="280"><span class="lineNum">     280 </span>                :            : </a>
+<a name="281"><span class="lineNum">     281 </span>                :            :   /* The timevar id associated with this pass.  */</a>
+<a name="282"><span class="lineNum">     282 </span>                :            :   timevar_id_t tv_id;</a>
+<a name="283"><span class="lineNum">     283 </span>                :            : </a>
+<a name="284"><span class="lineNum">     284 </span>                :            :   /* True if the df_set_blocks should null out the basic block info if</a>
+<a name="285"><span class="lineNum">     285 </span>                :            :      this block drops out of df-&gt;blocks_to_analyze.  */</a>
+<a name="286"><span class="lineNum">     286 </span>                :            :   bool free_blocks_on_set_blocks;</a>
+<a name="287"><span class="lineNum">     287 </span>                :            : };</a>
+<a name="288"><span class="lineNum">     288 </span>                :            : </a>
+<a name="289"><span class="lineNum">     289 </span>                :            : </a>
+<a name="290"><span class="lineNum">     290 </span>                :            : /* The specific instance of the problem to solve.  */</a>
+<a name="291"><span class="lineNum">     291 </span>                :            : struct dataflow</a>
+<a name="292"><span class="lineNum">     292 </span>                :            : {</a>
+<a name="293"><span class="lineNum">     293 </span>                :            :   const struct df_problem *problem;     /* The problem to be solved.  */</a>
+<a name="294"><span class="lineNum">     294 </span>                :            : </a>
+<a name="295"><span class="lineNum">     295 </span>                :            :   /* Array indexed by bb-&gt;index, that contains basic block problem and</a>
+<a name="296"><span class="lineNum">     296 </span>                :            :      solution specific information.  */</a>
+<a name="297"><span class="lineNum">     297 </span>                :            :   void *block_info;</a>
+<a name="298"><span class="lineNum">     298 </span>                :            :   unsigned int block_info_size;</a>
+<a name="299"><span class="lineNum">     299 </span>                :            : </a>
+<a name="300"><span class="lineNum">     300 </span>                :            :   /* The pool to allocate the block_info from. */</a>
+<a name="301"><span class="lineNum">     301 </span>                :            :   object_allocator&lt;df_link&gt; *block_pool;</a>
+<a name="302"><span class="lineNum">     302 </span>                :            : </a>
+<a name="303"><span class="lineNum">     303 </span>                :            :   /* The lr and live problems have their transfer functions recomputed</a>
+<a name="304"><span class="lineNum">     304 </span>                :            :      only if necessary.  This is possible for them because, the</a>
+<a name="305"><span class="lineNum">     305 </span>                :            :      problems are kept active for the entire backend and their</a>
+<a name="306"><span class="lineNum">     306 </span>                :            :      transfer functions are indexed by the REGNO.  These are not</a>
+<a name="307"><span class="lineNum">     307 </span>                :            :      defined for any other problem.  */</a>
+<a name="308"><span class="lineNum">     308 </span>                :            :   bitmap out_of_date_transfer_functions;</a>
+<a name="309"><span class="lineNum">     309 </span>                :            : </a>
+<a name="310"><span class="lineNum">     310 </span>                :            :   /* Other problem specific data that is not on a per basic block</a>
+<a name="311"><span class="lineNum">     311 </span>                :            :      basis.  The structure is generally defined privately for the</a>
+<a name="312"><span class="lineNum">     312 </span>                :            :      problem.  The exception being the scanning problem where it is</a>
+<a name="313"><span class="lineNum">     313 </span>                :            :      fully public.  */</a>
+<a name="314"><span class="lineNum">     314 </span>                :            :   void *problem_data;</a>
+<a name="315"><span class="lineNum">     315 </span>                :            : </a>
+<a name="316"><span class="lineNum">     316 </span>                :            :   /* Local flags for some of the problems. */</a>
+<a name="317"><span class="lineNum">     317 </span>                :            :   unsigned int local_flags;</a>
+<a name="318"><span class="lineNum">     318 </span>                :            : </a>
+<a name="319"><span class="lineNum">     319 </span>                :            :   /* True if this problem of this instance has been initialized.  This</a>
+<a name="320"><span class="lineNum">     320 </span>                :            :      is used by the dumpers to keep garbage out of the dumps if, for</a>
+<a name="321"><span class="lineNum">     321 </span>                :            :      debugging a dump is produced before the first call to</a>
+<a name="322"><span class="lineNum">     322 </span>                :            :      df_analyze after a new problem is added.  */</a>
+<a name="323"><span class="lineNum">     323 </span>                :            :   bool computed;</a>
+<a name="324"><span class="lineNum">     324 </span>                :            : </a>
+<a name="325"><span class="lineNum">     325 </span>                :            :   /* True if the something has changed which invalidates the dataflow</a>
+<a name="326"><span class="lineNum">     326 </span>                :            :      solutions.  Note that this bit is always true for all problems except</a>
+<a name="327"><span class="lineNum">     327 </span>                :            :      lr and live.  */</a>
+<a name="328"><span class="lineNum">     328 </span>                :            :   bool solutions_dirty;</a>
+<a name="329"><span class="lineNum">     329 </span>                :            : </a>
+<a name="330"><span class="lineNum">     330 </span>                :            :   /* If true, this pass is deleted by df_finish_pass.  This is never</a>
+<a name="331"><span class="lineNum">     331 </span>                :            :      true for DF_SCAN and DF_LR.  It is true for DF_LIVE if optimize &gt;</a>
+<a name="332"><span class="lineNum">     332 </span>                :            :      1.  It is always true for the other problems.  */</a>
+<a name="333"><span class="lineNum">     333 </span>                :            :   bool optional_p;</a>
+<a name="334"><span class="lineNum">     334 </span>                :            : };</a>
+<a name="335"><span class="lineNum">     335 </span>                :            : </a>
+<a name="336"><span class="lineNum">     336 </span>                :            : </a>
+<a name="337"><span class="lineNum">     337 </span>                :            : /* The set of multiword hardregs used as operands to this</a>
+<a name="338"><span class="lineNum">     338 </span>                :            :    instruction. These are factored into individual uses and defs but</a>
+<a name="339"><span class="lineNum">     339 </span>                :            :    the aggregate is still needed to service the REG_DEAD and</a>
+<a name="340"><span class="lineNum">     340 </span>                :            :    REG_UNUSED notes.  */</a>
+<a name="341"><span class="lineNum">     341 </span>                :            : struct df_mw_hardreg</a>
+<a name="342"><span class="lineNum">     342 </span>                :            : {</a>
+<a name="343"><span class="lineNum">     343 </span>                :            :   df_mw_hardreg *next;          /* Next entry for this instruction.  */</a>
+<a name="344"><span class="lineNum">     344 </span>                :            :   rtx mw_reg;                   /* The multiword hardreg.  */</a>
+<a name="345"><span class="lineNum">     345 </span>                :            :   /* These two bitfields are intentionally oversized, in the hope that</a>
+<a name="346"><span class="lineNum">     346 </span>                :            :      accesses to 16-bit fields will usually be quicker.  */</a>
+<a name="347"><span class="lineNum">     347 </span>                :            :   ENUM_BITFIELD(df_ref_type) type : 16;</a>
+<a name="348"><span class="lineNum">     348 </span>                :            :                                 /* Used to see if the ref is read or write.  */</a>
+<a name="349"><span class="lineNum">     349 </span>                :            :   int flags : 16;               /* Various df_ref_flags.  */</a>
+<a name="350"><span class="lineNum">     350 </span>                :            :   unsigned int start_regno;     /* First word of the multi word subreg.  */</a>
+<a name="351"><span class="lineNum">     351 </span>                :            :   unsigned int end_regno;       /* Last word of the multi word subreg.  */</a>
+<a name="352"><span class="lineNum">     352 </span>                :            :   unsigned int mw_order;        /* Same as df_ref.ref_order.  */</a>
+<a name="353"><span class="lineNum">     353 </span>                :            : };</a>
+<a name="354"><span class="lineNum">     354 </span>                :            : </a>
+<a name="355"><span class="lineNum">     355 </span>                :            : </a>
+<a name="356"><span class="lineNum">     356 </span>                :            : /* Define a register reference structure.  One of these is allocated</a>
+<a name="357"><span class="lineNum">     357 </span>                :            :     for every register reference (use or def).  Note some register</a>
+<a name="358"><span class="lineNum">     358 </span>                :            :     references (e.g., post_inc, subreg) generate both a def and a use.  */</a>
+<a name="359"><span class="lineNum">     359 </span>                :            : struct df_base_ref</a>
+<a name="360"><span class="lineNum">     360 </span>                :            : {</a>
+<a name="361"><span class="lineNum">     361 </span>                :            :   /* These three bitfields are intentionally oversized, in the hope that</a>
+<a name="362"><span class="lineNum">     362 </span>                :            :      accesses to 8 and 16-bit fields will usually be quicker.  */</a>
+<a name="363"><span class="lineNum">     363 </span>                :            :   ENUM_BITFIELD(df_ref_class) cl : 8;</a>
+<a name="364"><span class="lineNum">     364 </span>                :            : </a>
+<a name="365"><span class="lineNum">     365 </span>                :            :   ENUM_BITFIELD(df_ref_type) type : 8;</a>
+<a name="366"><span class="lineNum">     366 </span>                :            :                                 /* Type of ref.  */</a>
+<a name="367"><span class="lineNum">     367 </span>                :            :   int flags : 16;               /* Various df_ref_flags.  */</a>
+<a name="368"><span class="lineNum">     368 </span>                :            :   unsigned int regno;           /* The register number referenced.  */</a>
+<a name="369"><span class="lineNum">     369 </span>                :            :   rtx reg;                      /* The register referenced.  */</a>
+<a name="370"><span class="lineNum">     370 </span>                :            :   union df_ref_d *next_loc;     /* Next ref for same insn or bb.  */</a>
+<a name="371"><span class="lineNum">     371 </span>                :            :   struct df_link *chain;        /* Head of def-use, use-def.  */</a>
+<a name="372"><span class="lineNum">     372 </span>                :            :   /* Pointer to the insn info of the containing instruction.  FIXME!</a>
+<a name="373"><span class="lineNum">     373 </span>                :            :      Currently this is NULL for artificial refs but this will be used</a>
+<a name="374"><span class="lineNum">     374 </span>                :            :      when FUDs are added.  */</a>
+<a name="375"><span class="lineNum">     375 </span>                :            :   struct df_insn_info *insn_info;</a>
+<a name="376"><span class="lineNum">     376 </span>                :            :   /* For each regno, there are three chains of refs, one for the uses,</a>
+<a name="377"><span class="lineNum">     377 </span>                :            :      the eq_uses and the defs.  These chains go through the refs</a>
+<a name="378"><span class="lineNum">     378 </span>                :            :      themselves rather than using an external structure.  */</a>
+<a name="379"><span class="lineNum">     379 </span>                :            :   union df_ref_d *next_reg;     /* Next ref with same regno and type.  */</a>
+<a name="380"><span class="lineNum">     380 </span>                :            :   union df_ref_d *prev_reg;     /* Prev ref with same regno and type.  */</a>
+<a name="381"><span class="lineNum">     381 </span>                :            :   /* Location in the ref table.  This is only valid after a call to</a>
+<a name="382"><span class="lineNum">     382 </span>                :            :      df_maybe_reorganize_[use,def]_refs which is an expensive operation.  */</a>
+<a name="383"><span class="lineNum">     383 </span>                :            :   int id;</a>
+<a name="384"><span class="lineNum">     384 </span>                :            :   /* The index at which the operand was scanned in the insn.  This is</a>
+<a name="385"><span class="lineNum">     385 </span>                :            :      used to totally order the refs in an insn.  */</a>
+<a name="386"><span class="lineNum">     386 </span>                :            :   unsigned int ref_order;</a>
+<a name="387"><span class="lineNum">     387 </span>                :            : };</a>
+<a name="388"><span class="lineNum">     388 </span>                :            : </a>
+<a name="389"><span class="lineNum">     389 </span>                :            : </a>
+<a name="390"><span class="lineNum">     390 </span>                :            : /* The three types of df_refs.  Note that the df_ref_extract is an</a>
+<a name="391"><span class="lineNum">     391 </span>                :            :    extension of the df_regular_ref, not the df_base_ref.  */</a>
+<a name="392"><span class="lineNum">     392 </span>                :            : struct df_artificial_ref</a>
+<a name="393"><span class="lineNum">     393 </span>                :            : {</a>
+<a name="394"><span class="lineNum">     394 </span>                :            :   struct df_base_ref base;</a>
+<a name="395"><span class="lineNum">     395 </span>                :            : </a>
+<a name="396"><span class="lineNum">     396 </span>                :            :   /* Artificial refs do not have an insn, so to get the basic block,</a>
+<a name="397"><span class="lineNum">     397 </span>                :            :      it must be explicitly here.  */</a>
+<a name="398"><span class="lineNum">     398 </span>                :            :   basic_block bb;</a>
+<a name="399"><span class="lineNum">     399 </span>                :            : };</a>
+<a name="400"><span class="lineNum">     400 </span>                :            : </a>
+<a name="401"><span class="lineNum">     401 </span>                :            : </a>
+<a name="402"><span class="lineNum">     402 </span>                :            : struct df_regular_ref</a>
+<a name="403"><span class="lineNum">     403 </span>                :            : {</a>
+<a name="404"><span class="lineNum">     404 </span>                :            :   struct df_base_ref base;</a>
+<a name="405"><span class="lineNum">     405 </span>                :            :   /* The loc is the address in the insn of the reg.  This is not</a>
+<a name="406"><span class="lineNum">     406 </span>                :            :      defined for special registers, such as clobbers and stack</a>
+<a name="407"><span class="lineNum">     407 </span>                :            :      pointers that are also associated with call insns and so those</a>
+<a name="408"><span class="lineNum">     408 </span>                :            :      just use the base.  */</a>
+<a name="409"><span class="lineNum">     409 </span>                :            :   rtx *loc;</a>
+<a name="410"><span class="lineNum">     410 </span>                :            : };</a>
+<a name="411"><span class="lineNum">     411 </span>                :            : </a>
+<a name="412"><span class="lineNum">     412 </span>                :            : /* Union of the different kinds of defs/uses placeholders.  */</a>
+<a name="413"><span class="lineNum">     413 </span>                :            : union df_ref_d</a>
+<a name="414"><span class="lineNum">     414 </span>                :            : {</a>
+<a name="415"><span class="lineNum">     415 </span>                :            :   struct df_base_ref base;</a>
+<a name="416"><span class="lineNum">     416 </span>                :            :   struct df_regular_ref regular_ref;</a>
+<a name="417"><span class="lineNum">     417 </span>                :            :   struct df_artificial_ref artificial_ref;</a>
+<a name="418"><span class="lineNum">     418 </span>                :            : };</a>
+<a name="419"><span class="lineNum">     419 </span>                :            : typedef union df_ref_d *df_ref;</a>
+<a name="420"><span class="lineNum">     420 </span>                :            : </a>
+<a name="421"><span class="lineNum">     421 </span>                :            : </a>
+<a name="422"><span class="lineNum">     422 </span>                :            : /* One of these structures is allocated for every insn.  */</a>
+<a name="423"><span class="lineNum">     423 </span>                :            : struct df_insn_info</a>
+<a name="424"><span class="lineNum">     424 </span>                :            : {</a>
+<a name="425"><span class="lineNum">     425 </span>                :            :   rtx_insn *insn;               /* The insn this info comes from.  */</a>
+<a name="426"><span class="lineNum">     426 </span>                :            :   df_ref defs;                  /* Head of insn-def chain.  */</a>
+<a name="427"><span class="lineNum">     427 </span>                :            :   df_ref uses;                  /* Head of insn-use chain.  */</a>
+<a name="428"><span class="lineNum">     428 </span>                :            :   /* Head of insn-use chain for uses in REG_EQUAL/EQUIV notes.  */</a>
+<a name="429"><span class="lineNum">     429 </span>                :            :   df_ref eq_uses;</a>
+<a name="430"><span class="lineNum">     430 </span>                :            :   struct df_mw_hardreg *mw_hardregs;</a>
+<a name="431"><span class="lineNum">     431 </span>                :            :   /* The logical uid of the insn in the basic block.  This is valid</a>
+<a name="432"><span class="lineNum">     432 </span>                :            :      after any call to df_analyze but may rot after insns are added,</a>
+<a name="433"><span class="lineNum">     433 </span>                :            :      deleted or moved. */</a>
+<a name="434"><span class="lineNum">     434 </span>                :            :   int luid;</a>
+<a name="435"><span class="lineNum">     435 </span>                :            : };</a>
+<a name="436"><span class="lineNum">     436 </span>                :            : </a>
+<a name="437"><span class="lineNum">     437 </span>                :            : /* These links are used for ref-ref chains.  Currently only DEF-USE and</a>
+<a name="438"><span class="lineNum">     438 </span>                :            :    USE-DEF chains can be built by DF.  */</a>
+<a name="439"><span class="lineNum">     439 </span>                :            : struct df_link</a>
+<a name="440"><span class="lineNum">     440 </span>                :            : {</a>
+<a name="441"><span class="lineNum">     441 </span>                :            :   df_ref ref;</a>
+<a name="442"><span class="lineNum">     442 </span>                :            :   struct df_link *next;</a>
+<a name="443"><span class="lineNum">     443 </span>                :            : };</a>
+<a name="444"><span class="lineNum">     444 </span>                :            : </a>
+<a name="445"><span class="lineNum">     445 </span>                :            : </a>
+<a name="446"><span class="lineNum">     446 </span>                :            : enum df_chain_flags</a>
+<a name="447"><span class="lineNum">     447 </span>                :            : {</a>
+<a name="448"><span class="lineNum">     448 </span>                :            :   /* Flags that control the building of chains.  */</a>
+<a name="449"><span class="lineNum">     449 </span>                :            :   DF_DU_CHAIN      =  1, /* Build DU chains.  */</a>
+<a name="450"><span class="lineNum">     450 </span>                :            :   DF_UD_CHAIN      =  2  /* Build UD chains.  */</a>
+<a name="451"><span class="lineNum">     451 </span>                :            : };</a>
+<a name="452"><span class="lineNum">     452 </span>                :            : </a>
+<a name="453"><span class="lineNum">     453 </span>                :            : enum df_scan_flags</a>
+<a name="454"><span class="lineNum">     454 </span>                :            : {</a>
+<a name="455"><span class="lineNum">     455 </span>                :            :   /* Flags for the SCAN problem.  */</a>
+<a name="456"><span class="lineNum">     456 </span>                :            :   DF_SCAN_EMPTY_ENTRY_EXIT = 1  /* Don't define any registers in the entry</a>
+<a name="457"><span class="lineNum">     457 </span>                :            :                                    block; don't use any in the exit block.  */</a>
+<a name="458"><span class="lineNum">     458 </span>                :            : };</a>
+<a name="459"><span class="lineNum">     459 </span>                :            : </a>
+<a name="460"><span class="lineNum">     460 </span>                :            : enum df_changeable_flags</a>
+<a name="461"><span class="lineNum">     461 </span>                :            : {</a>
+<a name="462"><span class="lineNum">     462 </span>                :            :   /* Scanning flags.  */</a>
+<a name="463"><span class="lineNum">     463 </span>                :            :   /* Flag to control the running of dce as a side effect of building LR.  */</a>
+<a name="464"><span class="lineNum">     464 </span>                :            :   DF_LR_RUN_DCE           = 1 &lt;&lt; 0, /* Run DCE.  */</a>
+<a name="465"><span class="lineNum">     465 </span>                :            :   DF_NO_HARD_REGS         = 1 &lt;&lt; 1, /* Skip hard registers in RD and CHAIN Building.  */</a>
+<a name="466"><span class="lineNum">     466 </span>                :            : </a>
+<a name="467"><span class="lineNum">     467 </span>                :            :   DF_EQ_NOTES             = 1 &lt;&lt; 2, /* Build chains with uses present in EQUIV/EQUAL notes. */</a>
+<a name="468"><span class="lineNum">     468 </span>                :            :   DF_NO_REGS_EVER_LIVE    = 1 &lt;&lt; 3, /* Do not compute the regs_ever_live.  */</a>
+<a name="469"><span class="lineNum">     469 </span>                :            : </a>
+<a name="470"><span class="lineNum">     470 </span>                :            :   /* Cause df_insn_rescan df_notes_rescan and df_insn_delete, to</a>
+<a name="471"><span class="lineNum">     471 </span>                :            :   return immediately.  This is used by passes that know how to update</a>
+<a name="472"><span class="lineNum">     472 </span>                :            :   the scanning them selves.  */</a>
+<a name="473"><span class="lineNum">     473 </span>                :            :   DF_NO_INSN_RESCAN       = 1 &lt;&lt; 4,</a>
+<a name="474"><span class="lineNum">     474 </span>                :            : </a>
+<a name="475"><span class="lineNum">     475 </span>                :            :   /* Cause df_insn_rescan df_notes_rescan and df_insn_delete, to</a>
+<a name="476"><span class="lineNum">     476 </span>                :            :   return after marking the insn for later processing.  This allows all</a>
+<a name="477"><span class="lineNum">     477 </span>                :            :   rescans to be batched.  */</a>
+<a name="478"><span class="lineNum">     478 </span>                :            :   DF_DEFER_INSN_RESCAN    = 1 &lt;&lt; 5,</a>
+<a name="479"><span class="lineNum">     479 </span>                :            : </a>
+<a name="480"><span class="lineNum">     480 </span>                :            :   /* Compute the reaching defs problem as &quot;live and reaching defs&quot; (LR&amp;RD).</a>
+<a name="481"><span class="lineNum">     481 </span>                :            :      A DEF is reaching and live at insn I if DEF reaches I and REGNO(DEF)</a>
+<a name="482"><span class="lineNum">     482 </span>                :            :      is in LR_IN of the basic block containing I.  */</a>
+<a name="483"><span class="lineNum">     483 </span>                :            :   DF_RD_PRUNE_DEAD_DEFS   = 1 &lt;&lt; 6,</a>
+<a name="484"><span class="lineNum">     484 </span>                :            : </a>
+<a name="485"><span class="lineNum">     485 </span>                :            :   DF_VERIFY_SCHEDULED     = 1 &lt;&lt; 7</a>
+<a name="486"><span class="lineNum">     486 </span>                :            : };</a>
+<a name="487"><span class="lineNum">     487 </span>                :            : </a>
+<a name="488"><span class="lineNum">     488 </span>                :            : /* Two of these structures are inline in df, one for the uses and one</a>
+<a name="489"><span class="lineNum">     489 </span>                :            :    for the defs.  This structure is only contains the refs within the</a>
+<a name="490"><span class="lineNum">     490 </span>                :            :    boundary of the df_set_blocks if that has been defined.  */</a>
+<a name="491"><span class="lineNum">     491 </span>                :            : struct df_ref_info</a>
+<a name="492"><span class="lineNum">     492 </span>                :            : {</a>
+<a name="493"><span class="lineNum">     493 </span>                :            :   df_ref *refs;                 /* Ref table, indexed by id.  */</a>
+<a name="494"><span class="lineNum">     494 </span>                :            :   unsigned int *begin;          /* First ref_index for this pseudo.  */</a>
+<a name="495"><span class="lineNum">     495 </span>                :            :   unsigned int *count;          /* Count of refs for this pseudo.  */</a>
+<a name="496"><span class="lineNum">     496 </span>                :            :   unsigned int refs_size;       /* Size of currently allocated refs table.  */</a>
+<a name="497"><span class="lineNum">     497 </span>                :            : </a>
+<a name="498"><span class="lineNum">     498 </span>                :            :   /* Table_size is the number of elements in the refs table.  This</a>
+<a name="499"><span class="lineNum">     499 </span>                :            :      will also be the width of the bitvectors in the rd and ru</a>
+<a name="500"><span class="lineNum">     500 </span>                :            :      problems.  Total_size is the number of refs.  These will be the</a>
+<a name="501"><span class="lineNum">     501 </span>                :            :      same if the focus has not been reduced by df_set_blocks.  If the</a>
+<a name="502"><span class="lineNum">     502 </span>                :            :      focus has been reduced, table_size will be smaller since it only</a>
+<a name="503"><span class="lineNum">     503 </span>                :            :      contains the refs in the set blocks.  */</a>
+<a name="504"><span class="lineNum">     504 </span>                :            :   unsigned int table_size;</a>
+<a name="505"><span class="lineNum">     505 </span>                :            :   unsigned int total_size;</a>
+<a name="506"><span class="lineNum">     506 </span>                :            : </a>
+<a name="507"><span class="lineNum">     507 </span>                :            :   enum df_ref_order ref_order;</a>
+<a name="508"><span class="lineNum">     508 </span>                :            : };</a>
+<a name="509"><span class="lineNum">     509 </span>                :            : </a>
+<a name="510"><span class="lineNum">     510 </span>                :            : /* Three of these structures are allocated for every pseudo reg. One</a>
+<a name="511"><span class="lineNum">     511 </span>                :            :    for the uses, one for the eq_uses and one for the defs.  */</a>
+<a name="512"><span class="lineNum">     512 </span>                :            : struct df_reg_info</a>
+<a name="513"><span class="lineNum">     513 </span>                :            : {</a>
+<a name="514"><span class="lineNum">     514 </span>                :            :   /* Head of chain for refs of that type and regno.  */</a>
+<a name="515"><span class="lineNum">     515 </span>                :            :   df_ref reg_chain;</a>
+<a name="516"><span class="lineNum">     516 </span>                :            :   /* Number of refs in the chain.  */</a>
+<a name="517"><span class="lineNum">     517 </span>                :            :   unsigned int n_refs;</a>
+<a name="518"><span class="lineNum">     518 </span>                :            : };</a>
+<a name="519"><span class="lineNum">     519 </span>                :            : </a>
+<a name="520"><span class="lineNum">     520 </span>                :            : </a>
+<a name="521"><span class="lineNum">     521 </span>                :            : /*----------------------------------------------------------------------------</a>
+<a name="522"><span class="lineNum">     522 </span>                :            :    Problem data for the scanning dataflow problem.  Unlike the other</a>
+<a name="523"><span class="lineNum">     523 </span>                :            :    dataflow problems, the problem data for scanning is fully exposed and</a>
+<a name="524"><span class="lineNum">     524 </span>                :            :    used by owners of the problem.</a>
+<a name="525"><span class="lineNum">     525 </span>                :            : ----------------------------------------------------------------------------*/</a>
+<a name="526"><span class="lineNum">     526 </span>                :            : </a>
+<a name="527"><span class="lineNum">     527 </span>                :            : class df_d</a>
+<a name="528"><span class="lineNum">     528 </span>                :            : {</a>
+<a name="529"><span class="lineNum">     529 </span>                :            : public:</a>
+<a name="530"><span class="lineNum">     530 </span>                :            : </a>
+<a name="531"><span class="lineNum">     531 </span>                :            :   /* The set of problems to be solved is stored in two arrays.  In</a>
+<a name="532"><span class="lineNum">     532 </span>                :            :      PROBLEMS_IN_ORDER, the problems are stored in the order that they</a>
+<a name="533"><span class="lineNum">     533 </span>                :            :      are solved.  This is an internally dense array that may have</a>
+<a name="534"><span class="lineNum">     534 </span>                :            :      nulls at the end of it.  In PROBLEMS_BY_INDEX, the problem is</a>
+<a name="535"><span class="lineNum">     535 </span>                :            :      stored by the value in df_problem.id.  These are used to access</a>
+<a name="536"><span class="lineNum">     536 </span>                :            :      the problem local data without having to search the first</a>
+<a name="537"><span class="lineNum">     537 </span>                :            :      array.  */</a>
+<a name="538"><span class="lineNum">     538 </span>                :            : </a>
+<a name="539"><span class="lineNum">     539 </span>                :            :   struct dataflow *problems_in_order[DF_LAST_PROBLEM_PLUS1];</a>
+<a name="540"><span class="lineNum">     540 </span>                :            :   struct dataflow *problems_by_index[DF_LAST_PROBLEM_PLUS1];</a>
+<a name="541"><span class="lineNum">     541 </span>                :            : </a>
+<a name="542"><span class="lineNum">     542 </span>                :            :   /* If not NULL, this subset of blocks of the program to be</a>
+<a name="543"><span class="lineNum">     543 </span>                :            :      considered for analysis.  At certain times, this will contain all</a>
+<a name="544"><span class="lineNum">     544 </span>                :            :      the blocks in the function so it cannot be used as an indicator</a>
+<a name="545"><span class="lineNum">     545 </span>                :            :      of if we are analyzing a subset.  See analyze_subset.  */</a>
+<a name="546"><span class="lineNum">     546 </span>                :            :   bitmap blocks_to_analyze;</a>
+<a name="547"><span class="lineNum">     547 </span>                :            : </a>
+<a name="548"><span class="lineNum">     548 </span>                :            :   /* The following information is really the problem data for the</a>
+<a name="549"><span class="lineNum">     549 </span>                :            :      scanning instance but it is used too often by the other problems</a>
+<a name="550"><span class="lineNum">     550 </span>                :            :      to keep getting it from there.  */</a>
+<a name="551"><span class="lineNum">     551 </span>                :            :   struct df_ref_info def_info;   /* Def info.  */</a>
+<a name="552"><span class="lineNum">     552 </span>                :            :   struct df_ref_info use_info;   /* Use info.  */</a>
+<a name="553"><span class="lineNum">     553 </span>                :            : </a>
+<a name="554"><span class="lineNum">     554 </span>                :            :   /* The following three arrays are allocated in parallel.   They contain</a>
+<a name="555"><span class="lineNum">     555 </span>                :            :      the sets of refs of each type for each reg.  */</a>
+<a name="556"><span class="lineNum">     556 </span>                :            :   struct df_reg_info **def_regs;       /* Def reg info.  */</a>
+<a name="557"><span class="lineNum">     557 </span>                :            :   struct df_reg_info **use_regs;       /* Eq_use reg info.  */</a>
+<a name="558"><span class="lineNum">     558 </span>                :            :   struct df_reg_info **eq_use_regs;    /* Eq_use info.  */</a>
+<a name="559"><span class="lineNum">     559 </span>                :            :   unsigned int regs_size;       /* Size of currently allocated regs table.  */</a>
+<a name="560"><span class="lineNum">     560 </span>                :            :   unsigned int regs_inited;     /* Number of regs with reg_infos allocated.  */</a>
+<a name="561"><span class="lineNum">     561 </span>                :            : </a>
+<a name="562"><span class="lineNum">     562 </span>                :            : </a>
+<a name="563"><span class="lineNum">     563 </span>                :            :   struct df_insn_info **insns;   /* Insn table, indexed by insn UID.  */</a>
+<a name="564"><span class="lineNum">     564 </span>                :            :   unsigned int insns_size;       /* Size of insn table.  */</a>
+<a name="565"><span class="lineNum">     565 </span>                :            : </a>
+<a name="566"><span class="lineNum">     566 </span>                :            :   int num_problems_defined;</a>
+<a name="567"><span class="lineNum">     567 </span>                :            : </a>
+<a name="568"><span class="lineNum">     568 </span>                :            :   bitmap_head hardware_regs_used;     /* The set of hardware registers used.  */</a>
+<a name="569"><span class="lineNum">     569 </span>                :            :   /* The set of hard regs that are in the artificial uses at the end</a>
+<a name="570"><span class="lineNum">     570 </span>                :            :      of a regular basic block.  */</a>
+<a name="571"><span class="lineNum">     571 </span>                :            :   bitmap_head regular_block_artificial_uses;</a>
+<a name="572"><span class="lineNum">     572 </span>                :            :   /* The set of hard regs that are in the artificial uses at the end</a>
+<a name="573"><span class="lineNum">     573 </span>                :            :      of a basic block that has an EH pred.  */</a>
+<a name="574"><span class="lineNum">     574 </span>                :            :   bitmap_head eh_block_artificial_uses;</a>
+<a name="575"><span class="lineNum">     575 </span>                :            :   /* The set of hardware registers live on entry to the function.  */</a>
+<a name="576"><span class="lineNum">     576 </span>                :            :   bitmap entry_block_defs;</a>
+<a name="577"><span class="lineNum">     577 </span>                :            :   bitmap exit_block_uses;        /* The set of hardware registers used in exit block.  */</a>
+<a name="578"><span class="lineNum">     578 </span>                :            : </a>
+<a name="579"><span class="lineNum">     579 </span>                :            :   /* Insns to delete, rescan or reprocess the notes at next</a>
+<a name="580"><span class="lineNum">     580 </span>                :            :      df_rescan_all or df_process_deferred_rescans. */</a>
+<a name="581"><span class="lineNum">     581 </span>                :            :   bitmap_head insns_to_delete;</a>
+<a name="582"><span class="lineNum">     582 </span>                :            :   bitmap_head insns_to_rescan;</a>
+<a name="583"><span class="lineNum">     583 </span>                :            :   bitmap_head insns_to_notes_rescan;</a>
+<a name="584"><span class="lineNum">     584 </span>                :            :   int *postorder;                /* The current set of basic blocks</a>
+<a name="585"><span class="lineNum">     585 </span>                :            :                                     in reverse postorder.  */</a>
+<a name="586"><span class="lineNum">     586 </span>                :            :   vec&lt;int&gt; postorder_inverted;       /* The current set of basic blocks</a>
+<a name="587"><span class="lineNum">     587 </span>                :            :                                     in reverse postorder of inverted CFG.  */</a>
+<a name="588"><span class="lineNum">     588 </span>                :            :   int n_blocks;                  /* The number of blocks in reverse postorder.  */</a>
+<a name="589"><span class="lineNum">     589 </span>                :            : </a>
+<a name="590"><span class="lineNum">     590 </span>                :            :   /* An array [FIRST_PSEUDO_REGISTER], indexed by regno, of the number</a>
+<a name="591"><span class="lineNum">     591 </span>                :            :      of refs that qualify as being real hard regs uses.  Artificial</a>
+<a name="592"><span class="lineNum">     592 </span>                :            :      uses and defs as well as refs in eq notes are ignored.  If the</a>
+<a name="593"><span class="lineNum">     593 </span>                :            :      ref is a def, it cannot be a MAY_CLOBBER def.  If the ref is a</a>
+<a name="594"><span class="lineNum">     594 </span>                :            :      use, it cannot be the emim_reg_set or be the frame or arg pointer</a>
+<a name="595"><span class="lineNum">     595 </span>                :            :      register.  Uses in debug insns are ignored.</a>
+<a name="596"><span class="lineNum">     596 </span>                :            : </a>
+<a name="597"><span class="lineNum">     597 </span>                :            :      IT IS NOT ACCEPTABLE TO MANUALLY CHANGE THIS ARRAY.  This array</a>
+<a name="598"><span class="lineNum">     598 </span>                :            :      always reflects the actual number of refs in the insn stream that</a>
+<a name="599"><span class="lineNum">     599 </span>                :            :      satisfy the above criteria.  */</a>
+<a name="600"><span class="lineNum">     600 </span>                :            :   unsigned int *hard_regs_live_count;</a>
+<a name="601"><span class="lineNum">     601 </span>                :            : </a>
+<a name="602"><span class="lineNum">     602 </span>                :            :   /* This counter provides a way to totally order refs without using</a>
+<a name="603"><span class="lineNum">     603 </span>                :            :      addresses.  It is incremented whenever a ref is created.  */</a>
+<a name="604"><span class="lineNum">     604 </span>                :            :   unsigned int ref_order;</a>
+<a name="605"><span class="lineNum">     605 </span>                :            : </a>
+<a name="606"><span class="lineNum">     606 </span>                :            :   /* Problem specific control information.  This is a combination of</a>
+<a name="607"><span class="lineNum">     607 </span>                :            :      enum df_changeable_flags values.  */</a>
+<a name="608"><span class="lineNum">     608 </span>                :            :   int changeable_flags : 8;</a>
+<a name="609"><span class="lineNum">     609 </span>                :            : </a>
+<a name="610"><span class="lineNum">     610 </span>                :            :   /* If this is true, then only a subset of the blocks of the program</a>
+<a name="611"><span class="lineNum">     611 </span>                :            :      is considered to compute the solutions of dataflow problems.  */</a>
+<a name="612"><span class="lineNum">     612 </span>                :            :   bool analyze_subset;</a>
+<a name="613"><span class="lineNum">     613 </span>                :            : </a>
+<a name="614"><span class="lineNum">     614 </span>                :            :   /* True if someone added or deleted something from regs_ever_live so</a>
+<a name="615"><span class="lineNum">     615 </span>                :            :      that the entry and exit blocks need be reprocessed.  */</a>
+<a name="616"><span class="lineNum">     616 </span>                :            :   bool redo_entry_and_exit;</a>
+<a name="617"><span class="lineNum">     617 </span>                :            : };</a>
+<a name="618"><span class="lineNum">     618 </span>                :            : </a>
+<a name="619"><span class="lineNum">     619 </span>                :            : #define DF_SCAN_BB_INFO(BB) (df_scan_get_bb_info ((BB)-&gt;index))</a>
+<a name="620"><span class="lineNum">     620 </span>                :            : #define DF_RD_BB_INFO(BB) (df_rd_get_bb_info ((BB)-&gt;index))</a>
+<a name="621"><span class="lineNum">     621 </span>                :            : #define DF_LR_BB_INFO(BB) (df_lr_get_bb_info ((BB)-&gt;index))</a>
+<a name="622"><span class="lineNum">     622 </span>                :            : #define DF_LIVE_BB_INFO(BB) (df_live_get_bb_info ((BB)-&gt;index))</a>
+<a name="623"><span class="lineNum">     623 </span>                :            : #define DF_WORD_LR_BB_INFO(BB) (df_word_lr_get_bb_info ((BB)-&gt;index))</a>
+<a name="624"><span class="lineNum">     624 </span>                :            : #define DF_MD_BB_INFO(BB) (df_md_get_bb_info ((BB)-&gt;index))</a>
+<a name="625"><span class="lineNum">     625 </span>                :            : #define DF_MIR_BB_INFO(BB) (df_mir_get_bb_info ((BB)-&gt;index))</a>
+<a name="626"><span class="lineNum">     626 </span>                :            : </a>
+<a name="627"><span class="lineNum">     627 </span>                :            : /* Most transformations that wish to use live register analysis will</a>
+<a name="628"><span class="lineNum">     628 </span>                :            :    use these macros.  This info is the and of the lr and live sets.  */</a>
+<a name="629"><span class="lineNum">     629 </span>                :            : #define DF_LIVE_IN(BB) (&amp;DF_LIVE_BB_INFO (BB)-&gt;in)</a>
+<a name="630"><span class="lineNum">     630 </span>                :            : #define DF_LIVE_OUT(BB) (&amp;DF_LIVE_BB_INFO (BB)-&gt;out)</a>
+<a name="631"><span class="lineNum">     631 </span>                :            : </a>
+<a name="632"><span class="lineNum">     632 </span>                :            : #define DF_MIR_IN(BB) (&amp;DF_MIR_BB_INFO (BB)-&gt;in)</a>
+<a name="633"><span class="lineNum">     633 </span>                :            : #define DF_MIR_OUT(BB) (&amp;DF_MIR_BB_INFO (BB)-&gt;out)</a>
+<a name="634"><span class="lineNum">     634 </span>                :            : </a>
+<a name="635"><span class="lineNum">     635 </span>                :            : /* These macros are used by passes that are not tolerant of</a>
+<a name="636"><span class="lineNum">     636 </span>                :            :    uninitialized variables.  This intolerance should eventually</a>
+<a name="637"><span class="lineNum">     637 </span>                :            :    be fixed.  */</a>
+<a name="638"><span class="lineNum">     638 </span>                :            : #define DF_LR_IN(BB) (&amp;DF_LR_BB_INFO (BB)-&gt;in)</a>
+<a name="639"><span class="lineNum">     639 </span>                :            : #define DF_LR_OUT(BB) (&amp;DF_LR_BB_INFO (BB)-&gt;out)</a>
+<a name="640"><span class="lineNum">     640 </span>                :            : </a>
+<a name="641"><span class="lineNum">     641 </span>                :            : /* These macros are used by passes that are not tolerant of</a>
+<a name="642"><span class="lineNum">     642 </span>                :            :    uninitialized variables.  This intolerance should eventually</a>
+<a name="643"><span class="lineNum">     643 </span>                :            :    be fixed.  */</a>
+<a name="644"><span class="lineNum">     644 </span>                :            : #define DF_WORD_LR_IN(BB) (&amp;DF_WORD_LR_BB_INFO (BB)-&gt;in)</a>
+<a name="645"><span class="lineNum">     645 </span>                :            : #define DF_WORD_LR_OUT(BB) (&amp;DF_WORD_LR_BB_INFO (BB)-&gt;out)</a>
+<a name="646"><span class="lineNum">     646 </span>                :            : </a>
+<a name="647"><span class="lineNum">     647 </span>                :            : /* Macros to access the elements within the ref structure.  */</a>
+<a name="648"><span class="lineNum">     648 </span>                :            : </a>
+<a name="649"><span class="lineNum">     649 </span>                :            : </a>
+<a name="650"><span class="lineNum">     650 </span>                :            : #define DF_REF_REAL_REG(REF) (GET_CODE ((REF)-&gt;base.reg) == SUBREG \</a>
+<a name="651"><span class="lineNum">     651 </span>                :            :                                 ? SUBREG_REG ((REF)-&gt;base.reg) : ((REF)-&gt;base.reg))</a>
+<a name="652"><span class="lineNum">     652 </span>                :            : #define DF_REF_REGNO(REF) ((REF)-&gt;base.regno)</a>
+<a name="653"><span class="lineNum">     653 </span>                :            : #define DF_REF_REAL_LOC(REF) (GET_CODE (*((REF)-&gt;regular_ref.loc)) == SUBREG \</a>
+<a name="654"><span class="lineNum">     654 </span>                :            :                                ? &amp;SUBREG_REG (*((REF)-&gt;regular_ref.loc)) : ((REF)-&gt;regular_ref.loc))</a>
+<a name="655"><span class="lineNum">     655 </span>                :            : #define DF_REF_REG(REF) ((REF)-&gt;base.reg)</a>
+<a name="656"><span class="lineNum">     656 </span>                :            : #define DF_REF_LOC(REF) (DF_REF_CLASS (REF) == DF_REF_REGULAR ? \</a>
+<a name="657"><span class="lineNum">     657 </span>                :            :                          (REF)-&gt;regular_ref.loc : NULL)</a>
+<a name="658"><span class="lineNum">     658 </span>                :            : #define DF_REF_BB(REF) (DF_REF_IS_ARTIFICIAL (REF) \</a>
+<a name="659"><span class="lineNum">     659 </span>                :            :                         ? (REF)-&gt;artificial_ref.bb \</a>
+<a name="660"><span class="lineNum">     660 </span>                :            :                         : BLOCK_FOR_INSN (DF_REF_INSN (REF)))</a>
+<a name="661"><span class="lineNum">     661 </span>                :            : #define DF_REF_BBNO(REF) (DF_REF_BB (REF)-&gt;index)</a>
+<a name="662"><span class="lineNum">     662 </span>                :            : #define DF_REF_INSN_INFO(REF) ((REF)-&gt;base.insn_info)</a>
+<a name="663"><span class="lineNum">     663 </span>                :            : #define DF_REF_INSN(REF) ((REF)-&gt;base.insn_info-&gt;insn)</a>
+<a name="664"><span class="lineNum">     664 </span>                :            : #define DF_REF_INSN_UID(REF) (INSN_UID (DF_REF_INSN(REF)))</a>
+<a name="665"><span class="lineNum">     665 </span>                :            : #define DF_REF_CLASS(REF) ((REF)-&gt;base.cl)</a>
+<a name="666"><span class="lineNum">     666 </span>                :            : #define DF_REF_TYPE(REF) ((REF)-&gt;base.type)</a>
+<a name="667"><span class="lineNum">     667 </span>                :            : #define DF_REF_CHAIN(REF) ((REF)-&gt;base.chain)</a>
+<a name="668"><span class="lineNum">     668 </span>                :            : #define DF_REF_ID(REF) ((REF)-&gt;base.id)</a>
+<a name="669"><span class="lineNum">     669 </span>                :            : #define DF_REF_FLAGS(REF) ((REF)-&gt;base.flags)</a>
+<a name="670"><span class="lineNum">     670 </span>                :            : #define DF_REF_FLAGS_IS_SET(REF, v) ((DF_REF_FLAGS (REF) &amp; (v)) != 0)</a>
+<a name="671"><span class="lineNum">     671 </span>                :            : #define DF_REF_FLAGS_SET(REF, v) (DF_REF_FLAGS (REF) |= (v))</a>
+<a name="672"><span class="lineNum">     672 </span>                :            : #define DF_REF_FLAGS_CLEAR(REF, v) (DF_REF_FLAGS (REF) &amp;= ~(v))</a>
+<a name="673"><span class="lineNum">     673 </span>                :            : #define DF_REF_ORDER(REF) ((REF)-&gt;base.ref_order)</a>
+<a name="674"><span class="lineNum">     674 </span>                :            : /* If DF_REF_IS_ARTIFICIAL () is true, this is not a real</a>
+<a name="675"><span class="lineNum">     675 </span>                :            :    definition/use, but an artificial one created to model always live</a>
+<a name="676"><span class="lineNum">     676 </span>                :            :    registers, eh uses, etc.  */</a>
+<a name="677"><span class="lineNum">     677 </span>                :            : #define DF_REF_IS_ARTIFICIAL(REF) (DF_REF_CLASS (REF) == DF_REF_ARTIFICIAL)</a>
+<a name="678"><span class="lineNum">     678 </span>                :            : #define DF_REF_REG_MARK(REF) (DF_REF_FLAGS_SET ((REF),DF_REF_REG_MARKER))</a>
+<a name="679"><span class="lineNum">     679 </span>                :            : #define DF_REF_REG_UNMARK(REF) (DF_REF_FLAGS_CLEAR ((REF),DF_REF_REG_MARKER))</a>
+<a name="680"><span class="lineNum">     680 </span>                :            : #define DF_REF_IS_REG_MARKED(REF) (DF_REF_FLAGS_IS_SET ((REF),DF_REF_REG_MARKER))</a>
+<a name="681"><span class="lineNum">     681 </span>                :            : #define DF_REF_NEXT_LOC(REF) ((REF)-&gt;base.next_loc)</a>
+<a name="682"><span class="lineNum">     682 </span>                :            : #define DF_REF_NEXT_REG(REF) ((REF)-&gt;base.next_reg)</a>
+<a name="683"><span class="lineNum">     683 </span>                :            : #define DF_REF_PREV_REG(REF) ((REF)-&gt;base.prev_reg)</a>
+<a name="684"><span class="lineNum">     684 </span>                :            : /* The following two macros may only be applied if one of</a>
+<a name="685"><span class="lineNum">     685 </span>                :            :    DF_REF_SIGN_EXTRACT | DF_REF_ZERO_EXTRACT is true. */</a>
+<a name="686"><span class="lineNum">     686 </span>                :            : #define DF_REF_EXTRACT_WIDTH(REF) ((REF)-&gt;extract_ref.width)</a>
+<a name="687"><span class="lineNum">     687 </span>                :            : #define DF_REF_EXTRACT_OFFSET(REF) ((REF)-&gt;extract_ref.offset)</a>
+<a name="688"><span class="lineNum">     688 </span>                :            : #define DF_REF_EXTRACT_MODE(REF) ((REF)-&gt;extract_ref.mode)</a>
+<a name="689"><span class="lineNum">     689 </span>                :            : </a>
+<a name="690"><span class="lineNum">     690 </span>                :            : /* Macros to determine the reference type.  */</a>
+<a name="691"><span class="lineNum">     691 </span>                :            : #define DF_REF_REG_DEF_P(REF) (DF_REF_TYPE (REF) == DF_REF_REG_DEF)</a>
+<a name="692"><span class="lineNum">     692 </span>                :            : #define DF_REF_REG_USE_P(REF) (!DF_REF_REG_DEF_P (REF))</a>
+<a name="693"><span class="lineNum">     693 </span>                :            : #define DF_REF_REG_MEM_STORE_P(REF) (DF_REF_TYPE (REF) == DF_REF_REG_MEM_STORE)</a>
+<a name="694"><span class="lineNum">     694 </span>                :            : #define DF_REF_REG_MEM_LOAD_P(REF) (DF_REF_TYPE (REF) == DF_REF_REG_MEM_LOAD)</a>
+<a name="695"><span class="lineNum">     695 </span>                :            : #define DF_REF_REG_MEM_P(REF) (DF_REF_REG_MEM_STORE_P (REF) \</a>
+<a name="696"><span class="lineNum">     696 </span>                :            :                                || DF_REF_REG_MEM_LOAD_P (REF))</a>
+<a name="697"><span class="lineNum">     697 </span>                :            : </a>
+<a name="698"><span class="lineNum">     698 </span>                :            : #define DF_MWS_REG_DEF_P(MREF) (DF_MWS_TYPE (MREF) == DF_REF_REG_DEF)</a>
+<a name="699"><span class="lineNum">     699 </span>                :            : #define DF_MWS_REG_USE_P(MREF) (!DF_MWS_REG_DEF_P (MREF))</a>
+<a name="700"><span class="lineNum">     700 </span>                :            : #define DF_MWS_NEXT(MREF) ((MREF)-&gt;next)</a>
+<a name="701"><span class="lineNum">     701 </span>                :            : #define DF_MWS_TYPE(MREF) ((MREF)-&gt;type)</a>
+<a name="702"><span class="lineNum">     702 </span>                :            : </a>
+<a name="703"><span class="lineNum">     703 </span>                :            : /* Macros to get the refs out of def_info or use_info refs table.  If</a>
+<a name="704"><span class="lineNum">     704 </span>                :            :    the focus of the dataflow has been set to some subset of blocks</a>
+<a name="705"><span class="lineNum">     705 </span>                :            :    with df_set_blocks, these macros will only find the uses and defs</a>
+<a name="706"><span class="lineNum">     706 </span>                :            :    in that subset of blocks.</a>
+<a name="707"><span class="lineNum">     707 </span>                :            : </a>
+<a name="708"><span class="lineNum">     708 </span>                :            :    These macros should be used with care.  The def macros are only</a>
+<a name="709"><span class="lineNum">     709 </span>                :            :    usable after a call to df_maybe_reorganize_def_refs and the use</a>
+<a name="710"><span class="lineNum">     710 </span>                :            :    macros are only usable after a call to</a>
+<a name="711"><span class="lineNum">     711 </span>                :            :    df_maybe_reorganize_use_refs.  HOWEVER, BUILDING AND USING THESE</a>
+<a name="712"><span class="lineNum">     712 </span>                :            :    ARRAYS ARE A CACHE LOCALITY KILLER.  */</a>
+<a name="713"><span class="lineNum">     713 </span>                :            : </a>
+<a name="714"><span class="lineNum">     714 </span>                :            : #define DF_DEFS_TABLE_SIZE() (df-&gt;def_info.table_size)</a>
+<a name="715"><span class="lineNum">     715 </span>                :            : #define DF_DEFS_GET(ID) (df-&gt;def_info.refs[(ID)])</a>
+<a name="716"><span class="lineNum">     716 </span>                :            : #define DF_DEFS_SET(ID,VAL) (df-&gt;def_info.refs[(ID)]=(VAL))</a>
+<a name="717"><span class="lineNum">     717 </span>                :            : #define DF_DEFS_COUNT(ID) (df-&gt;def_info.count[(ID)])</a>
+<a name="718"><span class="lineNum">     718 </span>                :            : #define DF_DEFS_BEGIN(ID) (df-&gt;def_info.begin[(ID)])</a>
+<a name="719"><span class="lineNum">     719 </span>                :            : #define DF_USES_TABLE_SIZE() (df-&gt;use_info.table_size)</a>
+<a name="720"><span class="lineNum">     720 </span>                :            : #define DF_USES_GET(ID) (df-&gt;use_info.refs[(ID)])</a>
+<a name="721"><span class="lineNum">     721 </span>                :            : #define DF_USES_SET(ID,VAL) (df-&gt;use_info.refs[(ID)]=(VAL))</a>
+<a name="722"><span class="lineNum">     722 </span>                :            : #define DF_USES_COUNT(ID) (df-&gt;use_info.count[(ID)])</a>
+<a name="723"><span class="lineNum">     723 </span>                :            : #define DF_USES_BEGIN(ID) (df-&gt;use_info.begin[(ID)])</a>
+<a name="724"><span class="lineNum">     724 </span>                :            : </a>
+<a name="725"><span class="lineNum">     725 </span>                :            : /* Macros to access the register information from scan dataflow record.  */</a>
+<a name="726"><span class="lineNum">     726 </span>                :            : </a>
+<a name="727"><span class="lineNum">     727 </span>                :            : #define DF_REG_SIZE(DF) (df-&gt;regs_inited)</a>
+<a name="728"><span class="lineNum">     728 </span>                :            : #define DF_REG_DEF_GET(REG) (df-&gt;def_regs[(REG)])</a>
+<a name="729"><span class="lineNum">     729 </span>                :            : #define DF_REG_DEF_CHAIN(REG) (df-&gt;def_regs[(REG)]-&gt;reg_chain)</a>
+<a name="730"><span class="lineNum">     730 </span>                :            : #define DF_REG_DEF_COUNT(REG) (df-&gt;def_regs[(REG)]-&gt;n_refs)</a>
+<a name="731"><span class="lineNum">     731 </span>                :            : #define DF_REG_USE_GET(REG) (df-&gt;use_regs[(REG)])</a>
+<a name="732"><span class="lineNum">     732 </span>                :            : #define DF_REG_USE_CHAIN(REG) (df-&gt;use_regs[(REG)]-&gt;reg_chain)</a>
+<a name="733"><span class="lineNum">     733 </span>                :            : #define DF_REG_USE_COUNT(REG) (df-&gt;use_regs[(REG)]-&gt;n_refs)</a>
+<a name="734"><span class="lineNum">     734 </span>                :            : #define DF_REG_EQ_USE_GET(REG) (df-&gt;eq_use_regs[(REG)])</a>
+<a name="735"><span class="lineNum">     735 </span>                :            : #define DF_REG_EQ_USE_CHAIN(REG) (df-&gt;eq_use_regs[(REG)]-&gt;reg_chain)</a>
+<a name="736"><span class="lineNum">     736 </span>                :            : #define DF_REG_EQ_USE_COUNT(REG) (df-&gt;eq_use_regs[(REG)]-&gt;n_refs)</a>
+<a name="737"><span class="lineNum">     737 </span>                :            : </a>
+<a name="738"><span class="lineNum">     738 </span>                :            : /* Macros to access the elements within the reg_info structure table.  */</a>
+<a name="739"><span class="lineNum">     739 </span>                :            : </a>
+<a name="740"><span class="lineNum">     740 </span>                :            : #define DF_REGNO_FIRST_DEF(REGNUM) \</a>
+<a name="741"><span class="lineNum">     741 </span>                :            : (DF_REG_DEF_GET(REGNUM) ? DF_REG_DEF_GET (REGNUM) : 0)</a>
+<a name="742"><span class="lineNum">     742 </span>                :            : #define DF_REGNO_LAST_USE(REGNUM) \</a>
+<a name="743"><span class="lineNum">     743 </span>                :            : (DF_REG_USE_GET(REGNUM) ? DF_REG_USE_GET (REGNUM) : 0)</a>
+<a name="744"><span class="lineNum">     744 </span>                :            : </a>
+<a name="745"><span class="lineNum">     745 </span>                :            : /* Macros to access the elements within the insn_info structure table.  */</a>
+<a name="746"><span class="lineNum">     746 </span>                :            : </a>
+<a name="747"><span class="lineNum">     747 </span>                :            : #define DF_INSN_SIZE() ((df)-&gt;insns_size)</a>
+<a name="748"><span class="lineNum">     748 </span>                :            : #define DF_INSN_INFO_GET(INSN) (df-&gt;insns[(INSN_UID (INSN))])</a>
+<a name="749"><span class="lineNum">     749 </span>                :            : #define DF_INSN_INFO_SET(INSN,VAL) (df-&gt;insns[(INSN_UID (INSN))]=(VAL))</a>
+<a name="750"><span class="lineNum">     750 </span>                :            : #define DF_INSN_INFO_LUID(II) ((II)-&gt;luid)</a>
+<a name="751"><span class="lineNum">     751 </span>                :            : #define DF_INSN_INFO_DEFS(II) ((II)-&gt;defs)</a>
+<a name="752"><span class="lineNum">     752 </span>                :            : #define DF_INSN_INFO_USES(II) ((II)-&gt;uses)</a>
+<a name="753"><span class="lineNum">     753 </span>                :            : #define DF_INSN_INFO_EQ_USES(II) ((II)-&gt;eq_uses)</a>
+<a name="754"><span class="lineNum">     754 </span>                :            : #define DF_INSN_INFO_MWS(II) ((II)-&gt;mw_hardregs)</a>
+<a name="755"><span class="lineNum">     755 </span>                :            : </a>
+<a name="756"><span class="lineNum">     756 </span>                :            : #define DF_INSN_LUID(INSN) (DF_INSN_INFO_LUID (DF_INSN_INFO_GET (INSN)))</a>
+<a name="757"><span class="lineNum">     757 </span>                :            : #define DF_INSN_DEFS(INSN) (DF_INSN_INFO_DEFS (DF_INSN_INFO_GET (INSN)))</a>
+<a name="758"><span class="lineNum">     758 </span>                :            : #define DF_INSN_USES(INSN) (DF_INSN_INFO_USES (DF_INSN_INFO_GET (INSN)))</a>
+<a name="759"><span class="lineNum">     759 </span>                :            : #define DF_INSN_EQ_USES(INSN) (DF_INSN_INFO_EQ_USES (DF_INSN_INFO_GET (INSN)))</a>
+<a name="760"><span class="lineNum">     760 </span>                :            : </a>
+<a name="761"><span class="lineNum">     761 </span>                :            : #define DF_INSN_UID_GET(UID) (df-&gt;insns[(UID)])</a>
+<a name="762"><span class="lineNum">     762 </span>                :            : #define DF_INSN_UID_SET(UID,VAL) (df-&gt;insns[(UID)]=(VAL))</a>
+<a name="763"><span class="lineNum">     763 </span>                :            : #define DF_INSN_UID_SAFE_GET(UID) (((unsigned)(UID) &lt; DF_INSN_SIZE ())       \</a>
+<a name="764"><span class="lineNum">     764 </span>                :            :                                      ? DF_INSN_UID_GET (UID) \</a>
+<a name="765"><span class="lineNum">     765 </span>                :            :                                      : NULL)</a>
+<a name="766"><span class="lineNum">     766 </span>                :            : #define DF_INSN_UID_LUID(INSN) (DF_INSN_UID_GET (INSN)-&gt;luid)</a>
+<a name="767"><span class="lineNum">     767 </span>                :            : #define DF_INSN_UID_DEFS(INSN) (DF_INSN_UID_GET (INSN)-&gt;defs)</a>
+<a name="768"><span class="lineNum">     768 </span>                :            : #define DF_INSN_UID_USES(INSN) (DF_INSN_UID_GET (INSN)-&gt;uses)</a>
+<a name="769"><span class="lineNum">     769 </span>                :            : #define DF_INSN_UID_EQ_USES(INSN) (DF_INSN_UID_GET (INSN)-&gt;eq_uses)</a>
+<a name="770"><span class="lineNum">     770 </span>                :            : #define DF_INSN_UID_MWS(INSN) (DF_INSN_UID_GET (INSN)-&gt;mw_hardregs)</a>
+<a name="771"><span class="lineNum">     771 </span>                :            : </a>
+<a name="772"><span class="lineNum">     772 </span>                :            : #define FOR_EACH_INSN_INFO_DEF(ITER, INSN) \</a>
+<a name="773"><span class="lineNum">     773 </span>                :            :   for (ITER = DF_INSN_INFO_DEFS (INSN); ITER; ITER = DF_REF_NEXT_LOC (ITER))</a>
+<a name="774"><span class="lineNum">     774 </span>                :            : </a>
+<a name="775"><span class="lineNum">     775 </span>                :            : #define FOR_EACH_INSN_INFO_USE(ITER, INSN) \</a>
+<a name="776"><span class="lineNum">     776 </span>                :            :   for (ITER = DF_INSN_INFO_USES (INSN); ITER; ITER = DF_REF_NEXT_LOC (ITER))</a>
+<a name="777"><span class="lineNum">     777 </span>                :            : </a>
+<a name="778"><span class="lineNum">     778 </span>                :            : #define FOR_EACH_INSN_INFO_EQ_USE(ITER, INSN) \</a>
+<a name="779"><span class="lineNum">     779 </span>                :            :   for (ITER = DF_INSN_INFO_EQ_USES (INSN); ITER; ITER = DF_REF_NEXT_LOC (ITER))</a>
+<a name="780"><span class="lineNum">     780 </span>                :            : </a>
+<a name="781"><span class="lineNum">     781 </span>                :            : #define FOR_EACH_INSN_INFO_MW(ITER, INSN) \</a>
+<a name="782"><span class="lineNum">     782 </span>                :            :   for (ITER = DF_INSN_INFO_MWS (INSN); ITER; ITER = DF_MWS_NEXT (ITER))</a>
+<a name="783"><span class="lineNum">     783 </span>                :            : </a>
+<a name="784"><span class="lineNum">     784 </span>                :            : #define FOR_EACH_INSN_DEF(ITER, INSN) \</a>
+<a name="785"><span class="lineNum">     785 </span>                :            :   FOR_EACH_INSN_INFO_DEF(ITER, DF_INSN_INFO_GET (INSN))</a>
+<a name="786"><span class="lineNum">     786 </span>                :            : </a>
+<a name="787"><span class="lineNum">     787 </span>                :            : #define FOR_EACH_INSN_USE(ITER, INSN) \</a>
+<a name="788"><span class="lineNum">     788 </span>                :            :   FOR_EACH_INSN_INFO_USE(ITER, DF_INSN_INFO_GET (INSN))</a>
+<a name="789"><span class="lineNum">     789 </span>                :            : </a>
+<a name="790"><span class="lineNum">     790 </span>                :            : #define FOR_EACH_INSN_EQ_USE(ITER, INSN) \</a>
+<a name="791"><span class="lineNum">     791 </span>                :            :   FOR_EACH_INSN_INFO_EQ_USE(ITER, DF_INSN_INFO_GET (INSN))</a>
+<a name="792"><span class="lineNum">     792 </span>                :            : </a>
+<a name="793"><span class="lineNum">     793 </span>                :            : #define FOR_EACH_ARTIFICIAL_USE(ITER, BB_INDEX) \</a>
+<a name="794"><span class="lineNum">     794 </span>                :            :   for (ITER = df_get_artificial_uses (BB_INDEX); ITER; \</a>
+<a name="795"><span class="lineNum">     795 </span>                :            :        ITER = DF_REF_NEXT_LOC (ITER))</a>
+<a name="796"><span class="lineNum">     796 </span>                :            : </a>
+<a name="797"><span class="lineNum">     797 </span>                :            : #define FOR_EACH_ARTIFICIAL_DEF(ITER, BB_INDEX) \</a>
+<a name="798"><span class="lineNum">     798 </span>                :            :   for (ITER = df_get_artificial_defs (BB_INDEX); ITER; \</a>
+<a name="799"><span class="lineNum">     799 </span>                :            :        ITER = DF_REF_NEXT_LOC (ITER))</a>
+<a name="800"><span class="lineNum">     800 </span>                :            : </a>
+<a name="801"><span class="lineNum">     801 </span>                :            : /* An obstack for bitmap not related to specific dataflow problems.</a>
+<a name="802"><span class="lineNum">     802 </span>                :            :    This obstack should e.g. be used for bitmaps with a short life time</a>
+<a name="803"><span class="lineNum">     803 </span>                :            :    such as temporary bitmaps.  This obstack is declared in df-core.c.  */</a>
+<a name="804"><span class="lineNum">     804 </span>                :            : </a>
+<a name="805"><span class="lineNum">     805 </span>                :            : extern bitmap_obstack df_bitmap_obstack;</a>
+<a name="806"><span class="lineNum">     806 </span>                :            : </a>
+<a name="807"><span class="lineNum">     807 </span>                :            : </a>
+<a name="808"><span class="lineNum">     808 </span>                :            : /* One of these structures is allocated for every basic block.  */</a>
+<a name="809"><span class="lineNum">     809 </span>                :            : struct df_scan_bb_info</a>
+<a name="810"><span class="lineNum">     810 </span>                :            : {</a>
+<a name="811"><span class="lineNum">     811 </span>                :            :   /* The entry block has many artificial defs and these are at the</a>
+<a name="812"><span class="lineNum">     812 </span>                :            :      bottom of the block.</a>
+<a name="813"><span class="lineNum">     813 </span>                :            : </a>
+<a name="814"><span class="lineNum">     814 </span>                :            :      Blocks that are targets of exception edges may have some</a>
+<a name="815"><span class="lineNum">     815 </span>                :            :      artificial defs.  These are logically located at the top of the</a>
+<a name="816"><span class="lineNum">     816 </span>                :            :      block.</a>
+<a name="817"><span class="lineNum">     817 </span>                :            : </a>
+<a name="818"><span class="lineNum">     818 </span>                :            :      Blocks that are the targets of non-local goto's have the hard</a>
+<a name="819"><span class="lineNum">     819 </span>                :            :      frame pointer defined at the top of the block.  */</a>
+<a name="820"><span class="lineNum">     820 </span>                :            :   df_ref artificial_defs;</a>
+<a name="821"><span class="lineNum">     821 </span>                :            : </a>
+<a name="822"><span class="lineNum">     822 </span>                :            :   /* Blocks that are targets of exception edges may have some</a>
+<a name="823"><span class="lineNum">     823 </span>                :            :      artificial uses.  These are logically at the top of the block.</a>
+<a name="824"><span class="lineNum">     824 </span>                :            : </a>
+<a name="825"><span class="lineNum">     825 </span>                :            :      Most blocks have artificial uses at the bottom of the block.  */</a>
+<a name="826"><span class="lineNum">     826 </span>                :            :   df_ref artificial_uses;</a>
+<a name="827"><span class="lineNum">     827 </span>                :            : };</a>
+<a name="828"><span class="lineNum">     828 </span>                :            : </a>
+<a name="829"><span class="lineNum">     829 </span>                :            : </a>
+<a name="830"><span class="lineNum">     830 </span>                :            : /* Reaching definitions.  All bitmaps are indexed by the id field of</a>
+<a name="831"><span class="lineNum">     831 </span>                :            :    the ref except sparse_kill which is indexed by regno.  For the</a>
+<a name="832"><span class="lineNum">     832 </span>                :            :    LR&amp;RD problem, the kill set is not complete: It does not contain</a>
+<a name="833"><span class="lineNum">     833 </span>                :            :    DEFs killed because the set register has died in the LR set.  */</a>
+<a name="834"><span class="lineNum">     834 </span>                :            : class df_rd_bb_info</a>
+<a name="835"><span class="lineNum">     835 </span>                :            : {</a>
+<a name="836"><span class="lineNum">     836 </span>                :            : public:</a>
+<a name="837"><span class="lineNum">     837 </span>                :            :   /* Local sets to describe the basic blocks.   */</a>
+<a name="838"><span class="lineNum">     838 </span>                :            :   bitmap_head kill;</a>
+<a name="839"><span class="lineNum">     839 </span>                :            :   bitmap_head sparse_kill;</a>
+<a name="840"><span class="lineNum">     840 </span>                :            :   bitmap_head gen;   /* The set of defs generated in this block.  */</a>
+<a name="841"><span class="lineNum">     841 </span>                :            : </a>
+<a name="842"><span class="lineNum">     842 </span>                :            :   /* The results of the dataflow problem.  */</a>
+<a name="843"><span class="lineNum">     843 </span>                :            :   bitmap_head in;    /* At the top of the block.  */</a>
+<a name="844"><span class="lineNum">     844 </span>                :            :   bitmap_head out;   /* At the bottom of the block.  */</a>
+<a name="845"><span class="lineNum">     845 </span>                :            : };</a>
+<a name="846"><span class="lineNum">     846 </span>                :            : </a>
+<a name="847"><span class="lineNum">     847 </span>                :            : </a>
+<a name="848"><span class="lineNum">     848 </span>                :            : /* Multiple reaching definitions.  All bitmaps are referenced by the</a>
+<a name="849"><span class="lineNum">     849 </span>                :            :    register number.  */</a>
+<a name="850"><span class="lineNum">     850 </span>                :            : </a>
+<a name="851"><span class="lineNum">     851 </span>                :            : class df_md_bb_info</a>
+<a name="852"><span class="lineNum">     852 </span>                :            : {</a>
+<a name="853"><span class="lineNum">     853 </span>                :            : public:</a>
+<a name="854"><span class="lineNum">     854 </span>                :            :   /* Local sets to describe the basic blocks.  */</a>
+<a name="855"><span class="lineNum">     855 </span>                :            :   bitmap_head gen;    /* Partial/conditional definitions live at BB out.  */</a>
+<a name="856"><span class="lineNum">     856 </span>                :            :   bitmap_head kill;   /* Other definitions that are live at BB out.  */</a>
+<a name="857"><span class="lineNum">     857 </span>                :            :   bitmap_head init;   /* Definitions coming from dominance frontier edges. */</a>
+<a name="858"><span class="lineNum">     858 </span>                :            : </a>
+<a name="859"><span class="lineNum">     859 </span>                :            :   /* The results of the dataflow problem.  */</a>
+<a name="860"><span class="lineNum">     860 </span>                :            :   bitmap_head in;    /* Just before the block itself. */</a>
+<a name="861"><span class="lineNum">     861 </span>                :            :   bitmap_head out;   /* At the bottom of the block.  */</a>
+<a name="862"><span class="lineNum">     862 </span>                :            : };</a>
+<a name="863"><span class="lineNum">     863 </span>                :            : </a>
+<a name="864"><span class="lineNum">     864 </span>                :            : </a>
+<a name="865"><span class="lineNum">     865 </span>                :            : /* Live registers, a backwards dataflow problem.  All bitmaps are</a>
+<a name="866"><span class="lineNum">     866 </span>                :            :    referenced by the register number.  */</a>
+<a name="867"><span class="lineNum">     867 </span>                :            : </a>
+<a name="868"><span class="lineNum">     868 </span>                :            : class df_lr_bb_info</a>
+<a name="869"><span class="lineNum">     869 </span>                :            : {</a>
+<a name="870"><span class="lineNum">     870 </span>                :            : public:</a>
+<a name="871"><span class="lineNum">     871 </span>                :            :   /* Local sets to describe the basic blocks.  */</a>
+<a name="872"><span class="lineNum">     872 </span>                :            :   bitmap_head def;   /* The set of registers set in this block</a>
+<a name="873"><span class="lineNum">     873 </span>                :            :                         - except artificial defs at the top.  */</a>
+<a name="874"><span class="lineNum">     874 </span>                :            :   bitmap_head use;   /* The set of registers used in this block.  */</a>
+<a name="875"><span class="lineNum">     875 </span>                :            : </a>
+<a name="876"><span class="lineNum">     876 </span>                :            :   /* The results of the dataflow problem.  */</a>
+<a name="877"><span class="lineNum">     877 </span>                :            :   bitmap_head in;    /* Just before the block itself. */</a>
+<a name="878"><span class="lineNum">     878 </span>                :            :   bitmap_head out;   /* At the bottom of the block.  */</a>
+<a name="879"><span class="lineNum">     879 </span>                :            : };</a>
+<a name="880"><span class="lineNum">     880 </span>                :            : </a>
+<a name="881"><span class="lineNum">     881 </span>                :            : </a>
+<a name="882"><span class="lineNum">     882 </span>                :            : /* Uninitialized registers.  All bitmaps are referenced by the</a>
+<a name="883"><span class="lineNum">     883 </span>                :            :    register number.  Anded results of the forwards and backward live</a>
+<a name="884"><span class="lineNum">     884 </span>                :            :    info.  Note that the forwards live information is not available</a>
+<a name="885"><span class="lineNum">     885 </span>                :            :    separately.  */</a>
+<a name="886"><span class="lineNum">     886 </span>                :            : class df_live_bb_info</a>
+<a name="887"><span class="lineNum">     887 </span>                :            : {</a>
+<a name="888"><span class="lineNum">     888 </span>                :            : public:</a>
+<a name="889"><span class="lineNum">     889 </span>                :            :   /* Local sets to describe the basic blocks.  */</a>
+<a name="890"><span class="lineNum">     890 </span>                :            :   bitmap_head kill;  /* The set of registers unset in this block.  Calls,</a>
+<a name="891"><span class="lineNum">     891 </span>                :            :                         for instance, unset registers.  */</a>
+<a name="892"><span class="lineNum">     892 </span>                :            :   bitmap_head gen;   /* The set of registers set in this block.  */</a>
+<a name="893"><span class="lineNum">     893 </span>                :            : </a>
+<a name="894"><span class="lineNum">     894 </span>                :            :   /* The results of the dataflow problem.  */</a>
+<a name="895"><span class="lineNum">     895 </span>                :            :   bitmap_head in;    /* At the top of the block.  */</a>
+<a name="896"><span class="lineNum">     896 </span>                :            :   bitmap_head out;   /* At the bottom of the block.  */</a>
+<a name="897"><span class="lineNum">     897 </span>                :            : };</a>
+<a name="898"><span class="lineNum">     898 </span>                :            : </a>
+<a name="899"><span class="lineNum">     899 </span>                :            : </a>
+<a name="900"><span class="lineNum">     900 </span>                :            : /* Live registers, a backwards dataflow problem.  These bitmaps are</a>
+<a name="901"><span class="lineNum">     901 </span>                :            :    indexed by 2 * regno for each pseudo and have two entries for each</a>
+<a name="902"><span class="lineNum">     902 </span>                :            :    pseudo.  Only pseudos that have a size of 2 * UNITS_PER_WORD are</a>
+<a name="903"><span class="lineNum">     903 </span>                :            :    meaningfully tracked.  */</a>
+<a name="904"><span class="lineNum">     904 </span>                :            : </a>
+<a name="905"><span class="lineNum">     905 </span>                :            : class df_word_lr_bb_info</a>
+<a name="906"><span class="lineNum">     906 </span>                :            : {</a>
+<a name="907"><span class="lineNum">     907 </span>                :            : public:</a>
+<a name="908"><span class="lineNum">     908 </span>                :            :   /* Local sets to describe the basic blocks.  */</a>
+<a name="909"><span class="lineNum">     909 </span>                :            :   bitmap_head def;   /* The set of registers set in this block</a>
+<a name="910"><span class="lineNum">     910 </span>                :            :                         - except artificial defs at the top.  */</a>
+<a name="911"><span class="lineNum">     911 </span>                :            :   bitmap_head use;   /* The set of registers used in this block.  */</a>
+<a name="912"><span class="lineNum">     912 </span>                :            : </a>
+<a name="913"><span class="lineNum">     913 </span>                :            :   /* The results of the dataflow problem.  */</a>
+<a name="914"><span class="lineNum">     914 </span>                :            :   bitmap_head in;    /* Just before the block itself. */</a>
+<a name="915"><span class="lineNum">     915 </span>                :            :   bitmap_head out;   /* At the bottom of the block.  */</a>
+<a name="916"><span class="lineNum">     916 </span>                :            : };</a>
+<a name="917"><span class="lineNum">     917 </span>                :            : </a>
+<a name="918"><span class="lineNum">     918 </span>                :            : /* Must-initialized registers.  All bitmaps are referenced by the</a>
+<a name="919"><span class="lineNum">     919 </span>                :            :    register number.  */</a>
+<a name="920"><span class="lineNum">     920 </span>                :            : class df_mir_bb_info</a>
+<a name="921"><span class="lineNum">     921 </span>                :            : {</a>
+<a name="922"><span class="lineNum">     922 </span>                :            : public:</a>
+<a name="923"><span class="lineNum">     923 </span>                :            :   /* Local sets to describe the basic blocks.  */</a>
+<a name="924"><span class="lineNum">     924 </span>                :            :   bitmap_head kill;  /* The set of registers unset in this block.  Calls,</a>
+<a name="925"><span class="lineNum">     925 </span>                :            :                         for instance, unset registers.  */</a>
+<a name="926"><span class="lineNum">     926 </span>                :            :   bitmap_head gen;   /* The set of registers set in this block, excluding the</a>
+<a name="927"><span class="lineNum">     927 </span>                :            :                         ones killed later on in this block.  */</a>
+<a name="928"><span class="lineNum">     928 </span>                :            : </a>
+<a name="929"><span class="lineNum">     929 </span>                :            :   /* The results of the dataflow problem.  */</a>
+<a name="930"><span class="lineNum">     930 </span>                :            :   bitmap_head in;    /* At the top of the block.  */</a>
+<a name="931"><span class="lineNum">     931 </span>                :            :   bitmap_head out;   /* At the bottom of the block.  */</a>
+<a name="932"><span class="lineNum">     932 </span>                :            :   bool con_visited;  /* Visited by con_fun_{0,n}.  */</a>
+<a name="933"><span class="lineNum">     933 </span>                :            : };</a>
+<a name="934"><span class="lineNum">     934 </span>                :            : </a>
+<a name="935"><span class="lineNum">     935 </span>                :            : </a>
+<a name="936"><span class="lineNum">     936 </span>                :            : /* This is used for debugging and for the dumpers to find the latest</a>
+<a name="937"><span class="lineNum">     937 </span>                :            :    instance so that the df info can be added to the dumps.  This</a>
+<a name="938"><span class="lineNum">     938 </span>                :            :    should not be used by regular code.  */</a>
+<a name="939"><span class="lineNum">     939 </span>                :            : extern class df_d *df;</a>
+<a name="940"><span class="lineNum">     940 </span>                :            : #define df_scan    (df-&gt;problems_by_index[DF_SCAN])</a>
+<a name="941"><span class="lineNum">     941 </span>                :            : #define df_rd      (df-&gt;problems_by_index[DF_RD])</a>
+<a name="942"><span class="lineNum">     942 </span>                :            : #define df_lr      (df-&gt;problems_by_index[DF_LR])</a>
+<a name="943"><span class="lineNum">     943 </span>                :            : #define df_live    (df-&gt;problems_by_index[DF_LIVE])</a>
+<a name="944"><span class="lineNum">     944 </span>                :            : #define df_chain   (df-&gt;problems_by_index[DF_CHAIN])</a>
+<a name="945"><span class="lineNum">     945 </span>                :            : #define df_word_lr (df-&gt;problems_by_index[DF_WORD_LR])</a>
+<a name="946"><span class="lineNum">     946 </span>                :            : #define df_note    (df-&gt;problems_by_index[DF_NOTE])</a>
+<a name="947"><span class="lineNum">     947 </span>                :            : #define df_md      (df-&gt;problems_by_index[DF_MD])</a>
+<a name="948"><span class="lineNum">     948 </span>                :            : #define df_mir     (df-&gt;problems_by_index[DF_MIR])</a>
+<a name="949"><span class="lineNum">     949 </span>                :            : </a>
+<a name="950"><span class="lineNum">     950 </span>                :            : /* This symbol turns on checking that each modification of the cfg has</a>
+<a name="951"><span class="lineNum">     951 </span>                :            :   been identified to the appropriate df routines.  It is not part of</a>
+<a name="952"><span class="lineNum">     952 </span>                :            :   verification per se because the check that the final solution has</a>
+<a name="953"><span class="lineNum">     953 </span>                :            :   not changed covers this.  However, if the solution is not being</a>
+<a name="954"><span class="lineNum">     954 </span>                :            :   properly recomputed because the cfg is being modified, adding in</a>
+<a name="955"><span class="lineNum">     955 </span>                :            :   calls to df_check_cfg_clean can be used to find the source of that</a>
+<a name="956"><span class="lineNum">     956 </span>                :            :   kind of problem.  */</a>
+<a name="957"><span class="lineNum">     957 </span>                :            : #if 0</a>
+<a name="958"><span class="lineNum">     958 </span>                :            : #define DF_DEBUG_CFG</a>
+<a name="959"><span class="lineNum">     959 </span>                :            : #endif</a>
+<a name="960"><span class="lineNum">     960 </span>                :            : </a>
+<a name="961"><span class="lineNum">     961 </span>                :            : </a>
+<a name="962"><span class="lineNum">     962 </span>                :            : /* Functions defined in df-core.c.  */</a>
+<a name="963"><span class="lineNum">     963 </span>                :            : </a>
+<a name="964"><span class="lineNum">     964 </span>                :            : extern void df_add_problem (const struct df_problem *);</a>
+<a name="965"><span class="lineNum">     965 </span>                :            : extern int df_set_flags (int);</a>
+<a name="966"><span class="lineNum">     966 </span>                :            : extern int df_clear_flags (int);</a>
+<a name="967"><span class="lineNum">     967 </span>                :            : extern void df_set_blocks (bitmap);</a>
+<a name="968"><span class="lineNum">     968 </span>                :            : extern void df_remove_problem (struct dataflow *);</a>
+<a name="969"><span class="lineNum">     969 </span>                :            : extern void df_finish_pass (bool);</a>
+<a name="970"><span class="lineNum">     970 </span>                :            : extern void df_analyze_problem (struct dataflow *, bitmap, int *, int);</a>
+<a name="971"><span class="lineNum">     971 </span>                :            : extern void df_analyze ();</a>
+<a name="972"><span class="lineNum">     972 </span>                :            : extern void df_analyze_loop (class loop *);</a>
+<a name="973"><span class="lineNum">     973 </span>                :            : extern int df_get_n_blocks (enum df_flow_dir);</a>
+<a name="974"><span class="lineNum">     974 </span>                :            : extern int *df_get_postorder (enum df_flow_dir);</a>
+<a name="975"><span class="lineNum">     975 </span>                :            : extern void df_simple_dataflow (enum df_flow_dir, df_init_function,</a>
+<a name="976"><span class="lineNum">     976 </span>                :            :                                 df_confluence_function_0, df_confluence_function_n,</a>
+<a name="977"><span class="lineNum">     977 </span>                :            :                                 df_transfer_function, bitmap, int *, int);</a>
+<a name="978"><span class="lineNum">     978 </span>                :            : extern void df_mark_solutions_dirty (void);</a>
+<a name="979"><span class="lineNum">     979 </span>                :            : extern bool df_get_bb_dirty (basic_block);</a>
+<a name="980"><span class="lineNum">     980 </span>                :            : extern void df_set_bb_dirty (basic_block);</a>
+<a name="981"><span class="lineNum">     981 </span>                :            : extern void df_compact_blocks (void);</a>
+<a name="982"><span class="lineNum">     982 </span>                :            : extern void df_bb_replace (int, basic_block);</a>
+<a name="983"><span class="lineNum">     983 </span>                :            : extern void df_bb_delete (int);</a>
+<a name="984"><span class="lineNum">     984 </span>                :            : extern void df_verify (void);</a>
+<a name="985"><span class="lineNum">     985 </span>                :            : #ifdef DF_DEBUG_CFG</a>
+<a name="986"><span class="lineNum">     986 </span>                :            : extern void df_check_cfg_clean (void);</a>
+<a name="987"><span class="lineNum">     987 </span>                :            : #endif</a>
+<a name="988"><span class="lineNum">     988 </span>                :            : extern df_ref df_bb_regno_first_def_find (basic_block, unsigned int);</a>
+<a name="989"><span class="lineNum">     989 </span>                :            : extern df_ref df_bb_regno_last_def_find (basic_block, unsigned int);</a>
+<a name="990"><span class="lineNum">     990 </span>                :            : extern df_ref df_find_def (rtx_insn *, rtx);</a>
+<a name="991"><span class="lineNum">     991 </span>                :            : extern bool df_reg_defined (rtx_insn *, rtx);</a>
+<a name="992"><span class="lineNum">     992 </span>                :            : extern df_ref df_find_use (rtx_insn *, rtx);</a>
+<a name="993"><span class="lineNum">     993 </span>                :            : extern bool df_reg_used (rtx_insn *, rtx);</a>
+<a name="994"><span class="lineNum">     994 </span>                :            : extern void df_worklist_dataflow (struct dataflow *,bitmap, int *, int);</a>
+<a name="995"><span class="lineNum">     995 </span>                :            : extern void df_print_regset (FILE *file, const_bitmap r);</a>
+<a name="996"><span class="lineNum">     996 </span>                :            : extern void df_print_word_regset (FILE *file, const_bitmap r);</a>
+<a name="997"><span class="lineNum">     997 </span>                :            : extern void df_dump (FILE *);</a>
+<a name="998"><span class="lineNum">     998 </span>                :            : extern void df_dump_region (FILE *);</a>
+<a name="999"><span class="lineNum">     999 </span>                :            : extern void df_dump_start (FILE *);</a>
+<a name="1000"><span class="lineNum">    1000 </span>                :            : extern void df_dump_top (basic_block, FILE *);</a>
+<a name="1001"><span class="lineNum">    1001 </span>                :            : extern void df_dump_bottom (basic_block, FILE *);</a>
+<a name="1002"><span class="lineNum">    1002 </span>                :            : extern void df_dump_insn_top (const rtx_insn *, FILE *);</a>
+<a name="1003"><span class="lineNum">    1003 </span>                :            : extern void df_dump_insn_bottom (const rtx_insn *, FILE *);</a>
+<a name="1004"><span class="lineNum">    1004 </span>                :            : extern void df_refs_chain_dump (df_ref, bool, FILE *);</a>
+<a name="1005"><span class="lineNum">    1005 </span>                :            : extern void df_regs_chain_dump (df_ref,  FILE *);</a>
+<a name="1006"><span class="lineNum">    1006 </span>                :            : extern void df_insn_debug (rtx_insn *, bool, FILE *);</a>
+<a name="1007"><span class="lineNum">    1007 </span>                :            : extern void df_insn_debug_regno (rtx_insn *, FILE *);</a>
+<a name="1008"><span class="lineNum">    1008 </span>                :            : extern void df_regno_debug (unsigned int, FILE *);</a>
+<a name="1009"><span class="lineNum">    1009 </span>                :            : extern void df_ref_debug (df_ref, FILE *);</a>
+<a name="1010"><span class="lineNum">    1010 </span>                :            : extern void debug_df_insn (rtx_insn *);</a>
+<a name="1011"><span class="lineNum">    1011 </span>                :            : extern void debug_df_regno (unsigned int);</a>
+<a name="1012"><span class="lineNum">    1012 </span>                :            : extern void debug_df_reg (rtx);</a>
+<a name="1013"><span class="lineNum">    1013 </span>                :            : extern void debug_df_defno (unsigned int);</a>
+<a name="1014"><span class="lineNum">    1014 </span>                :            : extern void debug_df_useno (unsigned int);</a>
+<a name="1015"><span class="lineNum">    1015 </span>                :            : extern void debug_df_ref (df_ref);</a>
+<a name="1016"><span class="lineNum">    1016 </span>                :            : extern void debug_df_chain (struct df_link *);</a>
+<a name="1017"><span class="lineNum">    1017 </span>                :            : </a>
+<a name="1018"><span class="lineNum">    1018 </span>                :            : /* Functions defined in df-problems.c. */</a>
+<a name="1019"><span class="lineNum">    1019 </span>                :            : </a>
+<a name="1020"><span class="lineNum">    1020 </span>                :            : extern struct df_link *df_chain_create (df_ref, df_ref);</a>
+<a name="1021"><span class="lineNum">    1021 </span>                :            : extern void df_chain_unlink (df_ref);</a>
+<a name="1022"><span class="lineNum">    1022 </span>                :            : extern void df_chain_copy (df_ref, struct df_link *);</a>
+<a name="1023"><span class="lineNum">    1023 </span>                :            : extern void df_grow_bb_info (struct dataflow *);</a>
+<a name="1024"><span class="lineNum">    1024 </span>                :            : extern void df_chain_dump (struct df_link *, FILE *);</a>
+<a name="1025"><span class="lineNum">    1025 </span>                :            : extern void df_print_bb_index (basic_block bb, FILE *file);</a>
+<a name="1026"><span class="lineNum">    1026 </span>                :            : extern void df_rd_add_problem (void);</a>
+<a name="1027"><span class="lineNum">    1027 </span>                :            : extern void df_rd_simulate_artificial_defs_at_top (basic_block, bitmap);</a>
+<a name="1028"><span class="lineNum">    1028 </span>                :            : extern void df_rd_simulate_one_insn (basic_block, rtx_insn *, bitmap);</a>
+<a name="1029"><span class="lineNum">    1029 </span>                :            : extern void df_lr_add_problem (void);</a>
+<a name="1030"><span class="lineNum">    1030 </span>                :            : extern void df_lr_verify_transfer_functions (void);</a>
+<a name="1031"><span class="lineNum">    1031 </span>                :            : extern void df_live_verify_transfer_functions (void);</a>
+<a name="1032"><span class="lineNum">    1032 </span>                :            : extern void df_live_add_problem (void);</a>
+<a name="1033"><span class="lineNum">    1033 </span>                :            : extern void df_live_set_all_dirty (void);</a>
+<a name="1034"><span class="lineNum">    1034 </span>                :            : extern void df_chain_add_problem (unsigned int);</a>
+<a name="1035"><span class="lineNum">    1035 </span>                :            : extern void df_word_lr_add_problem (void);</a>
+<a name="1036"><span class="lineNum">    1036 </span>                :            : extern bool df_word_lr_mark_ref (df_ref, bool, bitmap);</a>
+<a name="1037"><span class="lineNum">    1037 </span>                :            : extern bool df_word_lr_simulate_defs (rtx_insn *, bitmap);</a>
+<a name="1038"><span class="lineNum">    1038 </span>                :            : extern void df_word_lr_simulate_uses (rtx_insn *, bitmap);</a>
+<a name="1039"><span class="lineNum">    1039 </span>                :            : extern void df_word_lr_simulate_artificial_refs_at_top (basic_block, bitmap);</a>
+<a name="1040"><span class="lineNum">    1040 </span>                :            : extern void df_word_lr_simulate_artificial_refs_at_end (basic_block, bitmap);</a>
+<a name="1041"><span class="lineNum">    1041 </span>                :            : extern void df_note_add_problem (void);</a>
+<a name="1042"><span class="lineNum">    1042 </span>                :            : extern void df_md_add_problem (void);</a>
+<a name="1043"><span class="lineNum">    1043 </span>                :            : extern void df_md_simulate_artificial_defs_at_top (basic_block, bitmap);</a>
+<a name="1044"><span class="lineNum">    1044 </span>                :            : extern void df_md_simulate_one_insn (basic_block, rtx_insn *, bitmap);</a>
+<a name="1045"><span class="lineNum">    1045 </span>                :            : extern void df_mir_add_problem (void);</a>
+<a name="1046"><span class="lineNum">    1046 </span>                :            : extern void df_mir_simulate_one_insn (basic_block, rtx_insn *, bitmap, bitmap);</a>
+<a name="1047"><span class="lineNum">    1047 </span>                :            : extern void df_simulate_find_noclobber_defs (rtx_insn *, bitmap);</a>
+<a name="1048"><span class="lineNum">    1048 </span>                :            : extern void df_simulate_find_defs (rtx_insn *, bitmap);</a>
+<a name="1049"><span class="lineNum">    1049 </span>                :            : extern void df_simulate_defs (rtx_insn *, bitmap);</a>
+<a name="1050"><span class="lineNum">    1050 </span>                :            : extern void df_simulate_uses (rtx_insn *, bitmap);</a>
+<a name="1051"><span class="lineNum">    1051 </span>                :            : extern void df_simulate_initialize_backwards (basic_block, bitmap);</a>
+<a name="1052"><span class="lineNum">    1052 </span>                :            : extern void df_simulate_one_insn_backwards (basic_block, rtx_insn *, bitmap);</a>
+<a name="1053"><span class="lineNum">    1053 </span>                :            : extern void df_simulate_finalize_backwards (basic_block, bitmap);</a>
+<a name="1054"><span class="lineNum">    1054 </span>                :            : extern void df_simulate_initialize_forwards (basic_block, bitmap);</a>
+<a name="1055"><span class="lineNum">    1055 </span>                :            : extern void df_simulate_one_insn_forwards (basic_block, rtx_insn *, bitmap);</a>
+<a name="1056"><span class="lineNum">    1056 </span>                :            : extern void simulate_backwards_to_point (basic_block, regset, rtx);</a>
+<a name="1057"><span class="lineNum">    1057 </span>                :            : extern bool can_move_insns_across (rtx_insn *, rtx_insn *,</a>
+<a name="1058"><span class="lineNum">    1058 </span>                :            :                                    rtx_insn *, rtx_insn *,</a>
+<a name="1059"><span class="lineNum">    1059 </span>                :            :                                    basic_block, regset,</a>
+<a name="1060"><span class="lineNum">    1060 </span>                :            :                                    regset, rtx_insn **);</a>
+<a name="1061"><span class="lineNum">    1061 </span>                :            : /* Functions defined in df-scan.c.  */</a>
+<a name="1062"><span class="lineNum">    1062 </span>                :            : </a>
+<a name="1063"><span class="lineNum">    1063 </span>                :            : extern void df_scan_alloc (bitmap);</a>
+<a name="1064"><span class="lineNum">    1064 </span>                :            : extern void df_scan_add_problem (void);</a>
+<a name="1065"><span class="lineNum">    1065 </span>                :            : extern void df_grow_reg_info (void);</a>
+<a name="1066"><span class="lineNum">    1066 </span>                :            : extern void df_grow_insn_info (void);</a>
+<a name="1067"><span class="lineNum">    1067 </span>                :            : extern void df_scan_blocks (void);</a>
+<a name="1068"><span class="lineNum">    1068 </span>                :            : extern void df_uses_create (rtx *, rtx_insn *, int);</a>
+<a name="1069"><span class="lineNum">    1069 </span>                :            : extern struct df_insn_info * df_insn_create_insn_record (rtx_insn *);</a>
+<a name="1070"><span class="lineNum">    1070 </span>                :            : extern void df_insn_delete (rtx_insn *);</a>
+<a name="1071"><span class="lineNum">    1071 </span>                :            : extern void df_bb_refs_record (int, bool);</a>
+<a name="1072"><span class="lineNum">    1072 </span>                :            : extern bool df_insn_rescan (rtx_insn *);</a>
+<a name="1073"><span class="lineNum">    1073 </span>                :            : extern bool df_insn_rescan_debug_internal (rtx_insn *);</a>
+<a name="1074"><span class="lineNum">    1074 </span>                :            : extern void df_insn_rescan_all (void);</a>
+<a name="1075"><span class="lineNum">    1075 </span>                :            : extern void df_process_deferred_rescans (void);</a>
+<a name="1076"><span class="lineNum">    1076 </span>                :            : extern void df_recompute_luids (basic_block);</a>
+<a name="1077"><span class="lineNum">    1077 </span>                :            : extern void df_insn_change_bb (rtx_insn *, basic_block);</a>
+<a name="1078"><span class="lineNum">    1078 </span>                :            : extern void df_maybe_reorganize_use_refs (enum df_ref_order);</a>
+<a name="1079"><span class="lineNum">    1079 </span>                :            : extern void df_maybe_reorganize_def_refs (enum df_ref_order);</a>
+<a name="1080"><span class="lineNum">    1080 </span>                :            : extern void df_ref_change_reg_with_loc (rtx, unsigned int);</a>
+<a name="1081"><span class="lineNum">    1081 </span>                :            : extern void df_notes_rescan (rtx_insn *);</a>
+<a name="1082"><span class="lineNum">    1082 </span>                :            : extern void df_hard_reg_init (void);</a>
+<a name="1083"><span class="lineNum">    1083 </span>                :            : extern void df_update_entry_block_defs (void);</a>
+<a name="1084"><span class="lineNum">    1084 </span>                :            : extern void df_update_exit_block_uses (void);</a>
+<a name="1085"><span class="lineNum">    1085 </span>                :            : extern void df_update_entry_exit_and_calls (void);</a>
+<a name="1086"><span class="lineNum">    1086 </span>                :            : extern bool df_hard_reg_used_p (unsigned int);</a>
+<a name="1087"><span class="lineNum">    1087 </span>                :            : extern unsigned int df_hard_reg_used_count (unsigned int);</a>
+<a name="1088"><span class="lineNum">    1088 </span>                :            : extern bool df_regs_ever_live_p (unsigned int);</a>
+<a name="1089"><span class="lineNum">    1089 </span>                :            : extern bool df_epilogue_uses_p (unsigned int);</a>
+<a name="1090"><span class="lineNum">    1090 </span>                :            : extern void df_set_regs_ever_live (unsigned int, bool);</a>
+<a name="1091"><span class="lineNum">    1091 </span>                :            : extern void df_compute_regs_ever_live (bool);</a>
+<a name="1092"><span class="lineNum">    1092 </span>                :            : extern void df_scan_verify (void);</a>
+<a name="1093"><span class="lineNum">    1093 </span>                :            : </a>
+<a name="1094"><span class="lineNum">    1094 </span>                :            : </a>
+<a name="1095"><span class="lineNum">    1095 </span>                :            : /*----------------------------------------------------------------------------</a>
+<a name="1096"><span class="lineNum">    1096 </span>                :            :    Public functions access functions for the dataflow problems.</a>
+<a name="1097"><span class="lineNum">    1097 </span>                :            : ----------------------------------------------------------------------------*/</a>
+<a name="1098"><span class="lineNum">    1098 </span>                :            : </a>
+<a name="1099"><span class="lineNum">    1099 </span>                :            : static inline struct df_scan_bb_info *</a>
+<a name="1100"><span class="lineNum">    1100 </span>                :<span class="lineCov">   86078554 : df_scan_get_bb_info (unsigned int index)</span></a>
+<a name="1101"><span class="lineNum">    1101 </span>                :            : {</a>
+<a name="1102"><span class="lineNum">    1102 </span>        [<span class="branchCov" title="Branch 0 was taken 86078554 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">   86078554 :   if (index &lt; df_scan-&gt;block_info_size)</span></a>
+<a name="1103"><span class="lineNum">    1103 </span>                :<span class="lineCov">   86078554 :     return &amp;((struct df_scan_bb_info *) df_scan-&gt;block_info)[index];</span></a>
+<a name="1104"><span class="lineNum">    1104 </span>                :            :   else</a>
+<a name="1105"><span class="lineNum">    1105 </span>                :<span class="lineNoCov">          0 :     return NULL;</span></a>
+<a name="1106"><span class="lineNum">    1106 </span>                :            : }</a>
+<a name="1107"><span class="lineNum">    1107 </span>                :            : </a>
+<a name="1108"><span class="lineNum">    1108 </span>                :            : static inline class df_rd_bb_info *</a>
+<a name="1109"><span class="lineNum">    1109 </span>                :<span class="lineCov">   25054198 : df_rd_get_bb_info (unsigned int index)</span></a>
+<a name="1110"><span class="lineNum">    1110 </span>                :            : {</a>
+<a name="1111"><span class="lineNum">    1111 </span>        [<span class="branchCov" title="Branch 0 was taken 25054198 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">   25054198 :   if (index &lt; df_rd-&gt;block_info_size)</span></a>
+<a name="1112"><span class="lineNum">    1112 </span>                :<span class="lineCov">   25054198 :     return &amp;((class df_rd_bb_info *) df_rd-&gt;block_info)[index];</span></a>
+<a name="1113"><span class="lineNum">    1113 </span>                :            :   else</a>
+<a name="1114"><span class="lineNum">    1114 </span>                :<span class="lineNoCov">          0 :     return NULL;</span></a>
+<a name="1115"><span class="lineNum">    1115 </span>                :            : }</a>
+<a name="1116"><span class="lineNum">    1116 </span>                :            : </a>
+<a name="1117"><span class="lineNum">    1117 </span>                :            : static inline class df_lr_bb_info *</a>
+<a name="1118"><span class="lineNum">    1118 </span>                :<span class="lineCov"> 4144958428 : df_lr_get_bb_info (unsigned int index)</span></a>
+<a name="1119"><span class="lineNum">    1119 </span>                :            : {</a>
+<a name="1120"><span class="lineNum">    1120 </span>        [<span class="branchCov" title="Branch 0 was taken 4144958428 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov"> 4144958428 :   if (index &lt; df_lr-&gt;block_info_size)</span></a>
+<a name="1121"><span class="lineNum">    1121 </span>                :<span class="lineCov"> 4144958428 :     return &amp;((class df_lr_bb_info *) df_lr-&gt;block_info)[index];</span></a>
+<a name="1122"><span class="lineNum">    1122 </span>                :            :   else</a>
+<a name="1123"><span class="lineNum">    1123 </span>                :<span class="lineNoCov">          0 :     return NULL;</span></a>
+<a name="1124"><span class="lineNum">    1124 </span>                :            : }</a>
+<a name="1125"><span class="lineNum">    1125 </span>                :            : </a>
+<a name="1126"><span class="lineNum">    1126 </span>                :            : static inline class df_md_bb_info *</a>
+<a name="1127"><span class="lineNum">    1127 </span>                :<span class="lineNoCov">          0 : df_md_get_bb_info (unsigned int index)</span></a>
+<a name="1128"><span class="lineNum">    1128 </span>                :            : {</a>
+<a name="1129"><span class="lineNum">    1129 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (index &lt; df_md-&gt;block_info_size)</span></a>
+<a name="1130"><span class="lineNum">    1130 </span>                :<span class="lineNoCov">          0 :     return &amp;((class df_md_bb_info *) df_md-&gt;block_info)[index];</span></a>
+<a name="1131"><span class="lineNum">    1131 </span>                :            :   else</a>
+<a name="1132"><span class="lineNum">    1132 </span>                :<span class="lineNoCov">          0 :     return NULL;</span></a>
+<a name="1133"><span class="lineNum">    1133 </span>                :            : }</a>
+<a name="1134"><span class="lineNum">    1134 </span>                :            : </a>
+<a name="1135"><span class="lineNum">    1135 </span>                :            : static inline class df_live_bb_info *</a>
+<a name="1136"><span class="lineNum">    1136 </span>                :<span class="lineCov">   85295301 : df_live_get_bb_info (unsigned int index)</span></a>
+<a name="1137"><span class="lineNum">    1137 </span>                :            : {</a>
+<a name="1138"><span class="lineNum">    1138 </span>        [<span class="branchCov" title="Branch 0 was taken 85295301 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">   85295301 :   if (index &lt; df_live-&gt;block_info_size)</span></a>
+<a name="1139"><span class="lineNum">    1139 </span>                :<span class="lineCov">   85295301 :     return &amp;((class df_live_bb_info *) df_live-&gt;block_info)[index];</span></a>
+<a name="1140"><span class="lineNum">    1140 </span>                :            :   else</a>
+<a name="1141"><span class="lineNum">    1141 </span>                :<span class="lineNoCov">          0 :     return NULL;</span></a>
+<a name="1142"><span class="lineNum">    1142 </span>                :            : }</a>
+<a name="1143"><span class="lineNum">    1143 </span>                :            : </a>
+<a name="1144"><span class="lineNum">    1144 </span>                :            : static inline class df_word_lr_bb_info *</a>
+<a name="1145"><span class="lineNum">    1145 </span>                :<span class="lineCov">     259399 : df_word_lr_get_bb_info (unsigned int index)</span></a>
+<a name="1146"><span class="lineNum">    1146 </span>                :            : {</a>
+<a name="1147"><span class="lineNum">    1147 </span>        [<span class="branchCov" title="Branch 0 was taken 259399 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">     259399 :   if (index &lt; df_word_lr-&gt;block_info_size)</span></a>
+<a name="1148"><span class="lineNum">    1148 </span>                :<span class="lineCov">     259399 :     return &amp;((class df_word_lr_bb_info *) df_word_lr-&gt;block_info)[index];</span></a>
+<a name="1149"><span class="lineNum">    1149 </span>                :            :   else</a>
+<a name="1150"><span class="lineNum">    1150 </span>                :<span class="lineNoCov">          0 :     return NULL;</span></a>
+<a name="1151"><span class="lineNum">    1151 </span>                :            : }</a>
+<a name="1152"><span class="lineNum">    1152 </span>                :            : </a>
+<a name="1153"><span class="lineNum">    1153 </span>                :            : static inline class df_mir_bb_info *</a>
+<a name="1154"><span class="lineNum">    1154 </span>                :<span class="lineCov">    4969807 : df_mir_get_bb_info (unsigned int index)</span></a>
+<a name="1155"><span class="lineNum">    1155 </span>                :            : {</a>
+<a name="1156"><span class="lineNum">    1156 </span>        [<span class="branchCov" title="Branch 0 was taken 4969807 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">    4969807 :   if (index &lt; df_mir-&gt;block_info_size)</span></a>
+<a name="1157"><span class="lineNum">    1157 </span>                :<span class="lineCov">    4969807 :     return &amp;((class df_mir_bb_info *) df_mir-&gt;block_info)[index];</span></a>
+<a name="1158"><span class="lineNum">    1158 </span>                :            :   else</a>
+<a name="1159"><span class="lineNum">    1159 </span>                :<span class="lineNoCov">          0 :     return NULL;</span></a>
+<a name="1160"><span class="lineNum">    1160 </span>                :            : }</a>
+<a name="1161"><span class="lineNum">    1161 </span>                :            : </a>
+<a name="1162"><span class="lineNum">    1162 </span>                :            : /* Get the live at out set for BB no matter what problem happens to be</a>
+<a name="1163"><span class="lineNum">    1163 </span>                :            :    defined.  This function is used by the register allocators who</a>
+<a name="1164"><span class="lineNum">    1164 </span>                :            :    choose different dataflow problems depending on the optimization</a>
+<a name="1165"><span class="lineNum">    1165 </span>                :            :    level.  */</a>
+<a name="1166"><span class="lineNum">    1166 </span>                :            : </a>
+<a name="1167"><span class="lineNum">    1167 </span>                :            : static inline bitmap</a>
+<a name="1168"><span class="lineNum">    1168 </span>                :<span class="lineCov"> 1021689377 : df_get_live_out (basic_block bb)</span></a>
+<a name="1169"><span class="lineNum">    1169 </span>                :            : {</a>
+<a name="1170"><span class="lineNum">    1170 </span>                :            :   gcc_checking_assert (df_lr);</a>
+<a name="1171"><span class="lineNum">    1171 </span>                :            : </a>
+<a name="1172"><span class="lineNum">    1172 </span>        [<span class="branchCov" title="Branch 0 was taken 9371496 times"> + </span><span class="branchCov" title="Branch 1 was taken 1012317871 times"> + </span>]:<span class="lineCov"> 1021689377 :   if (df_live)</span></a>
+<a name="1173"><span class="lineNum">    1173 </span>                :<span class="lineCov">    9371496 :     return DF_LIVE_OUT (bb);</span></a>
+<a name="1174"><span class="lineNum">    1174 </span>                :            :   else</a>
+<a name="1175"><span class="lineNum">    1175 </span>                :<span class="lineCov"> 1012317871 :     return DF_LR_OUT (bb);</span></a>
+<a name="1176"><span class="lineNum">    1176 </span>                :            : }</a>
+<a name="1177"><span class="lineNum">    1177 </span>                :            : </a>
+<a name="1178"><span class="lineNum">    1178 </span>                :            : /* Get the live at in set for BB no matter what problem happens to be</a>
+<a name="1179"><span class="lineNum">    1179 </span>                :            :    defined.  This function is used by the register allocators who</a>
+<a name="1180"><span class="lineNum">    1180 </span>                :            :    choose different dataflow problems depending on the optimization</a>
+<a name="1181"><span class="lineNum">    1181 </span>                :            :    level.  */</a>
+<a name="1182"><span class="lineNum">    1182 </span>                :            : </a>
+<a name="1183"><span class="lineNum">    1183 </span>                :            : static inline bitmap</a>
+<a name="1184"><span class="lineNum">    1184 </span>                :<span class="lineCov"> 2986719164 : df_get_live_in (basic_block bb)</span></a>
+<a name="1185"><span class="lineNum">    1185 </span>                :            : {</a>
+<a name="1186"><span class="lineNum">    1186 </span>                :            :   gcc_checking_assert (df_lr);</a>
+<a name="1187"><span class="lineNum">    1187 </span>                :            : </a>
+<a name="1188"><span class="lineNum">    1188 </span>        [<span class="branchCov" title="Branch 0 was taken 1693712 times"> + </span><span class="branchCov" title="Branch 1 was taken 2985025452 times"> + </span>]:<span class="lineCov"> 2986719164 :   if (df_live)</span></a>
+<a name="1189"><span class="lineNum">    1189 </span>                :<span class="lineCov">    1693712 :     return DF_LIVE_IN (bb);</span></a>
+<a name="1190"><span class="lineNum">    1190 </span>                :            :   else</a>
+<a name="1191"><span class="lineNum">    1191 </span>                :<span class="lineCov"> 2985025452 :     return DF_LR_IN (bb);</span></a>
+<a name="1192"><span class="lineNum">    1192 </span>                :            : }</a>
+<a name="1193"><span class="lineNum">    1193 </span>                :            : </a>
+<a name="1194"><span class="lineNum">    1194 </span>                :            : /* Get basic block info.  */</a>
+<a name="1195"><span class="lineNum">    1195 </span>                :            : /* Get the artificial defs for a basic block.  */</a>
+<a name="1196"><span class="lineNum">    1196 </span>                :            : </a>
+<a name="1197"><span class="lineNum">    1197 </span>                :            : static inline df_ref</a>
+<a name="1198"><span class="lineNum">    1198 </span>                :<span class="lineCov">   50834776 : df_get_artificial_defs (unsigned int bb_index)</span></a>
+<a name="1199"><span class="lineNum">    1199 </span>                :            : {</a>
+<a name="1200"><span class="lineNum">    1200 </span>                :<span class="lineCov">   50834776 :   return df_scan_get_bb_info (bb_index)-&gt;artificial_defs;</span></a>
+<a name="1201"><span class="lineNum">    1201 </span>                :            : }</a>
+<a name="1202"><span class="lineNum">    1202 </span>                :            : </a>
+<a name="1203"><span class="lineNum">    1203 </span>                :            : </a>
+<a name="1204"><span class="lineNum">    1204 </span>                :            : /* Get the artificial uses for a basic block.  */</a>
+<a name="1205"><span class="lineNum">    1205 </span>                :            : </a>
+<a name="1206"><span class="lineNum">    1206 </span>                :            : static inline df_ref</a>
+<a name="1207"><span class="lineNum">    1207 </span>                :<span class="lineCov">   30947024 : df_get_artificial_uses (unsigned int bb_index)</span></a>
+<a name="1208"><span class="lineNum">    1208 </span>                :            : {</a>
+<a name="1209"><span class="lineNum">    1209 </span>                :<span class="lineCov">   30947024 :   return df_scan_get_bb_info (bb_index)-&gt;artificial_uses;</span></a>
+<a name="1210"><span class="lineNum">    1210 </span>                :            : }</a>
+<a name="1211"><span class="lineNum">    1211 </span>                :            : </a>
+<a name="1212"><span class="lineNum">    1212 </span>                :            : /* If INSN defines exactly one register, return the associated reference,</a>
+<a name="1213"><span class="lineNum">    1213 </span>                :            :    otherwise return null.  */</a>
+<a name="1214"><span class="lineNum">    1214 </span>                :            : </a>
+<a name="1215"><span class="lineNum">    1215 </span>                :            : static inline df_ref</a>
+<a name="1216"><span class="lineNum">    1216 </span>                :<span class="lineCov">    4899100 : df_single_def (const df_insn_info *info)</span></a>
+<a name="1217"><span class="lineNum">    1217 </span>                :            : {</a>
+<a name="1218"><span class="lineNum">    1218 </span>                :<span class="lineCov">    4899100 :   df_ref defs = DF_INSN_INFO_DEFS (info);</span></a>
+<a name="1219"><span class="lineNum">    1219 </span>  [<span class="branchCov" title="Branch 0 was taken 3545370 times"> + </span><span class="branchCov" title="Branch 1 was taken 1353730 times"> + </span><span class="branchCov" title="Branch 2 was taken 2693220 times"> + </span><span class="branchCov" title="Branch 3 was taken 852152 times"> + </span>]:<span class="lineCov">    4899100 :   return defs &amp;&amp; !DF_REF_NEXT_LOC (defs) ? defs : NULL;</span></a>
+<a name="1220"><span class="lineNum">    1220 </span>                :            : }</a>
+<a name="1221"><span class="lineNum">    1221 </span>                :            : </a>
+<a name="1222"><span class="lineNum">    1222 </span>                :            : /* If INSN uses exactly one register, return the associated reference,</a>
+<a name="1223"><span class="lineNum">    1223 </span>                :            :    otherwise return null.  */</a>
+<a name="1224"><span class="lineNum">    1224 </span>                :            : </a>
+<a name="1225"><span class="lineNum">    1225 </span>                :            : static inline df_ref</a>
+<a name="1226"><span class="lineNum">    1226 </span>                :<span class="lineCov">    2449550 : df_single_use (const df_insn_info *info)</span></a>
+<a name="1227"><span class="lineNum">    1227 </span>                :            : {</a>
+<a name="1228"><span class="lineNum">    1228 </span>                :<span class="lineCov">    2449550 :   df_ref uses = DF_INSN_INFO_USES (info);</span></a>
+<a name="1229"><span class="lineNum">    1229 </span>  [<span class="branchCov" title="Branch 0 was taken 1887830 times"> + </span><span class="branchCov" title="Branch 1 was taken 561715 times"> + </span><span class="branchCov" title="Branch 2 was taken 1410670 times"> + </span><span class="branchCov" title="Branch 3 was taken 477162 times"> + </span>]:<span class="lineCov">    2449550 :   return uses &amp;&amp; !DF_REF_NEXT_LOC (uses) ? uses : NULL;</span></a>
+<a name="1230"><span class="lineNum">    1230 </span>                :            : }</a>
+<a name="1231"><span class="lineNum">    1231 </span>                :            : </a>
+<a name="1232"><span class="lineNum">    1232 </span>                :            : /* web */</a>
+<a name="1233"><span class="lineNum">    1233 </span>                :            : </a>
+<a name="1234"><span class="lineNum">    1234 </span>                :            : struct web_entry_base</a>
+<a name="1235"><span class="lineNum">    1235 </span>                :            : {</a>
+<a name="1236"><span class="lineNum">    1236 </span>                :            :  private:</a>
+<a name="1237"><span class="lineNum">    1237 </span>                :            :   /* Reference to the parent in the union/find tree.  */</a>
+<a name="1238"><span class="lineNum">    1238 </span>                :            :   web_entry_base *pred_pvt;</a>
+<a name="1239"><span class="lineNum">    1239 </span>                :            : </a>
+<a name="1240"><span class="lineNum">    1240 </span>                :            :  public:</a>
+<a name="1241"><span class="lineNum">    1241 </span>                :            :   /* Accessors.  */</a>
+<a name="1242"><span class="lineNum">    1242 </span>                :<span class="lineCov">    2431910 :   web_entry_base *pred () { return pred_pvt; }</span></a>
+<a name="1243"><span class="lineNum">    1243 </span>                :<span class="lineCov">     496695 :   void set_pred (web_entry_base *p) { pred_pvt = p; }</span></a>
+<a name="1244"><span class="lineNum">    1244 </span>                :            : </a>
+<a name="1245"><span class="lineNum">    1245 </span>                :            :   /* Find representative in union-find tree.  */</a>
+<a name="1246"><span class="lineNum">    1246 </span>                :            :   web_entry_base *unionfind_root ();</a>
+<a name="1247"><span class="lineNum">    1247 </span>                :            : </a>
+<a name="1248"><span class="lineNum">    1248 </span>                :            :   /* Union with another set, returning TRUE if they are already unioned.  */</a>
+<a name="1249"><span class="lineNum">    1249 </span>                :            :   friend bool unionfind_union (web_entry_base *first, web_entry_base *second);</a>
+<a name="1250"><span class="lineNum">    1250 </span>                :            : };</a>
+<a name="1251"><span class="lineNum">    1251 </span>                :            : </a>
+<a name="1252"><span class="lineNum">    1252 </span>                :            : #endif /* GCC_DF_H */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

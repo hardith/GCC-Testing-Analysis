@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/cfg-flags.def</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - cfg-flags.def<span style="font-size: 80%;"> (source / <a href="cfg-flags.def.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntryHi">-</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">72</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Flags on basic blocks and edges.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 2012-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : </a>
+<a name="4"><span class="lineNum">       4 </span>                :            : This file is part of GCC.</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : the terms of the GNU General Public License as published by the Free</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : Software Foundation; either version 3, or (at your option) any later</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : version.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : </a>
+<a name="11"><span class="lineNum">      11 </span>                :            : GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : /* This file defines flags that may appear on basic blocks or on</a>
+<a name="21"><span class="lineNum">      21 </span>                :            :    edges.  Source files define DEF_BASIC_BLOCK_FLAG or DEF_EDGE_FLAG</a>
+<a name="22"><span class="lineNum">      22 </span>                :            :    appropriately before including this file.  */</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : </a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #if !defined(DEF_BASIC_BLOCK_FLAG) &amp;&amp; !defined(DEF_EDGE_FLAG)</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #error &quot;You must define DEF_BASIC_BLOCK_FLAG or DEF_EDGE_FLAG&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #endif</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : </a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #ifdef DEF_BASIC_BLOCK_FLAG</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : </a>
+<a name="30"><span class="lineNum">      30 </span>                :            : /* Masks for basic_block.flags.</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : </a>
+<a name="32"><span class="lineNum">      32 </span>                :            :    The format of this file is: DEF_BASIC_BLOCK_FLAG(NAME, IDX).</a>
+<a name="33"><span class="lineNum">      33 </span>                :            :    NAME is the name of the basic block flag.  A flag BB_#NAME will be</a>
+<a name="34"><span class="lineNum">      34 </span>                :            :    created and the name is used in dump_edge_info.</a>
+<a name="35"><span class="lineNum">      35 </span>                :            :    IDX is a sequence number that is used to determine the value</a>
+<a name="36"><span class="lineNum">      36 </span>                :            :    of the flag, which is 1 &lt;&lt; IDX).</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : </a>
+<a name="38"><span class="lineNum">      38 </span>                :            :    BB_HOT_PARTITION and BB_COLD_PARTITION should be preserved throughout</a>
+<a name="39"><span class="lineNum">      39 </span>                :            :    the compilation, so they are never cleared.</a>
+<a name="40"><span class="lineNum">      40 </span>                :            : </a>
+<a name="41"><span class="lineNum">      41 </span>                :            :    All other flags may be cleared by clear_bb_flags().  It is generally</a>
+<a name="42"><span class="lineNum">      42 </span>                :            :    a bad idea to rely on any flags being up-to-date.  */</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : </a>
+<a name="44"><span class="lineNum">      44 </span>                :            : /* Only set on blocks that have just been created by create_bb.  */</a>
+<a name="45"><span class="lineNum">      45 </span>                :            : DEF_BASIC_BLOCK_FLAG(NEW, 0)</a>
+<a name="46"><span class="lineNum">      46 </span>                :            : </a>
+<a name="47"><span class="lineNum">      47 </span>                :            : /* Set by find_unreachable_blocks.  Do not rely on this being set in any</a>
+<a name="48"><span class="lineNum">      48 </span>                :            :    pass.  */</a>
+<a name="49"><span class="lineNum">      49 </span>                :            : DEF_BASIC_BLOCK_FLAG(REACHABLE, 1)</a>
+<a name="50"><span class="lineNum">      50 </span>                :            : </a>
+<a name="51"><span class="lineNum">      51 </span>                :            : /* Set for blocks in an irreducible loop by loop analysis.  */</a>
+<a name="52"><span class="lineNum">      52 </span>                :            : DEF_BASIC_BLOCK_FLAG(IRREDUCIBLE_LOOP, 2)</a>
+<a name="53"><span class="lineNum">      53 </span>                :            : </a>
+<a name="54"><span class="lineNum">      54 </span>                :            : /* Set on blocks that may actually not be single-entry single-exit block.  */</a>
+<a name="55"><span class="lineNum">      55 </span>                :            : DEF_BASIC_BLOCK_FLAG(SUPERBLOCK, 3)</a>
+<a name="56"><span class="lineNum">      56 </span>                :            : </a>
+<a name="57"><span class="lineNum">      57 </span>                :            : /* Set on basic blocks that the scheduler should not touch.  This is used</a>
+<a name="58"><span class="lineNum">      58 </span>                :            :    by SMS to prevent other schedulers from messing with the loop schedule.  */</a>
+<a name="59"><span class="lineNum">      59 </span>                :            : DEF_BASIC_BLOCK_FLAG(DISABLE_SCHEDULE, 4)</a>
+<a name="60"><span class="lineNum">      60 </span>                :            : </a>
+<a name="61"><span class="lineNum">      61 </span>                :            : /* Set on blocks that should be put in a hot section.  */</a>
+<a name="62"><span class="lineNum">      62 </span>                :            : DEF_BASIC_BLOCK_FLAG(HOT_PARTITION, 5)</a>
+<a name="63"><span class="lineNum">      63 </span>                :            : </a>
+<a name="64"><span class="lineNum">      64 </span>                :            : /* Set on blocks that should be put in a cold section.  */</a>
+<a name="65"><span class="lineNum">      65 </span>                :            : DEF_BASIC_BLOCK_FLAG(COLD_PARTITION, 6)</a>
+<a name="66"><span class="lineNum">      66 </span>                :            : </a>
+<a name="67"><span class="lineNum">      67 </span>                :            : /* Set on block that was duplicated.  */</a>
+<a name="68"><span class="lineNum">      68 </span>                :            : DEF_BASIC_BLOCK_FLAG(DUPLICATED, 7)</a>
+<a name="69"><span class="lineNum">      69 </span>                :            : </a>
+<a name="70"><span class="lineNum">      70 </span>                :            : /* Set if the label at the top of this block is the target of a non-local goto.  */</a>
+<a name="71"><span class="lineNum">      71 </span>                :            : DEF_BASIC_BLOCK_FLAG(NON_LOCAL_GOTO_TARGET, 8)</a>
+<a name="72"><span class="lineNum">      72 </span>                :            : </a>
+<a name="73"><span class="lineNum">      73 </span>                :            : /* Set on blocks that are in RTL format.  */</a>
+<a name="74"><span class="lineNum">      74 </span>                :            : DEF_BASIC_BLOCK_FLAG(RTL, 9) </a>
+<a name="75"><span class="lineNum">      75 </span>                :            : </a>
+<a name="76"><span class="lineNum">      76 </span>                :            : /* Set on blocks that are forwarder blocks.</a>
+<a name="77"><span class="lineNum">      77 </span>                :            :    Only used in cfgcleanup.c.  */</a>
+<a name="78"><span class="lineNum">      78 </span>                :            : DEF_BASIC_BLOCK_FLAG(FORWARDER_BLOCK, 10)</a>
+<a name="79"><span class="lineNum">      79 </span>                :            : </a>
+<a name="80"><span class="lineNum">      80 </span>                :            : /* Set on blocks that cannot be threaded through.</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :    Only used for jump threading.  */</a>
+<a name="82"><span class="lineNum">      82 </span>                :            : DEF_BASIC_BLOCK_FLAG(NONTHREADABLE_BLOCK, 11)</a>
+<a name="83"><span class="lineNum">      83 </span>                :            : </a>
+<a name="84"><span class="lineNum">      84 </span>                :            : /* Set on blocks that were modified in some way.  This bit is set in</a>
+<a name="85"><span class="lineNum">      85 </span>                :            :    df_set_bb_dirty, but not cleared by df_analyze, so it can be used</a>
+<a name="86"><span class="lineNum">      86 </span>                :            :    to test whether a block has been modified prior to a df_analyze call.  */</a>
+<a name="87"><span class="lineNum">      87 </span>                :            : DEF_BASIC_BLOCK_FLAG(MODIFIED, 12)</a>
+<a name="88"><span class="lineNum">      88 </span>                :            : </a>
+<a name="89"><span class="lineNum">      89 </span>                :            : /* A general visited flag for passes to use.  */</a>
+<a name="90"><span class="lineNum">      90 </span>                :            : DEF_BASIC_BLOCK_FLAG(VISITED, 13)</a>
+<a name="91"><span class="lineNum">      91 </span>                :            : </a>
+<a name="92"><span class="lineNum">      92 </span>                :            : /* Set on blocks that are in a transaction.  This is calculated on</a>
+<a name="93"><span class="lineNum">      93 </span>                :            :    demand, and is available after calling compute_transaction_bits().  */</a>
+<a name="94"><span class="lineNum">      94 </span>                :            : DEF_BASIC_BLOCK_FLAG(IN_TRANSACTION, 14)</a>
+<a name="95"><span class="lineNum">      95 </span>                :            : </a>
+<a name="96"><span class="lineNum">      96 </span>                :            : #endif</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :            : #ifdef DEF_EDGE_FLAG</a>
+<a name="99"><span class="lineNum">      99 </span>                :            : </a>
+<a name="100"><span class="lineNum">     100 </span>                :            : /* Masks for edge.flags.</a>
+<a name="101"><span class="lineNum">     101 </span>                :            : </a>
+<a name="102"><span class="lineNum">     102 </span>                :            :    The format of this file is: DEF_EDGE_FLAG(NAME, IDX, STRING).</a>
+<a name="103"><span class="lineNum">     103 </span>                :            :    NAME is the name of the edge flag.  A flag EDGE_#NAME will be</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :    created and the name is used in dump_edge_info.</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :    IDX is a sequence number that is used to determine the value</a>
+<a name="106"><span class="lineNum">     106 </span>                :            :    of the flag, which is 1 &lt;&lt; IDX).  */</a>
+<a name="107"><span class="lineNum">     107 </span>                :            : </a>
+<a name="108"><span class="lineNum">     108 </span>                :            : /* 'Straight line' flow.  In GIMPLE and in cfglayout mode, all normal</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :    edges are fallthru edges.  In cfgrtl mode, this flag really means</a>
+<a name="110"><span class="lineNum">     110 </span>                :            :    that control flow falls through to the next basic block in the line.  */</a>
+<a name="111"><span class="lineNum">     111 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(FALLTHRU, 0)</span></a>
+<a name="112"><span class="lineNum">     112 </span>                :            : </a>
+<a name="113"><span class="lineNum">     113 </span>                :            : /* Strange flow, like a computed jump or exception handling.  Usually</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :    this means that the edge cannot be split.  */</a>
+<a name="115"><span class="lineNum">     115 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(ABNORMAL, 1)</span></a>
+<a name="116"><span class="lineNum">     116 </span>                :            : </a>
+<a name="117"><span class="lineNum">     117 </span>                :            : /* Edge out of a basic block that ends with a CALL_INSN with abnormal</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :    exit, like an exception or a non-local goto.</a>
+<a name="119"><span class="lineNum">     119 </span>                :            :    ABNORMAL_CALL edges also have ABNORMAL set.</a>
+<a name="120"><span class="lineNum">     120 </span>                :            :    This flag is only used for the RTL CFG.  */</a>
+<a name="121"><span class="lineNum">     121 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(ABNORMAL_CALL, 2)</span></a>
+<a name="122"><span class="lineNum">     122 </span>                :            : </a>
+<a name="123"><span class="lineNum">     123 </span>                :            : /* Exception edge.  Exception handling edges represent possible control</a>
+<a name="124"><span class="lineNum">     124 </span>                :            :    transfers from a trapping instruction to an exception handler.</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :    EH edges also have ABNORMAL set for the RTL CFG.  */</a>
+<a name="126"><span class="lineNum">     126 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(EH, 3)</span></a>
+<a name="127"><span class="lineNum">     127 </span>                :            : </a>
+<a name="128"><span class="lineNum">     128 </span>                :            : /* Never merge blocks via this edge.  This is used for exception handling,</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :    to prevent merging away edges to the post-landing-pad basic block.</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :    This flag is only used for the RTL CFG.  */</a>
+<a name="131"><span class="lineNum">     131 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(PRESERVE, 4)</span></a>
+<a name="132"><span class="lineNum">     132 </span>                :            : </a>
+<a name="133"><span class="lineNum">     133 </span>                :            : /* Not a real edge.  This is used to connect parts of the CFG that do</a>
+<a name="134"><span class="lineNum">     134 </span>                :            :    not halt, such as infinite loops and noreturn functions, to the</a>
+<a name="135"><span class="lineNum">     135 </span>                :            :    EXIT_BLOCK, so that traversing of the reverse CFG is possible.  */</a>
+<a name="136"><span class="lineNum">     136 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(FAKE, 5)</span></a>
+<a name="137"><span class="lineNum">     137 </span>                :            : </a>
+<a name="138"><span class="lineNum">     138 </span>                :            : /* A back edge, marked in a depth-first search of the CFG.  Back edges</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :    are hints that this edge may be part of a loop in the CFG.  */</a>
+<a name="140"><span class="lineNum">     140 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(DFS_BACK, 6)</span></a>
+<a name="141"><span class="lineNum">     141 </span>                :            : </a>
+<a name="142"><span class="lineNum">     142 </span>                :            : /* Edge in a part of the CFG that is an irreducible loop.  */</a>
+<a name="143"><span class="lineNum">     143 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(IRREDUCIBLE_LOOP, 7)</span></a>
+<a name="144"><span class="lineNum">     144 </span>                :            : </a>
+<a name="145"><span class="lineNum">     145 </span>                :            : /* Edge taken when controlling predicate is nonzero.</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :    This is only used for the GIMPLE CFG.  */</a>
+<a name="147"><span class="lineNum">     147 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(TRUE_VALUE, 8)</span></a>
+<a name="148"><span class="lineNum">     148 </span>                :            : </a>
+<a name="149"><span class="lineNum">     149 </span>                :            : /* Edge taken when controlling predicate is zero.</a>
+<a name="150"><span class="lineNum">     150 </span>                :            :    This is only used for the GIMPLE CFG.  */</a>
+<a name="151"><span class="lineNum">     151 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(FALSE_VALUE, 9)</span></a>
+<a name="152"><span class="lineNum">     152 </span>                :            : </a>
+<a name="153"><span class="lineNum">     153 </span>                :            : /* Edge is executable.  This is only used in GIMPLE SSA-CCP and VRP.</a>
+<a name="154"><span class="lineNum">     154 </span>                :            :    This is only used for the GIMPLE CFG.  */</a>
+<a name="155"><span class="lineNum">     155 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(EXECUTABLE, 10)</span></a>
+<a name="156"><span class="lineNum">     156 </span>                :            : </a>
+<a name="157"><span class="lineNum">     157 </span>                :            : /* Edge crosses between hot and cold sections, when we do partitioning.</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :    This flag is only used for the RTL CFG.  */</a>
+<a name="159"><span class="lineNum">     159 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(CROSSING, 11)</span></a>
+<a name="160"><span class="lineNum">     160 </span>                :            : </a>
+<a name="161"><span class="lineNum">     161 </span>                :            : /* Edge from a sibcall CALL_INSN to exit.</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :    SIBCALL edges also have ABNORMAL set.</a>
+<a name="163"><span class="lineNum">     163 </span>                :            :    This flag is only used for the RTL CFG.  */</a>
+<a name="164"><span class="lineNum">     164 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(SIBCALL, 12)</span></a>
+<a name="165"><span class="lineNum">     165 </span>                :            : </a>
+<a name="166"><span class="lineNum">     166 </span>                :            : /* Candidate for straight line flow.  Only used in bb-reorder.c.</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :    This flag is only used for the RTL CFG.  */</a>
+<a name="168"><span class="lineNum">     168 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(CAN_FALLTHRU, 13)</span></a>
+<a name="169"><span class="lineNum">     169 </span>                :            : </a>
+<a name="170"><span class="lineNum">     170 </span>                :            : /* Exit of a loop.  This is only used in ifcvt.c.</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :    This flag is only used for the RTL CFG.  */</a>
+<a name="172"><span class="lineNum">     172 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(LOOP_EXIT, 14)</span></a>
+<a name="173"><span class="lineNum">     173 </span>                :            : </a>
+<a name="174"><span class="lineNum">     174 </span>                :            : /* Uninstrumented edge out of a GIMPLE_TRANSACTION statement.  */</a>
+<a name="175"><span class="lineNum">     175 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(TM_UNINSTRUMENTED, 15)</span></a>
+<a name="176"><span class="lineNum">     176 </span>                :            : </a>
+<a name="177"><span class="lineNum">     177 </span>                :            : /* Abort (over) edge out of a GIMPLE_TRANSACTION statement.  */</a>
+<a name="178"><span class="lineNum">     178 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(TM_ABORT, 16)</span></a>
+<a name="179"><span class="lineNum">     179 </span>                :            : </a>
+<a name="180"><span class="lineNum">     180 </span>                :            : /* An edge we should ignore.  It should be entirely local to</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :    passes.  ie, it is never set on any edge upon the completion</a>
+<a name="182"><span class="lineNum">     182 </span>                :            :    of any pass.  */</a>
+<a name="183"><span class="lineNum">     183 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 : DEF_EDGE_FLAG(IGNORE, 17)</span></a>
+<a name="184"><span class="lineNum">     184 </span>                :            : </a>
+<a name="185"><span class="lineNum">     185 </span>                :            : #endif</a>
+<a name="186"><span class="lineNum">     186 </span>                :            : </a>
+<a name="187"><span class="lineNum">     187 </span>                :            : /*</a>
+<a name="188"><span class="lineNum">     188 </span>                :            : Local variables:</a>
+<a name="189"><span class="lineNum">     189 </span>                :            : mode:c</a>
+<a name="190"><span class="lineNum">     190 </span>                :            : End:</a>
+<a name="191"><span class="lineNum">     191 </span>                :            : */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

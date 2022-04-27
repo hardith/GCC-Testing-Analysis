@@ -1,0 +1,1180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/bitmap.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - bitmap.h<span style="font-size: 80%;"> (source / <a href="bitmap.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">198</td>
+            <td class="headerCovTableEntry">208</td>
+            <td class="headerCovTableEntryHi">95.2 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">22</td>
+            <td class="headerCovTableEntryMed">86.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">82</td>
+            <td class="headerCovTableEntry">86</td>
+            <td class="headerCovTableEntryHi">95.3 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Functions to support general ended bitmaps.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 1997-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : </a>
+<a name="4"><span class="lineNum">       4 </span>                :            : This file is part of GCC.</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : GCC is free software; you can redistribute it and/or modify it under</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : the terms of the GNU General Public License as published by the Free</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : Software Foundation; either version 3, or (at your option) any later</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : version.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : </a>
+<a name="11"><span class="lineNum">      11 </span>                :            : GCC is distributed in the hope that it will be useful, but WITHOUT ANY</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : WARRANTY; without even the implied warranty of MERCHANTABILITY or</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #ifndef GCC_BITMAP_H</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #define GCC_BITMAP_H</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : </a>
+<a name="23"><span class="lineNum">      23 </span>                :            : /* Implementation of sparse integer sets as a linked list or tree.</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : </a>
+<a name="25"><span class="lineNum">      25 </span>                :            :    This sparse set representation is suitable for sparse sets with an</a>
+<a name="26"><span class="lineNum">      26 </span>                :            :    unknown (a priori) universe.</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : </a>
+<a name="28"><span class="lineNum">      28 </span>                :            :    Sets are represented as double-linked lists of container nodes of</a>
+<a name="29"><span class="lineNum">      29 </span>                :            :    type &quot;struct bitmap_element&quot; or as a binary trees of the same</a>
+<a name="30"><span class="lineNum">      30 </span>                :            :    container nodes.  Each container node consists of an index for the</a>
+<a name="31"><span class="lineNum">      31 </span>                :            :    first member that could be held in the container, a small array of</a>
+<a name="32"><span class="lineNum">      32 </span>                :            :    integers that represent the members in the container, and pointers</a>
+<a name="33"><span class="lineNum">      33 </span>                :            :    to the next and previous element in the linked list, or left and</a>
+<a name="34"><span class="lineNum">      34 </span>                :            :    right children in the tree.  In linked-list form, the container</a>
+<a name="35"><span class="lineNum">      35 </span>                :            :    nodes in the list are sorted in ascending order, i.e. the head of</a>
+<a name="36"><span class="lineNum">      36 </span>                :            :    the list holds the element with the smallest member of the set.</a>
+<a name="37"><span class="lineNum">      37 </span>                :            :    In tree form, nodes to the left have a smaller container index.</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : </a>
+<a name="39"><span class="lineNum">      39 </span>                :            :    For a given member I in the set:</a>
+<a name="40"><span class="lineNum">      40 </span>                :            :      - the element for I will have index is I / (bits per element)</a>
+<a name="41"><span class="lineNum">      41 </span>                :            :      - the position for I within element is I % (bits per element)</a>
+<a name="42"><span class="lineNum">      42 </span>                :            : </a>
+<a name="43"><span class="lineNum">      43 </span>                :            :    This representation is very space-efficient for large sparse sets, and</a>
+<a name="44"><span class="lineNum">      44 </span>                :            :    the size of the set can be changed dynamically without much overhead.</a>
+<a name="45"><span class="lineNum">      45 </span>                :            :    An important parameter is the number of bits per element.  In this</a>
+<a name="46"><span class="lineNum">      46 </span>                :            :    implementation, there are 128 bits per element.  This results in a</a>
+<a name="47"><span class="lineNum">      47 </span>                :            :    high storage overhead *per element*, but a small overall overhead if</a>
+<a name="48"><span class="lineNum">      48 </span>                :            :    the set is very sparse.</a>
+<a name="49"><span class="lineNum">      49 </span>                :            : </a>
+<a name="50"><span class="lineNum">      50 </span>                :            :    The storage requirements for linked-list sparse sets are O(E), with E-&gt;N</a>
+<a name="51"><span class="lineNum">      51 </span>                :            :    in the worst case (a sparse set with large distances between the values</a>
+<a name="52"><span class="lineNum">      52 </span>                :            :    of the set members).</a>
+<a name="53"><span class="lineNum">      53 </span>                :            : </a>
+<a name="54"><span class="lineNum">      54 </span>                :            :    This representation also works well for data flow problems where the size</a>
+<a name="55"><span class="lineNum">      55 </span>                :            :    of the set may grow dynamically, but care must be taken that the member_p,</a>
+<a name="56"><span class="lineNum">      56 </span>                :            :    add_member, and remove_member operations occur with a suitable access</a>
+<a name="57"><span class="lineNum">      57 </span>                :            :    pattern.</a>
+<a name="58"><span class="lineNum">      58 </span>                :            : </a>
+<a name="59"><span class="lineNum">      59 </span>                :            :    The linked-list set representation works well for problems involving very</a>
+<a name="60"><span class="lineNum">      60 </span>                :            :    sparse sets.  The canonical example in GCC is, of course, the &quot;set of</a>
+<a name="61"><span class="lineNum">      61 </span>                :            :    sets&quot; for some CFG-based data flow problems (liveness analysis, dominance</a>
+<a name="62"><span class="lineNum">      62 </span>                :            :    frontiers, etc.).</a>
+<a name="63"><span class="lineNum">      63 </span>                :            :    </a>
+<a name="64"><span class="lineNum">      64 </span>                :            :    For random-access sparse sets of unknown universe, the binary tree</a>
+<a name="65"><span class="lineNum">      65 </span>                :            :    representation is likely to be a more suitable choice.  Theoretical</a>
+<a name="66"><span class="lineNum">      66 </span>                :            :    access times for the binary tree representation are better than those</a>
+<a name="67"><span class="lineNum">      67 </span>                :            :    for the linked-list, but in practice this is only true for truely</a>
+<a name="68"><span class="lineNum">      68 </span>                :            :    random access.</a>
+<a name="69"><span class="lineNum">      69 </span>                :            : </a>
+<a name="70"><span class="lineNum">      70 </span>                :            :    Often the most suitable representation during construction of the set</a>
+<a name="71"><span class="lineNum">      71 </span>                :            :    is not the best choice for the usage of the set.  For such cases, the</a>
+<a name="72"><span class="lineNum">      72 </span>                :            :    &quot;view&quot; of the set can be changed from one representation to the other.</a>
+<a name="73"><span class="lineNum">      73 </span>                :            :    This is an O(E) operation:</a>
+<a name="74"><span class="lineNum">      74 </span>                :            : </a>
+<a name="75"><span class="lineNum">      75 </span>                :            :      * from list to tree view   : bitmap_tree_view</a>
+<a name="76"><span class="lineNum">      76 </span>                :            :      * from tree to list view   : bitmap_list_view</a>
+<a name="77"><span class="lineNum">      77 </span>                :            : </a>
+<a name="78"><span class="lineNum">      78 </span>                :            :    Traversing linked lists or trees can be cache-unfriendly.  Performance</a>
+<a name="79"><span class="lineNum">      79 </span>                :            :    can be improved by keeping container nodes in the set grouped together</a>
+<a name="80"><span class="lineNum">      80 </span>                :            :    in  memory, using a dedicated obstack for a set (or group of related</a>
+<a name="81"><span class="lineNum">      81 </span>                :            :    sets).  Elements allocated on obstacks are released to a free-list and</a>
+<a name="82"><span class="lineNum">      82 </span>                :            :    taken off the free list.  If multiple sets are allocated on the same</a>
+<a name="83"><span class="lineNum">      83 </span>                :            :    obstack, elements freed from one set may be re-used for one of the other</a>
+<a name="84"><span class="lineNum">      84 </span>                :            :    sets.  This usually helps avoid cache misses.</a>
+<a name="85"><span class="lineNum">      85 </span>                :            : </a>
+<a name="86"><span class="lineNum">      86 </span>                :            :    A single free-list is used for all sets allocated in GGC space.  This is</a>
+<a name="87"><span class="lineNum">      87 </span>                :            :    bad for persistent sets, so persistent sets should be allocated on an</a>
+<a name="88"><span class="lineNum">      88 </span>                :            :    obstack whenever possible.</a>
+<a name="89"><span class="lineNum">      89 </span>                :            : </a>
+<a name="90"><span class="lineNum">      90 </span>                :            :    For random-access sets with a known, relatively small universe size, the</a>
+<a name="91"><span class="lineNum">      91 </span>                :            :    SparseSet or simple bitmap representations may be more efficient than a</a>
+<a name="92"><span class="lineNum">      92 </span>                :            :    linked-list set.</a>
+<a name="93"><span class="lineNum">      93 </span>                :            : </a>
+<a name="94"><span class="lineNum">      94 </span>                :            : </a>
+<a name="95"><span class="lineNum">      95 </span>                :            :    LINKED LIST FORM</a>
+<a name="96"><span class="lineNum">      96 </span>                :            :    ================</a>
+<a name="97"><span class="lineNum">      97 </span>                :            : </a>
+<a name="98"><span class="lineNum">      98 </span>                :            :    In linked-list form, in-order iterations of the set can be executed</a>
+<a name="99"><span class="lineNum">      99 </span>                :            :    efficiently.  The downside is that many random-access operations are</a>
+<a name="100"><span class="lineNum">     100 </span>                :            :    relatively slow, because the linked list has to be traversed to test</a>
+<a name="101"><span class="lineNum">     101 </span>                :            :    membership (i.e. member_p/ add_member/remove_member).</a>
+<a name="102"><span class="lineNum">     102 </span>                :            :    </a>
+<a name="103"><span class="lineNum">     103 </span>                :            :    To improve the performance of this set representation, the last</a>
+<a name="104"><span class="lineNum">     104 </span>                :            :    accessed element and its index are cached.  For membership tests on</a>
+<a name="105"><span class="lineNum">     105 </span>                :            :    members close to recently accessed members, the cached last element</a>
+<a name="106"><span class="lineNum">     106 </span>                :            :    improves membership test to a constant-time operation.</a>
+<a name="107"><span class="lineNum">     107 </span>                :            : </a>
+<a name="108"><span class="lineNum">     108 </span>                :            :    The following operations can always be performed in O(1) time in</a>
+<a name="109"><span class="lineNum">     109 </span>                :            :    list view:</a>
+<a name="110"><span class="lineNum">     110 </span>                :            : </a>
+<a name="111"><span class="lineNum">     111 </span>                :            :      * clear                    : bitmap_clear</a>
+<a name="112"><span class="lineNum">     112 </span>                :            :      * smallest_member          : bitmap_first_set_bit</a>
+<a name="113"><span class="lineNum">     113 </span>                :            :      * choose_one               : (not implemented, but could be</a>
+<a name="114"><span class="lineNum">     114 </span>                :            :                                    in constant time)</a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>                :            :    The following operations can be performed in O(E) time worst-case in</a>
+<a name="117"><span class="lineNum">     117 </span>                :            :    list view (with E the number of elements in the linked list), but in</a>
+<a name="118"><span class="lineNum">     118 </span>                :            :    O(1) time with a suitable access patterns:</a>
+<a name="119"><span class="lineNum">     119 </span>                :            : </a>
+<a name="120"><span class="lineNum">     120 </span>                :            :      * member_p                 : bitmap_bit_p</a>
+<a name="121"><span class="lineNum">     121 </span>                :            :      * add_member               : bitmap_set_bit / bitmap_set_range</a>
+<a name="122"><span class="lineNum">     122 </span>                :            :      * remove_member            : bitmap_clear_bit / bitmap_clear_range</a>
+<a name="123"><span class="lineNum">     123 </span>                :            : </a>
+<a name="124"><span class="lineNum">     124 </span>                :            :    The following operations can be performed in O(E) time in list view:</a>
+<a name="125"><span class="lineNum">     125 </span>                :            : </a>
+<a name="126"><span class="lineNum">     126 </span>                :            :      * cardinality              : bitmap_count_bits</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :      * largest_member           : bitmap_last_set_bit (but this could</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :                                   in constant time with a pointer to</a>
+<a name="129"><span class="lineNum">     129 </span>                :            :                                   the last element in the chain)</a>
+<a name="130"><span class="lineNum">     130 </span>                :            :      * set_size                 : bitmap_last_set_bit</a>
+<a name="131"><span class="lineNum">     131 </span>                :            : </a>
+<a name="132"><span class="lineNum">     132 </span>                :            :    In tree view the following operations can all be performed in O(log E)</a>
+<a name="133"><span class="lineNum">     133 </span>                :            :    amortized time with O(E) worst-case behavior.</a>
+<a name="134"><span class="lineNum">     134 </span>                :            : </a>
+<a name="135"><span class="lineNum">     135 </span>                :            :      * smallest_member</a>
+<a name="136"><span class="lineNum">     136 </span>                :            :      * largest_member</a>
+<a name="137"><span class="lineNum">     137 </span>                :            :      * set_size</a>
+<a name="138"><span class="lineNum">     138 </span>                :            :      * member_p</a>
+<a name="139"><span class="lineNum">     139 </span>                :            :      * add_member</a>
+<a name="140"><span class="lineNum">     140 </span>                :            :      * remove_member</a>
+<a name="141"><span class="lineNum">     141 </span>                :            : </a>
+<a name="142"><span class="lineNum">     142 </span>                :            :    Additionally, the linked-list sparse set representation supports</a>
+<a name="143"><span class="lineNum">     143 </span>                :            :    enumeration of the members in O(E) time:</a>
+<a name="144"><span class="lineNum">     144 </span>                :            : </a>
+<a name="145"><span class="lineNum">     145 </span>                :            :      * forall                   : EXECUTE_IF_SET_IN_BITMAP</a>
+<a name="146"><span class="lineNum">     146 </span>                :            :      * set_copy                 : bitmap_copy</a>
+<a name="147"><span class="lineNum">     147 </span>                :            :      * set_intersection         : bitmap_intersect_p /</a>
+<a name="148"><span class="lineNum">     148 </span>                :            :                                   bitmap_and / bitmap_and_into /</a>
+<a name="149"><span class="lineNum">     149 </span>                :            :                                   EXECUTE_IF_AND_IN_BITMAP</a>
+<a name="150"><span class="lineNum">     150 </span>                :            :      * set_union                : bitmap_ior / bitmap_ior_into</a>
+<a name="151"><span class="lineNum">     151 </span>                :            :      * set_difference           : bitmap_intersect_compl_p /</a>
+<a name="152"><span class="lineNum">     152 </span>                :            :                                   bitmap_and_comp / bitmap_and_comp_into /</a>
+<a name="153"><span class="lineNum">     153 </span>                :            :                                   EXECUTE_IF_AND_COMPL_IN_BITMAP</a>
+<a name="154"><span class="lineNum">     154 </span>                :            :      * set_disjuction           : bitmap_xor_comp / bitmap_xor_comp_into</a>
+<a name="155"><span class="lineNum">     155 </span>                :            :      * set_compare              : bitmap_equal_p</a>
+<a name="156"><span class="lineNum">     156 </span>                :            : </a>
+<a name="157"><span class="lineNum">     157 </span>                :            :    Some operations on 3 sets that occur frequently in data flow problems</a>
+<a name="158"><span class="lineNum">     158 </span>                :            :    are also implemented:</a>
+<a name="159"><span class="lineNum">     159 </span>                :            : </a>
+<a name="160"><span class="lineNum">     160 </span>                :            :      * A | (B &amp; C)          : bitmap_ior_and_into</a>
+<a name="161"><span class="lineNum">     161 </span>                :            :      * A | (B &amp; ~C)         : bitmap_ior_and_compl /</a>
+<a name="162"><span class="lineNum">     162 </span>                :            :                                   bitmap_ior_and_compl_into</a>
+<a name="163"><span class="lineNum">     163 </span>                :            : </a>
+<a name="164"><span class="lineNum">     164 </span>                :            : </a>
+<a name="165"><span class="lineNum">     165 </span>                :            :    BINARY TREE FORM</a>
+<a name="166"><span class="lineNum">     166 </span>                :            :    ================</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :    An alternate &quot;view&quot; of a bitmap is its binary tree representation.</a>
+<a name="168"><span class="lineNum">     168 </span>                :            :    For this representation, splay trees are used because they can be</a>
+<a name="169"><span class="lineNum">     169 </span>                :            :    implemented using the same data structures as the linked list, with</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :    no overhead for meta-data (like color, or rank) on the tree nodes.</a>
+<a name="171"><span class="lineNum">     171 </span>                :            : </a>
+<a name="172"><span class="lineNum">     172 </span>                :            :    In binary tree form, random-access to the set is much more efficient</a>
+<a name="173"><span class="lineNum">     173 </span>                :            :    than for the linked-list representation.  Downsides are the high cost</a>
+<a name="174"><span class="lineNum">     174 </span>                :            :    of clearing the set, and the relatively large number of operations</a>
+<a name="175"><span class="lineNum">     175 </span>                :            :    necessary to balance the tree.  Also, iterating the set members is</a>
+<a name="176"><span class="lineNum">     176 </span>                :            :    not supported.</a>
+<a name="177"><span class="lineNum">     177 </span>                :            :    </a>
+<a name="178"><span class="lineNum">     178 </span>                :            :    As for the linked-list representation, the last accessed element and</a>
+<a name="179"><span class="lineNum">     179 </span>                :            :    its index are cached, so that membership tests on the latest accessed</a>
+<a name="180"><span class="lineNum">     180 </span>                :            :    members is a constant-time operation.  Other lookups take O(logE)</a>
+<a name="181"><span class="lineNum">     181 </span>                :            :    time amortized (but O(E) time worst-case).</a>
+<a name="182"><span class="lineNum">     182 </span>                :            : </a>
+<a name="183"><span class="lineNum">     183 </span>                :            :    The following operations can always be performed in O(1) time:</a>
+<a name="184"><span class="lineNum">     184 </span>                :            : </a>
+<a name="185"><span class="lineNum">     185 </span>                :            :      * choose_one               : (not implemented, but could be</a>
+<a name="186"><span class="lineNum">     186 </span>                :            :                                    implemented in constant time)</a>
+<a name="187"><span class="lineNum">     187 </span>                :            : </a>
+<a name="188"><span class="lineNum">     188 </span>                :            :    The following operations can be performed in O(logE) time amortized</a>
+<a name="189"><span class="lineNum">     189 </span>                :            :    but O(E) time worst-case, but in O(1) time if the same element is</a>
+<a name="190"><span class="lineNum">     190 </span>                :            :    accessed.</a>
+<a name="191"><span class="lineNum">     191 </span>                :            : </a>
+<a name="192"><span class="lineNum">     192 </span>                :            :      * member_p                 : bitmap_bit_p</a>
+<a name="193"><span class="lineNum">     193 </span>                :            :      * add_member               : bitmap_set_bit</a>
+<a name="194"><span class="lineNum">     194 </span>                :            :      * remove_member            : bitmap_clear_bit</a>
+<a name="195"><span class="lineNum">     195 </span>                :            : </a>
+<a name="196"><span class="lineNum">     196 </span>                :            :    The following operations can be performed in O(logE) time amortized</a>
+<a name="197"><span class="lineNum">     197 </span>                :            :    but O(E) time worst-case:</a>
+<a name="198"><span class="lineNum">     198 </span>                :            : </a>
+<a name="199"><span class="lineNum">     199 </span>                :            :      * smallest_member          : bitmap_first_set_bit</a>
+<a name="200"><span class="lineNum">     200 </span>                :            :      * largest_member           : bitmap_last_set_bit</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :      * set_size                 : bitmap_last_set_bit</a>
+<a name="202"><span class="lineNum">     202 </span>                :            : </a>
+<a name="203"><span class="lineNum">     203 </span>                :            :    The following operations can be performed in O(E) time:</a>
+<a name="204"><span class="lineNum">     204 </span>                :            : </a>
+<a name="205"><span class="lineNum">     205 </span>                :            :      * clear                    : bitmap_clear</a>
+<a name="206"><span class="lineNum">     206 </span>                :            : </a>
+<a name="207"><span class="lineNum">     207 </span>                :            :    The binary tree sparse set representation does *not* support any form</a>
+<a name="208"><span class="lineNum">     208 </span>                :            :    of enumeration, and does also *not* support logical operations on sets.</a>
+<a name="209"><span class="lineNum">     209 </span>                :            :    The binary tree representation is only supposed to be used for sets</a>
+<a name="210"><span class="lineNum">     210 </span>                :            :    on which many random-access membership tests will happen.  */</a>
+<a name="211"><span class="lineNum">     211 </span>                :            : </a>
+<a name="212"><span class="lineNum">     212 </span>                :            : #include &quot;obstack.h&quot;</a>
+<a name="213"><span class="lineNum">     213 </span>                :            : #include &quot;array-traits.h&quot;</a>
+<a name="214"><span class="lineNum">     214 </span>                :            : </a>
+<a name="215"><span class="lineNum">     215 </span>                :            : /* Bitmap memory usage.  */</a>
+<a name="216"><span class="lineNum">     216 </span>                :            : class bitmap_usage: public mem_usage</a>
+<a name="217"><span class="lineNum">     217 </span>                :            : {</a>
+<a name="218"><span class="lineNum">     218 </span>                :            : public:</a>
+<a name="219"><span class="lineNum">     219 </span>                :            :   /* Default contructor.  */</a>
+<a name="220"><span class="lineNum">     220 </span>                :<span class="lineNoCov">          0 :   bitmap_usage (): m_nsearches (0), m_search_iter (0) {}</span></a>
+<a name="221"><span class="lineNum">     221 </span>                :            :   /* Constructor.  */</a>
+<a name="222"><span class="lineNum">     222 </span>                :            :   bitmap_usage (size_t allocated, size_t times, size_t peak,</a>
+<a name="223"><span class="lineNum">     223 </span>                :            :              uint64_t nsearches, uint64_t search_iter)</a>
+<a name="224"><span class="lineNum">     224 </span>                :            :     : mem_usage (allocated, times, peak),</a>
+<a name="225"><span class="lineNum">     225 </span>                :            :     m_nsearches (nsearches), m_search_iter (search_iter) {}</a>
+<a name="226"><span class="lineNum">     226 </span>                :            : </a>
+<a name="227"><span class="lineNum">     227 </span>                :            :   /* Sum the usage with SECOND usage.  */</a>
+<a name="228"><span class="lineNum">     228 </span>                :            :   bitmap_usage</a>
+<a name="229"><span class="lineNum">     229 </span>                :            :   operator+ (const bitmap_usage &amp;second)</a>
+<a name="230"><span class="lineNum">     230 </span>                :            :   {</a>
+<a name="231"><span class="lineNum">     231 </span>                :            :     return bitmap_usage (m_allocated + second.m_allocated,</a>
+<a name="232"><span class="lineNum">     232 </span>                :            :                              m_times + second.m_times,</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :                              m_peak + second.m_peak,</a>
+<a name="234"><span class="lineNum">     234 </span>                :            :                              m_nsearches + second.m_nsearches,</a>
+<a name="235"><span class="lineNum">     235 </span>                :            :                              m_search_iter + second.m_search_iter);</a>
+<a name="236"><span class="lineNum">     236 </span>                :            :   }</a>
+<a name="237"><span class="lineNum">     237 </span>                :            : </a>
+<a name="238"><span class="lineNum">     238 </span>                :            :   /* Dump usage coupled to LOC location, where TOTAL is sum of all rows.  */</a>
+<a name="239"><span class="lineNum">     239 </span>                :            :   inline void</a>
+<a name="240"><span class="lineNum">     240 </span>                :            :   dump (mem_location *loc, const mem_usage &amp;total) const</a>
+<a name="241"><span class="lineNum">     241 </span>                :            :   {</a>
+<a name="242"><span class="lineNum">     242 </span>                :            :     char *location_string = loc-&gt;to_string ();</a>
+<a name="243"><span class="lineNum">     243 </span>                :            : </a>
+<a name="244"><span class="lineNum">     244 </span>                :            :     fprintf (stderr, &quot;%-48s &quot; PRsa (9) &quot;:%5.1f%%&quot;</a>
+<a name="245"><span class="lineNum">     245 </span>                :            :              PRsa (9) PRsa (9) &quot;:%5.1f%%&quot;</a>
+<a name="246"><span class="lineNum">     246 </span>                :            :              PRsa (11) PRsa (11) &quot;%10s\n&quot;,</a>
+<a name="247"><span class="lineNum">     247 </span>                :            :              location_string, SIZE_AMOUNT (m_allocated),</a>
+<a name="248"><span class="lineNum">     248 </span>                :            :              get_percent (m_allocated, total.m_allocated),</a>
+<a name="249"><span class="lineNum">     249 </span>                :            :              SIZE_AMOUNT (m_peak), SIZE_AMOUNT (m_times),</a>
+<a name="250"><span class="lineNum">     250 </span>                :            :              get_percent (m_times, total.m_times),</a>
+<a name="251"><span class="lineNum">     251 </span>                :            :              SIZE_AMOUNT (m_nsearches), SIZE_AMOUNT (m_search_iter),</a>
+<a name="252"><span class="lineNum">     252 </span>                :            :              loc-&gt;m_ggc ? &quot;ggc&quot; : &quot;heap&quot;);</a>
+<a name="253"><span class="lineNum">     253 </span>                :            : </a>
+<a name="254"><span class="lineNum">     254 </span>                :            :     free (location_string);</a>
+<a name="255"><span class="lineNum">     255 </span>                :            :   }</a>
+<a name="256"><span class="lineNum">     256 </span>                :            : </a>
+<a name="257"><span class="lineNum">     257 </span>                :            :   /* Dump header with NAME.  */</a>
+<a name="258"><span class="lineNum">     258 </span>                :            :   static inline void</a>
+<a name="259"><span class="lineNum">     259 </span>                :            :   dump_header (const char *name)</a>
+<a name="260"><span class="lineNum">     260 </span>                :            :   {</a>
+<a name="261"><span class="lineNum">     261 </span>                :            :     fprintf (stderr, &quot;%-48s %11s%16s%17s%12s%12s%10s\n&quot;, name, &quot;Leak&quot;, &quot;Peak&quot;,</a>
+<a name="262"><span class="lineNum">     262 </span>                :            :              &quot;Times&quot;, &quot;N searches&quot;, &quot;Search iter&quot;, &quot;Type&quot;);</a>
+<a name="263"><span class="lineNum">     263 </span>                :            :   }</a>
+<a name="264"><span class="lineNum">     264 </span>                :            : </a>
+<a name="265"><span class="lineNum">     265 </span>                :            :   /* Number search operations.  */</a>
+<a name="266"><span class="lineNum">     266 </span>                :            :   uint64_t m_nsearches;</a>
+<a name="267"><span class="lineNum">     267 </span>                :            :   /* Number of search iterations.  */</a>
+<a name="268"><span class="lineNum">     268 </span>                :            :   uint64_t m_search_iter;</a>
+<a name="269"><span class="lineNum">     269 </span>                :            : };</a>
+<a name="270"><span class="lineNum">     270 </span>                :            : </a>
+<a name="271"><span class="lineNum">     271 </span>                :            : /* Bitmap memory description.  */</a>
+<a name="272"><span class="lineNum">     272 </span>                :            : extern mem_alloc_description&lt;bitmap_usage&gt; bitmap_mem_desc;</a>
+<a name="273"><span class="lineNum">     273 </span>                :            : </a>
+<a name="274"><span class="lineNum">     274 </span>                :            : /* Fundamental storage type for bitmap.  */</a>
+<a name="275"><span class="lineNum">     275 </span>                :            : </a>
+<a name="276"><span class="lineNum">     276 </span>                :            : typedef unsigned long BITMAP_WORD;</a>
+<a name="277"><span class="lineNum">     277 </span>                :            : /* BITMAP_WORD_BITS needs to be unsigned, but cannot contain casts as</a>
+<a name="278"><span class="lineNum">     278 </span>                :            :    it is used in preprocessor directives -- hence the 1u.  */</a>
+<a name="279"><span class="lineNum">     279 </span>                :            : #define BITMAP_WORD_BITS (CHAR_BIT * SIZEOF_LONG * 1u)</a>
+<a name="280"><span class="lineNum">     280 </span>                :            : </a>
+<a name="281"><span class="lineNum">     281 </span>                :            : /* Number of words to use for each element in the linked list.  */</a>
+<a name="282"><span class="lineNum">     282 </span>                :            : </a>
+<a name="283"><span class="lineNum">     283 </span>                :            : #ifndef BITMAP_ELEMENT_WORDS</a>
+<a name="284"><span class="lineNum">     284 </span>                :            : #define BITMAP_ELEMENT_WORDS ((128 + BITMAP_WORD_BITS - 1) / BITMAP_WORD_BITS)</a>
+<a name="285"><span class="lineNum">     285 </span>                :            : #endif</a>
+<a name="286"><span class="lineNum">     286 </span>                :            : </a>
+<a name="287"><span class="lineNum">     287 </span>                :            : /* Number of bits in each actual element of a bitmap.  */</a>
+<a name="288"><span class="lineNum">     288 </span>                :            : </a>
+<a name="289"><span class="lineNum">     289 </span>                :            : #define BITMAP_ELEMENT_ALL_BITS (BITMAP_ELEMENT_WORDS * BITMAP_WORD_BITS)</a>
+<a name="290"><span class="lineNum">     290 </span>                :            : </a>
+<a name="291"><span class="lineNum">     291 </span>                :            : /* Obstack for allocating bitmaps and elements from.  */</a>
+<a name="292"><span class="lineNum">     292 </span>                :            : struct bitmap_obstack {</a>
+<a name="293"><span class="lineNum">     293 </span>                :            :   struct bitmap_element *elements;</a>
+<a name="294"><span class="lineNum">     294 </span>                :            :   bitmap_head *heads;</a>
+<a name="295"><span class="lineNum">     295 </span>                :            :   struct obstack obstack;</a>
+<a name="296"><span class="lineNum">     296 </span>                :            : };</a>
+<a name="297"><span class="lineNum">     297 </span>                :            : </a>
+<a name="298"><span class="lineNum">     298 </span>                :            : /* Bitmap set element.  We use a linked list to hold only the bits that</a>
+<a name="299"><span class="lineNum">     299 </span>                :            :    are set.  This allows for use to grow the bitset dynamically without</a>
+<a name="300"><span class="lineNum">     300 </span>                :            :    having to realloc and copy a giant bit array.</a>
+<a name="301"><span class="lineNum">     301 </span>                :            : </a>
+<a name="302"><span class="lineNum">     302 </span>                :            :    The free list is implemented as a list of lists.  There is one</a>
+<a name="303"><span class="lineNum">     303 </span>                :            :    outer list connected together by prev fields.  Each element of that</a>
+<a name="304"><span class="lineNum">     304 </span>                :            :    outer is an inner list (that may consist only of the outer list</a>
+<a name="305"><span class="lineNum">     305 </span>                :            :    element) that are connected by the next fields.  The prev pointer</a>
+<a name="306"><span class="lineNum">     306 </span>                :            :    is undefined for interior elements.  This allows</a>
+<a name="307"><span class="lineNum">     307 </span>                :            :    bitmap_elt_clear_from to be implemented in unit time rather than</a>
+<a name="308"><span class="lineNum">     308 </span>                :            :    linear in the number of elements to be freed.  */</a>
+<a name="309"><span class="lineNum">     309 </span>                :            : </a>
+<a name="310"><span class="lineNum">     310 </span>                :            : struct GTY((chain_next (&quot;%h.next&quot;))) bitmap_element {</a>
+<a name="311"><span class="lineNum">     311 </span>                :            :   /* In list form, the next element in the linked list;</a>
+<a name="312"><span class="lineNum">     312 </span>                :            :      in tree form, the left child node in the tree.  */</a>
+<a name="313"><span class="lineNum">     313 </span>                :            :   struct bitmap_element *next;</a>
+<a name="314"><span class="lineNum">     314 </span>                :            :   /* In list form, the previous element in the linked list;</a>
+<a name="315"><span class="lineNum">     315 </span>                :            :      in tree form, the right child node in the tree.  */</a>
+<a name="316"><span class="lineNum">     316 </span>                :            :   struct bitmap_element *prev;</a>
+<a name="317"><span class="lineNum">     317 </span>                :            :   /* regno/BITMAP_ELEMENT_ALL_BITS.  */</a>
+<a name="318"><span class="lineNum">     318 </span>                :            :   unsigned int indx;</a>
+<a name="319"><span class="lineNum">     319 </span>                :            :   /* Bits that are set, counting from INDX, inclusive  */</a>
+<a name="320"><span class="lineNum">     320 </span>                :            :   BITMAP_WORD bits[BITMAP_ELEMENT_WORDS];</a>
+<a name="321"><span class="lineNum">     321 </span>                :            : };</a>
+<a name="322"><span class="lineNum">     322 </span>                :            : </a>
+<a name="323"><span class="lineNum">     323 </span>                :            : /* Head of bitmap linked list.  The 'current' member points to something</a>
+<a name="324"><span class="lineNum">     324 </span>                :            :    already pointed to by the chain started by first, so GTY((skip)) it.  */</a>
+<a name="325"><span class="lineNum">     325 </span>                :            : </a>
+<a name="326"><span class="lineNum">     326 </span>                :            : class GTY(()) bitmap_head {</a>
+<a name="327"><span class="lineNum">     327 </span>                :            : public:</a>
+<a name="328"><span class="lineNum">     328 </span>                :            :   static bitmap_obstack crashme;</a>
+<a name="329"><span class="lineNum">     329 </span>                :            :   /* Poison obstack to not make it not a valid initialized GC bitmap.  */</a>
+<a name="330"><span class="lineNum">     330 </span>                :<span class="lineCov">   35267420 :   CONSTEXPR bitmap_head()</span></a>
+<a name="331"><span class="lineNum">     331 </span>                :<span class="lineCov">   35267420 :     : indx (0), tree_form (false), padding (0), alloc_descriptor (0), first (NULL),</span></a>
+<a name="332"><span class="lineNum">     332 </span>                :<span class="lineCov">   35267420 :       current (NULL), obstack (&amp;crashme)</span></a>
+<a name="333"><span class="lineNum">     333 </span>                :<span class="lineCov">   35267420 :   {}</span></a>
+<a name="334"><span class="lineNum">     334 </span>                :            :   /* Index of last element looked at.  */</a>
+<a name="335"><span class="lineNum">     335 </span>                :            :   unsigned int indx;</a>
+<a name="336"><span class="lineNum">     336 </span>                :            :   /* False if the bitmap is in list form; true if the bitmap is in tree form.</a>
+<a name="337"><span class="lineNum">     337 </span>                :            :      Bitmap iterators only work on bitmaps in list form.  */</a>
+<a name="338"><span class="lineNum">     338 </span>                :            :   unsigned tree_form: 1;</a>
+<a name="339"><span class="lineNum">     339 </span>                :            :   /* Next integer is shifted, so padding is needed.  */</a>
+<a name="340"><span class="lineNum">     340 </span>                :            :   unsigned padding: 2;</a>
+<a name="341"><span class="lineNum">     341 </span>                :            :   /* Bitmap UID used for memory allocation statistics.  */</a>
+<a name="342"><span class="lineNum">     342 </span>                :            :   unsigned alloc_descriptor: 29;</a>
+<a name="343"><span class="lineNum">     343 </span>                :            :   /* In list form, the first element in the linked list;</a>
+<a name="344"><span class="lineNum">     344 </span>                :            :      in tree form, the root of the tree.   */</a>
+<a name="345"><span class="lineNum">     345 </span>                :            :   bitmap_element *first;</a>
+<a name="346"><span class="lineNum">     346 </span>                :            :   /* Last element looked at.  */</a>
+<a name="347"><span class="lineNum">     347 </span>                :            :   bitmap_element * GTY((skip(&quot;&quot;))) current;</a>
+<a name="348"><span class="lineNum">     348 </span>                :            :   /* Obstack to allocate elements from.  If NULL, then use GGC allocation.  */</a>
+<a name="349"><span class="lineNum">     349 </span>                :            :   bitmap_obstack * GTY((skip(&quot;&quot;))) obstack;</a>
+<a name="350"><span class="lineNum">     350 </span>                :            : </a>
+<a name="351"><span class="lineNum">     351 </span>                :            :   /* Dump bitmap.  */</a>
+<a name="352"><span class="lineNum">     352 </span>                :            :   void dump ();</a>
+<a name="353"><span class="lineNum">     353 </span>                :            : </a>
+<a name="354"><span class="lineNum">     354 </span>                :            :   /* Get bitmap descriptor UID casted to an unsigned integer pointer.</a>
+<a name="355"><span class="lineNum">     355 </span>                :            :      Shift the descriptor because pointer_hash&lt;Type&gt;::hash is</a>
+<a name="356"><span class="lineNum">     356 </span>                :            :      doing &gt;&gt; 3 shift operation.  */</a>
+<a name="357"><span class="lineNum">     357 </span>                :<span class="lineNoCov">          0 :   unsigned *get_descriptor ()</span></a>
+<a name="358"><span class="lineNum">     358 </span>                :            :   {</a>
+<a name="359"><span class="lineNum">     359 </span>                :<span class="lineNoCov">          0 :     return (unsigned *)(ptrdiff_t)(alloc_descriptor &lt;&lt; 3);</span></a>
+<a name="360"><span class="lineNum">     360 </span>                :            :   }</a>
+<a name="361"><span class="lineNum">     361 </span>                :            : };</a>
+<a name="362"><span class="lineNum">     362 </span>                :            : </a>
+<a name="363"><span class="lineNum">     363 </span>                :            : /* Global data */</a>
+<a name="364"><span class="lineNum">     364 </span>                :            : extern bitmap_element bitmap_zero_bits; /* Zero bitmap element */</a>
+<a name="365"><span class="lineNum">     365 </span>                :            : extern bitmap_obstack bitmap_default_obstack;   /* Default bitmap obstack */</a>
+<a name="366"><span class="lineNum">     366 </span>                :            : </a>
+<a name="367"><span class="lineNum">     367 </span>                :            : /* Change the view of the bitmap to list, or tree.  */</a>
+<a name="368"><span class="lineNum">     368 </span>                :            : void bitmap_list_view (bitmap);</a>
+<a name="369"><span class="lineNum">     369 </span>                :            : void bitmap_tree_view (bitmap);</a>
+<a name="370"><span class="lineNum">     370 </span>                :            : </a>
+<a name="371"><span class="lineNum">     371 </span>                :            : /* Clear a bitmap by freeing up the linked list.  */</a>
+<a name="372"><span class="lineNum">     372 </span>                :            : extern void bitmap_clear (bitmap);</a>
+<a name="373"><span class="lineNum">     373 </span>                :            : </a>
+<a name="374"><span class="lineNum">     374 </span>                :            : /* Copy a bitmap to another bitmap.  */</a>
+<a name="375"><span class="lineNum">     375 </span>                :            : extern void bitmap_copy (bitmap, const_bitmap);</a>
+<a name="376"><span class="lineNum">     376 </span>                :            : </a>
+<a name="377"><span class="lineNum">     377 </span>                :            : /* Move a bitmap to another bitmap.  */</a>
+<a name="378"><span class="lineNum">     378 </span>                :            : extern void bitmap_move (bitmap, bitmap);</a>
+<a name="379"><span class="lineNum">     379 </span>                :            : </a>
+<a name="380"><span class="lineNum">     380 </span>                :            : /* True if two bitmaps are identical.  */</a>
+<a name="381"><span class="lineNum">     381 </span>                :            : extern bool bitmap_equal_p (const_bitmap, const_bitmap);</a>
+<a name="382"><span class="lineNum">     382 </span>                :            : </a>
+<a name="383"><span class="lineNum">     383 </span>                :            : /* True if the bitmaps intersect (their AND is non-empty).  */</a>
+<a name="384"><span class="lineNum">     384 </span>                :            : extern bool bitmap_intersect_p (const_bitmap, const_bitmap);</a>
+<a name="385"><span class="lineNum">     385 </span>                :            : </a>
+<a name="386"><span class="lineNum">     386 </span>                :            : /* True if the complement of the second intersects the first (their</a>
+<a name="387"><span class="lineNum">     387 </span>                :            :    AND_COMPL is non-empty).  */</a>
+<a name="388"><span class="lineNum">     388 </span>                :            : extern bool bitmap_intersect_compl_p (const_bitmap, const_bitmap);</a>
+<a name="389"><span class="lineNum">     389 </span>                :            : </a>
+<a name="390"><span class="lineNum">     390 </span>                :            : /* True if MAP is an empty bitmap.  */</a>
+<a name="391"><span class="lineNum">     391 </span>                :<span class="lineCov">  146803400 : inline bool bitmap_empty_p (const_bitmap map)</span></a>
+<a name="392"><span class="lineNum">     392 </span>                :            : {</a>
+<a name="393"><span class="lineNum">     393 </span>                :<span class="lineCov">  146803400 :   return !map-&gt;first;</span></a>
+<a name="394"><span class="lineNum">     394 </span>                :            : }</a>
+<a name="395"><span class="lineNum">     395 </span>                :            : </a>
+<a name="396"><span class="lineNum">     396 </span>                :            : /* True if the bitmap has only a single bit set.  */</a>
+<a name="397"><span class="lineNum">     397 </span>                :            : extern bool bitmap_single_bit_set_p (const_bitmap);</a>
+<a name="398"><span class="lineNum">     398 </span>                :            : </a>
+<a name="399"><span class="lineNum">     399 </span>                :            : /* Count the number of bits set in the bitmap.  */</a>
+<a name="400"><span class="lineNum">     400 </span>                :            : extern unsigned long bitmap_count_bits (const_bitmap);</a>
+<a name="401"><span class="lineNum">     401 </span>                :            : </a>
+<a name="402"><span class="lineNum">     402 </span>                :            : /* Count the number of unique bits set across the two bitmaps.  */</a>
+<a name="403"><span class="lineNum">     403 </span>                :            : extern unsigned long bitmap_count_unique_bits (const_bitmap, const_bitmap);</a>
+<a name="404"><span class="lineNum">     404 </span>                :            : </a>
+<a name="405"><span class="lineNum">     405 </span>                :            : /* Boolean operations on bitmaps.  The _into variants are two operand</a>
+<a name="406"><span class="lineNum">     406 </span>                :            :    versions that modify the first source operand.  The other variants</a>
+<a name="407"><span class="lineNum">     407 </span>                :            :    are three operand versions that to not destroy the source bitmaps.</a>
+<a name="408"><span class="lineNum">     408 </span>                :            :    The operations supported are &amp;, &amp; ~, |, ^.  */</a>
+<a name="409"><span class="lineNum">     409 </span>                :            : extern void bitmap_and (bitmap, const_bitmap, const_bitmap);</a>
+<a name="410"><span class="lineNum">     410 </span>                :            : extern bool bitmap_and_into (bitmap, const_bitmap);</a>
+<a name="411"><span class="lineNum">     411 </span>                :            : extern bool bitmap_and_compl (bitmap, const_bitmap, const_bitmap);</a>
+<a name="412"><span class="lineNum">     412 </span>                :            : extern bool bitmap_and_compl_into (bitmap, const_bitmap);</a>
+<a name="413"><span class="lineNum">     413 </span>                :            : #define bitmap_compl_and(DST, A, B) bitmap_and_compl (DST, B, A)</a>
+<a name="414"><span class="lineNum">     414 </span>                :            : extern void bitmap_compl_and_into (bitmap, const_bitmap);</a>
+<a name="415"><span class="lineNum">     415 </span>                :            : extern void bitmap_clear_range (bitmap, unsigned int, unsigned int);</a>
+<a name="416"><span class="lineNum">     416 </span>                :            : extern void bitmap_set_range (bitmap, unsigned int, unsigned int);</a>
+<a name="417"><span class="lineNum">     417 </span>                :            : extern bool bitmap_ior (bitmap, const_bitmap, const_bitmap);</a>
+<a name="418"><span class="lineNum">     418 </span>                :            : extern bool bitmap_ior_into (bitmap, const_bitmap);</a>
+<a name="419"><span class="lineNum">     419 </span>                :            : extern bool bitmap_ior_into_and_free (bitmap, bitmap *);</a>
+<a name="420"><span class="lineNum">     420 </span>                :            : extern void bitmap_xor (bitmap, const_bitmap, const_bitmap);</a>
+<a name="421"><span class="lineNum">     421 </span>                :            : extern void bitmap_xor_into (bitmap, const_bitmap);</a>
+<a name="422"><span class="lineNum">     422 </span>                :            : </a>
+<a name="423"><span class="lineNum">     423 </span>                :            : /* DST = A | (B &amp; C).  Return true if DST changes.  */</a>
+<a name="424"><span class="lineNum">     424 </span>                :            : extern bool bitmap_ior_and_into (bitmap DST, const_bitmap B, const_bitmap C);</a>
+<a name="425"><span class="lineNum">     425 </span>                :            : /* DST = A | (B &amp; ~C).  Return true if DST changes.  */</a>
+<a name="426"><span class="lineNum">     426 </span>                :            : extern bool bitmap_ior_and_compl (bitmap DST, const_bitmap A,</a>
+<a name="427"><span class="lineNum">     427 </span>                :            :                                   const_bitmap B, const_bitmap C);</a>
+<a name="428"><span class="lineNum">     428 </span>                :            : /* A |= (B &amp; ~C).  Return true if A changes.  */</a>
+<a name="429"><span class="lineNum">     429 </span>                :            : extern bool bitmap_ior_and_compl_into (bitmap A,</a>
+<a name="430"><span class="lineNum">     430 </span>                :            :                                        const_bitmap B, const_bitmap C);</a>
+<a name="431"><span class="lineNum">     431 </span>                :            : </a>
+<a name="432"><span class="lineNum">     432 </span>                :            : /* Clear a single bit in a bitmap.  Return true if the bit changed.  */</a>
+<a name="433"><span class="lineNum">     433 </span>                :            : extern bool bitmap_clear_bit (bitmap, int);</a>
+<a name="434"><span class="lineNum">     434 </span>                :            : </a>
+<a name="435"><span class="lineNum">     435 </span>                :            : /* Set a single bit in a bitmap.  Return true if the bit changed.  */</a>
+<a name="436"><span class="lineNum">     436 </span>                :            : extern bool bitmap_set_bit (bitmap, int);</a>
+<a name="437"><span class="lineNum">     437 </span>                :            : </a>
+<a name="438"><span class="lineNum">     438 </span>                :            : /* Return true if a bit is set in a bitmap.  */</a>
+<a name="439"><span class="lineNum">     439 </span>                :            : extern int bitmap_bit_p (const_bitmap, int);</a>
+<a name="440"><span class="lineNum">     440 </span>                :            : </a>
+<a name="441"><span class="lineNum">     441 </span>                :            : /* Set and get multiple bit values in a sparse bitmap.  This allows a bitmap to</a>
+<a name="442"><span class="lineNum">     442 </span>                :            :    function as a sparse array of bit patterns where the patterns are</a>
+<a name="443"><span class="lineNum">     443 </span>                :            :    multiples of power of 2. This is more efficient than performing this as</a>
+<a name="444"><span class="lineNum">     444 </span>                :            :    multiple individual operations.  */</a>
+<a name="445"><span class="lineNum">     445 </span>                :            : void bitmap_set_aligned_chunk (bitmap, unsigned int, unsigned int, BITMAP_WORD);</a>
+<a name="446"><span class="lineNum">     446 </span>                :            : BITMAP_WORD bitmap_get_aligned_chunk (const_bitmap, unsigned int, unsigned int);</a>
+<a name="447"><span class="lineNum">     447 </span>                :            : </a>
+<a name="448"><span class="lineNum">     448 </span>                :            : /* Debug functions to print a bitmap.  */</a>
+<a name="449"><span class="lineNum">     449 </span>                :            : extern void debug_bitmap (const_bitmap);</a>
+<a name="450"><span class="lineNum">     450 </span>                :            : extern void debug_bitmap_file (FILE *, const_bitmap);</a>
+<a name="451"><span class="lineNum">     451 </span>                :            : </a>
+<a name="452"><span class="lineNum">     452 </span>                :            : /* Print a bitmap.  */</a>
+<a name="453"><span class="lineNum">     453 </span>                :            : extern void bitmap_print (FILE *, const_bitmap, const char *, const char *);</a>
+<a name="454"><span class="lineNum">     454 </span>                :            : </a>
+<a name="455"><span class="lineNum">     455 </span>                :            : /* Initialize and release a bitmap obstack.  */</a>
+<a name="456"><span class="lineNum">     456 </span>                :            : extern void bitmap_obstack_initialize (bitmap_obstack *);</a>
+<a name="457"><span class="lineNum">     457 </span>                :            : extern void bitmap_obstack_release (bitmap_obstack *);</a>
+<a name="458"><span class="lineNum">     458 </span>                :            : extern void bitmap_register (bitmap MEM_STAT_DECL);</a>
+<a name="459"><span class="lineNum">     459 </span>                :            : extern void dump_bitmap_statistics (void);</a>
+<a name="460"><span class="lineNum">     460 </span>                :            : </a>
+<a name="461"><span class="lineNum">     461 </span>                :            : /* Initialize a bitmap header.  OBSTACK indicates the bitmap obstack</a>
+<a name="462"><span class="lineNum">     462 </span>                :            :    to allocate from, NULL for GC'd bitmap.  */</a>
+<a name="463"><span class="lineNum">     463 </span>                :            : </a>
+<a name="464"><span class="lineNum">     464 </span>                :            : static inline void</a>
+<a name="465"><span class="lineNum">     465 </span>                :<span class="lineCov">  201794859 : bitmap_initialize (bitmap head, bitmap_obstack *obstack CXX_MEM_STAT_INFO)</span></a>
+<a name="466"><span class="lineNum">     466 </span>                :            : {</a>
+<a name="467"><span class="lineNum">     467 </span>                :<span class="lineCov">  201794859 :   head-&gt;first = head-&gt;current = NULL;</span></a>
+<a name="468"><span class="lineNum">     468 </span>                :<span class="lineCov">  201794859 :   head-&gt;indx = head-&gt;tree_form = 0;</span></a>
+<a name="469"><span class="lineNum">     469 </span>                :<span class="lineCov">  201794859 :   head-&gt;padding = 0;</span></a>
+<a name="470"><span class="lineNum">     470 </span>                :<span class="lineCov">  201794859 :   head-&gt;alloc_descriptor = 0;</span></a>
+<a name="471"><span class="lineNum">     471 </span>                :<span class="lineCov">  201794859 :   head-&gt;obstack = obstack;</span></a>
+<a name="472"><span class="lineNum">     472 </span>                :            :   if (GATHER_STATISTICS)</a>
+<a name="473"><span class="lineNum">     473 </span>                :            :     bitmap_register (head PASS_MEM_STAT);</a>
+<a name="474"><span class="lineNum">     474 </span>                :<span class="lineCov">  201794859 : }</span></a>
+<a name="475"><span class="lineNum">     475 </span>                :            : </a>
+<a name="476"><span class="lineNum">     476 </span>                :            : /* Release a bitmap (but not its head).  This is suitable for pairing with</a>
+<a name="477"><span class="lineNum">     477 </span>                :            :    bitmap_initialize.  */</a>
+<a name="478"><span class="lineNum">     478 </span>                :            : </a>
+<a name="479"><span class="lineNum">     479 </span>                :            : static inline void</a>
+<a name="480"><span class="lineNum">     480 </span>                :<span class="lineCov">    6064936 : bitmap_release (bitmap head)</span></a>
+<a name="481"><span class="lineNum">     481 </span>                :            : {</a>
+<a name="482"><span class="lineNum">     482 </span>                :<span class="lineCov">    6064936 :   bitmap_clear (head);</span></a>
+<a name="483"><span class="lineNum">     483 </span>                :            :   /* Poison the obstack pointer so the obstack can be safely released.</a>
+<a name="484"><span class="lineNum">     484 </span>                :            :      Do not zero it as the bitmap then becomes initialized GC.  */</a>
+<a name="485"><span class="lineNum">     485 </span>                :<span class="lineCov">    6064936 :   head-&gt;obstack = &amp;bitmap_head::crashme;</span></a>
+<a name="486"><span class="lineNum">     486 </span>                :<span class="lineCov">    6064936 : }</span></a>
+<a name="487"><span class="lineNum">     487 </span>                :            : </a>
+<a name="488"><span class="lineNum">     488 </span>                :            : /* Allocate and free bitmaps from obstack, malloc and gc'd memory.  */</a>
+<a name="489"><span class="lineNum">     489 </span>                :            : extern bitmap bitmap_alloc (bitmap_obstack *obstack CXX_MEM_STAT_INFO);</a>
+<a name="490"><span class="lineNum">     490 </span>                :            : #define BITMAP_ALLOC bitmap_alloc</a>
+<a name="491"><span class="lineNum">     491 </span>                :            : extern bitmap bitmap_gc_alloc (ALONE_CXX_MEM_STAT_INFO);</a>
+<a name="492"><span class="lineNum">     492 </span>                :            : #define BITMAP_GGC_ALLOC bitmap_gc_alloc</a>
+<a name="493"><span class="lineNum">     493 </span>                :            : extern void bitmap_obstack_free (bitmap);</a>
+<a name="494"><span class="lineNum">     494 </span>                :            : </a>
+<a name="495"><span class="lineNum">     495 </span>                :            : /* A few compatibility/functions macros for compatibility with sbitmaps */</a>
+<a name="496"><span class="lineNum">     496 </span>                :<span class="lineNoCov">          0 : inline void dump_bitmap (FILE *file, const_bitmap map)</span></a>
+<a name="497"><span class="lineNum">     497 </span>                :            : {</a>
+<a name="498"><span class="lineNum">     498 </span>                :<span class="lineNoCov">          0 :   bitmap_print (file, map, &quot;&quot;, &quot;\n&quot;);</span></a>
+<a name="499"><span class="lineNum">     499 </span>                :<span class="lineNoCov">          0 : }</span></a>
+<a name="500"><span class="lineNum">     500 </span>                :            : extern void debug (const bitmap_head &amp;ref);</a>
+<a name="501"><span class="lineNum">     501 </span>                :            : extern void debug (const bitmap_head *ptr);</a>
+<a name="502"><span class="lineNum">     502 </span>                :            : </a>
+<a name="503"><span class="lineNum">     503 </span>                :            : extern unsigned bitmap_first_set_bit (const_bitmap);</a>
+<a name="504"><span class="lineNum">     504 </span>                :            : extern unsigned bitmap_last_set_bit (const_bitmap);</a>
+<a name="505"><span class="lineNum">     505 </span>                :            : </a>
+<a name="506"><span class="lineNum">     506 </span>                :            : /* Compute bitmap hash (for purposes of hashing etc.)  */</a>
+<a name="507"><span class="lineNum">     507 </span>                :            : extern hashval_t bitmap_hash (const_bitmap);</a>
+<a name="508"><span class="lineNum">     508 </span>                :            : </a>
+<a name="509"><span class="lineNum">     509 </span>                :            : /* Do any cleanup needed on a bitmap when it is no longer used.  */</a>
+<a name="510"><span class="lineNum">     510 </span>                :            : #define BITMAP_FREE(BITMAP) \</a>
+<a name="511"><span class="lineNum">     511 </span>                :            :        ((void) (bitmap_obstack_free ((bitmap) BITMAP), (BITMAP) = (bitmap) NULL))</a>
+<a name="512"><span class="lineNum">     512 </span>                :            : </a>
+<a name="513"><span class="lineNum">     513 </span>                :            : /* Iterator for bitmaps.  */</a>
+<a name="514"><span class="lineNum">     514 </span>                :            : </a>
+<a name="515"><span class="lineNum">     515 </span>                :            : struct bitmap_iterator</a>
+<a name="516"><span class="lineNum">     516 </span>                :            : {</a>
+<a name="517"><span class="lineNum">     517 </span>                :            :   /* Pointer to the current bitmap element.  */</a>
+<a name="518"><span class="lineNum">     518 </span>                :            :   bitmap_element *elt1;</a>
+<a name="519"><span class="lineNum">     519 </span>                :            : </a>
+<a name="520"><span class="lineNum">     520 </span>                :            :   /* Pointer to 2nd bitmap element when two are involved.  */</a>
+<a name="521"><span class="lineNum">     521 </span>                :            :   bitmap_element *elt2;</a>
+<a name="522"><span class="lineNum">     522 </span>                :            : </a>
+<a name="523"><span class="lineNum">     523 </span>                :            :   /* Word within the current element.  */</a>
+<a name="524"><span class="lineNum">     524 </span>                :            :   unsigned word_no;</a>
+<a name="525"><span class="lineNum">     525 </span>                :            : </a>
+<a name="526"><span class="lineNum">     526 </span>                :            :   /* Contents of the actually processed word.  When finding next bit</a>
+<a name="527"><span class="lineNum">     527 </span>                :            :      it is shifted right, so that the actual bit is always the least</a>
+<a name="528"><span class="lineNum">     528 </span>                :            :      significant bit of ACTUAL.  */</a>
+<a name="529"><span class="lineNum">     529 </span>                :            :   BITMAP_WORD bits;</a>
+<a name="530"><span class="lineNum">     530 </span>                :            : };</a>
+<a name="531"><span class="lineNum">     531 </span>                :            : </a>
+<a name="532"><span class="lineNum">     532 </span>                :            : /* Initialize a single bitmap iterator.  START_BIT is the first bit to</a>
+<a name="533"><span class="lineNum">     533 </span>                :            :    iterate from.  */</a>
+<a name="534"><span class="lineNum">     534 </span>                :            : </a>
+<a name="535"><span class="lineNum">     535 </span>                :            : static inline void</a>
+<a name="536"><span class="lineNum">     536 </span>                :<span class="lineCov">  147382967 : bmp_iter_set_init (bitmap_iterator *bi, const_bitmap map,</span></a>
+<a name="537"><span class="lineNum">     537 </span>                :            :                    unsigned start_bit, unsigned *bit_no)</a>
+<a name="538"><span class="lineNum">     538 </span>                :            : {</a>
+<a name="539"><span class="lineNum">     539 </span>                :<span class="lineCov">  147382967 :   bi-&gt;elt1 = map-&gt;first;</span></a>
+<a name="540"><span class="lineNum">     540 </span>                :<span class="lineCov">  147382967 :   bi-&gt;elt2 = NULL;</span></a>
+<a name="541"><span class="lineNum">     541 </span>                :            : </a>
+<a name="542"><span class="lineNum">     542 </span>                :            :   gcc_checking_assert (!map-&gt;tree_form);</a>
+<a name="543"><span class="lineNum">     543 </span>                :            : </a>
+<a name="544"><span class="lineNum">     544 </span>                :            :   /* Advance elt1 until it is not before the block containing start_bit.  */</a>
+<a name="545"><span class="lineNum">     545 </span>                :            :   while (1)</a>
+<a name="546"><span class="lineNum">     546 </span>                :            :     {</a>
+<a name="547"><span class="lineNum">     547 </span>        [<span class="branchCov" title="Branch 0 was taken 36748668 times"> + </span><span class="branchCov" title="Branch 1 was taken 132661640 times"> + </span>]:<span class="lineCov">  169410347 :       if (!bi-&gt;elt1)</span></a>
+<a name="548"><span class="lineNum">     548 </span>                :            :         {</a>
+<a name="549"><span class="lineNum">     549 </span>                :<span class="lineCov">   36748668 :           bi-&gt;elt1 = &amp;bitmap_zero_bits;</span></a>
+<a name="550"><span class="lineNum">     550 </span>                :<span class="lineCov">   36748668 :           break;</span></a>
+<a name="551"><span class="lineNum">     551 </span>                :            :         }</a>
+<a name="552"><span class="lineNum">     552 </span>                :            : </a>
+<a name="553"><span class="lineNum">     553 </span>        [<span class="branchCov" title="Branch 0 was taken 110634260 times"> + </span><span class="branchCov" title="Branch 1 was taken 22027380 times"> + </span>]:<span class="lineCov">  132661640 :       if (bi-&gt;elt1-&gt;indx &gt;= start_bit / BITMAP_ELEMENT_ALL_BITS)</span></a>
+<a name="554"><span class="lineNum">     554 </span>                :<span class="lineCov">  110634260 :         break;</span></a>
+<a name="555"><span class="lineNum">     555 </span>                :<span class="lineCov">   22027380 :       bi-&gt;elt1 = bi-&gt;elt1-&gt;next;</span></a>
+<a name="556"><span class="lineNum">     556 </span>                :            :     }</a>
+<a name="557"><span class="lineNum">     557 </span>                :            : </a>
+<a name="558"><span class="lineNum">     558 </span>                :            :   /* We might have gone past the start bit, so reinitialize it.  */</a>
+<a name="559"><span class="lineNum">     559 </span>        [<span class="branchCov" title="Branch 0 was taken 11049166 times"> + </span><span class="branchCov" title="Branch 1 was taken 136333761 times"> + </span>]:<span class="lineCov">  147382967 :   if (bi-&gt;elt1-&gt;indx != start_bit / BITMAP_ELEMENT_ALL_BITS)</span></a>
+<a name="560"><span class="lineNum">     560 </span>                :<span class="lineCov">   11049166 :     start_bit = bi-&gt;elt1-&gt;indx * BITMAP_ELEMENT_ALL_BITS;</span></a>
+<a name="561"><span class="lineNum">     561 </span>                :            : </a>
+<a name="562"><span class="lineNum">     562 </span>                :            :   /* Initialize for what is now start_bit.  */</a>
+<a name="563"><span class="lineNum">     563 </span>                :<span class="lineCov">  147382967 :   bi-&gt;word_no = start_bit / BITMAP_WORD_BITS % BITMAP_ELEMENT_WORDS;</span></a>
+<a name="564"><span class="lineNum">     564 </span>                :<span class="lineCov">  147382967 :   bi-&gt;bits = bi-&gt;elt1-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="565"><span class="lineNum">     565 </span>                :<span class="lineCov">  147382967 :   bi-&gt;bits &gt;&gt;= start_bit % BITMAP_WORD_BITS;</span></a>
+<a name="566"><span class="lineNum">     566 </span>                :            : </a>
+<a name="567"><span class="lineNum">     567 </span>                :            :   /* If this word is zero, we must make sure we're not pointing at the</a>
+<a name="568"><span class="lineNum">     568 </span>                :            :      first bit, otherwise our incrementing to the next word boundary</a>
+<a name="569"><span class="lineNum">     569 </span>                :            :      will fail.  It won't matter if this increment moves us into the</a>
+<a name="570"><span class="lineNum">     570 </span>                :            :      next word.  */</a>
+<a name="571"><span class="lineNum">     571 </span>                :<span class="lineCov">  147382967 :   start_bit += !bi-&gt;bits;</span></a>
+<a name="572"><span class="lineNum">     572 </span>                :            : </a>
+<a name="573"><span class="lineNum">     573 </span>                :<span class="lineCov">  147382967 :   *bit_no = start_bit;</span></a>
+<a name="574"><span class="lineNum">     574 </span>                :<span class="lineCov">  147382967 : }</span></a>
+<a name="575"><span class="lineNum">     575 </span>                :            : </a>
+<a name="576"><span class="lineNum">     576 </span>                :            : /* Initialize an iterator to iterate over the intersection of two</a>
+<a name="577"><span class="lineNum">     577 </span>                :            :    bitmaps.  START_BIT is the bit to commence from.  */</a>
+<a name="578"><span class="lineNum">     578 </span>                :            : </a>
+<a name="579"><span class="lineNum">     579 </span>                :            : static inline void</a>
+<a name="580"><span class="lineNum">     580 </span>                :<span class="lineCov">    2612365 : bmp_iter_and_init (bitmap_iterator *bi, const_bitmap map1, const_bitmap map2,</span></a>
+<a name="581"><span class="lineNum">     581 </span>                :            :                    unsigned start_bit, unsigned *bit_no)</a>
+<a name="582"><span class="lineNum">     582 </span>                :            : {</a>
+<a name="583"><span class="lineNum">     583 </span>                :<span class="lineCov">    2612365 :   bi-&gt;elt1 = map1-&gt;first;</span></a>
+<a name="584"><span class="lineNum">     584 </span>                :<span class="lineCov">    2612365 :   bi-&gt;elt2 = map2-&gt;first;</span></a>
+<a name="585"><span class="lineNum">     585 </span>                :            : </a>
+<a name="586"><span class="lineNum">     586 </span>                :            :   gcc_checking_assert (!map1-&gt;tree_form &amp;&amp; !map2-&gt;tree_form);</a>
+<a name="587"><span class="lineNum">     587 </span>                :            : </a>
+<a name="588"><span class="lineNum">     588 </span>                :            :   /* Advance elt1 until it is not before the block containing</a>
+<a name="589"><span class="lineNum">     589 </span>                :            :      start_bit.  */</a>
+<a name="590"><span class="lineNum">     590 </span>                :            :   while (1)</a>
+<a name="591"><span class="lineNum">     591 </span>                :            :     {</a>
+<a name="592"><span class="lineNum">     592 </span>        [<span class="branchCov" title="Branch 0 was taken 601509 times"> + </span><span class="branchCov" title="Branch 1 was taken 2010857 times"> + </span>]:<span class="lineCov">    2612365 :       if (!bi-&gt;elt1)</span></a>
+<a name="593"><span class="lineNum">     593 </span>                :            :         {</a>
+<a name="594"><span class="lineNum">     594 </span>                :<span class="lineCov">     601509 :           bi-&gt;elt2 = NULL;</span></a>
+<a name="595"><span class="lineNum">     595 </span>                :<span class="lineCov">     601509 :           break;</span></a>
+<a name="596"><span class="lineNum">     596 </span>                :            :         }</a>
+<a name="597"><span class="lineNum">     597 </span>                :            : </a>
+<a name="598"><span class="lineNum">     598 </span>        [<span class="branchCov" title="Branch 0 was taken 2010857 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">    2010857 :       if (bi-&gt;elt1-&gt;indx &gt;= start_bit / BITMAP_ELEMENT_ALL_BITS)</span></a>
+<a name="599"><span class="lineNum">     599 </span>                :<span class="lineCov">    2010857 :         break;</span></a>
+<a name="600"><span class="lineNum">     600 </span>                :<span class="lineNoCov">          0 :       bi-&gt;elt1 = bi-&gt;elt1-&gt;next;</span></a>
+<a name="601"><span class="lineNum">     601 </span>                :            :     }</a>
+<a name="602"><span class="lineNum">     602 </span>                :            : </a>
+<a name="603"><span class="lineNum">     603 </span>                :            :   /* Advance elt2 until it is not before elt1.  */</a>
+<a name="604"><span class="lineNum">     604 </span>                :            :   while (1)</a>
+<a name="605"><span class="lineNum">     605 </span>                :            :     {</a>
+<a name="606"><span class="lineNum">     606 </span>        [<span class="branchCov" title="Branch 0 was taken 816811 times"> + </span><span class="branchCov" title="Branch 1 was taken 2925575 times"> + </span>]:<span class="lineCov">    3742379 :       if (!bi-&gt;elt2)</span></a>
+<a name="607"><span class="lineNum">     607 </span>                :            :         {</a>
+<a name="608"><span class="lineNum">     608 </span>                :<span class="lineCov">     816811 :           bi-&gt;elt1 = bi-&gt;elt2 = &amp;bitmap_zero_bits;</span></a>
+<a name="609"><span class="lineNum">     609 </span>                :<span class="lineCov">     816811 :           break;</span></a>
+<a name="610"><span class="lineNum">     610 </span>                :            :         }</a>
+<a name="611"><span class="lineNum">     611 </span>                :            : </a>
+<a name="612"><span class="lineNum">     612 </span>        [<span class="branchCov" title="Branch 0 was taken 1795552 times"> + </span><span class="branchCov" title="Branch 1 was taken 1130021 times"> + </span>]:<span class="lineCov">    2925575 :       if (bi-&gt;elt2-&gt;indx &gt;= bi-&gt;elt1-&gt;indx)</span></a>
+<a name="613"><span class="lineNum">     613 </span>                :<span class="lineCov">    1795552 :         break;</span></a>
+<a name="614"><span class="lineNum">     614 </span>                :<span class="lineCov">    1130021 :       bi-&gt;elt2 = bi-&gt;elt2-&gt;next;</span></a>
+<a name="615"><span class="lineNum">     615 </span>                :            :     }</a>
+<a name="616"><span class="lineNum">     616 </span>                :            : </a>
+<a name="617"><span class="lineNum">     617 </span>                :            :   /* If we're at the same index, then we have some intersecting bits.  */</a>
+<a name="618"><span class="lineNum">     618 </span>        [<span class="branchCov" title="Branch 0 was taken 2516173 times"> + </span><span class="branchCov" title="Branch 1 was taken 96192 times"> + </span>]:<span class="lineCov">    2612365 :   if (bi-&gt;elt1-&gt;indx == bi-&gt;elt2-&gt;indx)</span></a>
+<a name="619"><span class="lineNum">     619 </span>                :            :     {</a>
+<a name="620"><span class="lineNum">     620 </span>                :            :       /* We might have advanced beyond the start_bit, so reinitialize</a>
+<a name="621"><span class="lineNum">     621 </span>                :            :          for that.  */</a>
+<a name="622"><span class="lineNum">     622 </span>        [<span class="branchCov" title="Branch 0 was taken 385120 times"> + </span><span class="branchCov" title="Branch 1 was taken 2131049 times"> + </span>]:<span class="lineCov">    2516173 :       if (bi-&gt;elt1-&gt;indx != start_bit / BITMAP_ELEMENT_ALL_BITS)</span></a>
+<a name="623"><span class="lineNum">     623 </span>                :<span class="lineCov">     385120 :         start_bit = bi-&gt;elt1-&gt;indx * BITMAP_ELEMENT_ALL_BITS;</span></a>
+<a name="624"><span class="lineNum">     624 </span>                :            : </a>
+<a name="625"><span class="lineNum">     625 </span>                :<span class="lineCov">    2516173 :       bi-&gt;word_no = start_bit / BITMAP_WORD_BITS % BITMAP_ELEMENT_WORDS;</span></a>
+<a name="626"><span class="lineNum">     626 </span>                :<span class="lineCov">    2516173 :       bi-&gt;bits = bi-&gt;elt1-&gt;bits[bi-&gt;word_no] &amp; bi-&gt;elt2-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="627"><span class="lineNum">     627 </span>                :<span class="lineCov">    2516173 :       bi-&gt;bits &gt;&gt;= start_bit % BITMAP_WORD_BITS;</span></a>
+<a name="628"><span class="lineNum">     628 </span>                :            :     }</a>
+<a name="629"><span class="lineNum">     629 </span>                :            :   else</a>
+<a name="630"><span class="lineNum">     630 </span>                :            :     {</a>
+<a name="631"><span class="lineNum">     631 </span>                :            :       /* Otherwise we must immediately advance elt1, so initialize for</a>
+<a name="632"><span class="lineNum">     632 </span>                :            :          that.  */</a>
+<a name="633"><span class="lineNum">     633 </span>                :<span class="lineCov">      96192 :       bi-&gt;word_no = BITMAP_ELEMENT_WORDS - 1;</span></a>
+<a name="634"><span class="lineNum">     634 </span>                :<span class="lineCov">      96192 :       bi-&gt;bits = 0;</span></a>
+<a name="635"><span class="lineNum">     635 </span>                :            :     }</a>
+<a name="636"><span class="lineNum">     636 </span>                :            : </a>
+<a name="637"><span class="lineNum">     637 </span>                :            :   /* If this word is zero, we must make sure we're not pointing at the</a>
+<a name="638"><span class="lineNum">     638 </span>                :            :      first bit, otherwise our incrementing to the next word boundary</a>
+<a name="639"><span class="lineNum">     639 </span>                :            :      will fail.  It won't matter if this increment moves us into the</a>
+<a name="640"><span class="lineNum">     640 </span>                :            :      next word.  */</a>
+<a name="641"><span class="lineNum">     641 </span>                :<span class="lineCov">    2612365 :   start_bit += !bi-&gt;bits;</span></a>
+<a name="642"><span class="lineNum">     642 </span>                :            : </a>
+<a name="643"><span class="lineNum">     643 </span>                :<span class="lineCov">    2612365 :   *bit_no = start_bit;</span></a>
+<a name="644"><span class="lineNum">     644 </span>                :<span class="lineCov">    2612365 : }</span></a>
+<a name="645"><span class="lineNum">     645 </span>                :            : </a>
+<a name="646"><span class="lineNum">     646 </span>                :            : /* Initialize an iterator to iterate over the bits in MAP1 &amp; ~MAP2.  */</a>
+<a name="647"><span class="lineNum">     647 </span>                :            : </a>
+<a name="648"><span class="lineNum">     648 </span>                :            : static inline void</a>
+<a name="649"><span class="lineNum">     649 </span>                :<span class="lineCov">    2878601 : bmp_iter_and_compl_init (bitmap_iterator *bi,</span></a>
+<a name="650"><span class="lineNum">     650 </span>                :            :                          const_bitmap map1, const_bitmap map2,</a>
+<a name="651"><span class="lineNum">     651 </span>                :            :                          unsigned start_bit, unsigned *bit_no)</a>
+<a name="652"><span class="lineNum">     652 </span>                :            : {</a>
+<a name="653"><span class="lineNum">     653 </span>                :<span class="lineCov">    2878601 :   bi-&gt;elt1 = map1-&gt;first;</span></a>
+<a name="654"><span class="lineNum">     654 </span>                :<span class="lineCov">    2878601 :   bi-&gt;elt2 = map2-&gt;first;</span></a>
+<a name="655"><span class="lineNum">     655 </span>                :            : </a>
+<a name="656"><span class="lineNum">     656 </span>                :            :   gcc_checking_assert (!map1-&gt;tree_form &amp;&amp; !map2-&gt;tree_form);</a>
+<a name="657"><span class="lineNum">     657 </span>                :            : </a>
+<a name="658"><span class="lineNum">     658 </span>                :            :   /* Advance elt1 until it is not before the block containing start_bit.  */</a>
+<a name="659"><span class="lineNum">     659 </span>                :            :   while (1)</a>
+<a name="660"><span class="lineNum">     660 </span>                :            :     {</a>
+<a name="661"><span class="lineNum">     661 </span>        [<span class="branchCov" title="Branch 0 was taken 796144 times"> + </span><span class="branchCov" title="Branch 1 was taken 2082461 times"> + </span>]:<span class="lineCov">    2878601 :       if (!bi-&gt;elt1)</span></a>
+<a name="662"><span class="lineNum">     662 </span>                :            :         {</a>
+<a name="663"><span class="lineNum">     663 </span>                :<span class="lineCov">     796144 :           bi-&gt;elt1 = &amp;bitmap_zero_bits;</span></a>
+<a name="664"><span class="lineNum">     664 </span>                :<span class="lineCov">     796144 :           break;</span></a>
+<a name="665"><span class="lineNum">     665 </span>                :            :         }</a>
+<a name="666"><span class="lineNum">     666 </span>                :            : </a>
+<a name="667"><span class="lineNum">     667 </span>        [<span class="branchCov" title="Branch 0 was taken 2082461 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">    2082461 :       if (bi-&gt;elt1-&gt;indx &gt;= start_bit / BITMAP_ELEMENT_ALL_BITS)</span></a>
+<a name="668"><span class="lineNum">     668 </span>                :<span class="lineCov">    2082461 :         break;</span></a>
+<a name="669"><span class="lineNum">     669 </span>                :<span class="lineNoCov">          0 :       bi-&gt;elt1 = bi-&gt;elt1-&gt;next;</span></a>
+<a name="670"><span class="lineNum">     670 </span>                :            :     }</a>
+<a name="671"><span class="lineNum">     671 </span>                :            : </a>
+<a name="672"><span class="lineNum">     672 </span>                :            :   /* Advance elt2 until it is not before elt1.  */</a>
+<a name="673"><span class="lineNum">     673 </span>  [<span class="branchCov" title="Branch 0 was taken 2304030 times"> + </span><span class="branchCov" title="Branch 1 was taken 799825 times"> + </span><span class="branchCov" title="Branch 2 was taken 225247 times"> + </span><span class="branchCov" title="Branch 3 was taken 2078780 times"> + </span>]:<span class="lineCov">    3103851 :   while (bi-&gt;elt2 &amp;&amp; bi-&gt;elt2-&gt;indx &lt; bi-&gt;elt1-&gt;indx)</span></a>
+<a name="674"><span class="lineNum">     674 </span>                :<span class="lineCov">     225247 :     bi-&gt;elt2 = bi-&gt;elt2-&gt;next;</span></a>
+<a name="675"><span class="lineNum">     675 </span>                :            : </a>
+<a name="676"><span class="lineNum">     676 </span>                :            :   /* We might have advanced beyond the start_bit, so reinitialize for</a>
+<a name="677"><span class="lineNum">     677 </span>                :            :      that.  */</a>
+<a name="678"><span class="lineNum">     678 </span>        [<span class="branchCov" title="Branch 0 was taken 223912 times"> + </span><span class="branchCov" title="Branch 1 was taken 2654697 times"> + </span>]:<span class="lineCov">    2878601 :   if (bi-&gt;elt1-&gt;indx != start_bit / BITMAP_ELEMENT_ALL_BITS)</span></a>
+<a name="679"><span class="lineNum">     679 </span>                :<span class="lineCov">     223912 :     start_bit = bi-&gt;elt1-&gt;indx * BITMAP_ELEMENT_ALL_BITS;</span></a>
+<a name="680"><span class="lineNum">     680 </span>                :            : </a>
+<a name="681"><span class="lineNum">     681 </span>                :<span class="lineCov">    2878601 :   bi-&gt;word_no = start_bit / BITMAP_WORD_BITS % BITMAP_ELEMENT_WORDS;</span></a>
+<a name="682"><span class="lineNum">     682 </span>                :<span class="lineCov">    2878601 :   bi-&gt;bits = bi-&gt;elt1-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="683"><span class="lineNum">     683 </span>  [<span class="branchCov" title="Branch 0 was taken 2078780 times"> + </span><span class="branchCov" title="Branch 1 was taken 799825 times"> + </span><span class="branchCov" title="Branch 2 was taken 2051642 times"> + </span><span class="branchCov" title="Branch 3 was taken 27136 times"> + </span>]:<span class="lineCov">    2878601 :   if (bi-&gt;elt2 &amp;&amp; bi-&gt;elt1-&gt;indx == bi-&gt;elt2-&gt;indx)</span></a>
+<a name="684"><span class="lineNum">     684 </span>                :<span class="lineCov">    2051642 :     bi-&gt;bits &amp;= ~bi-&gt;elt2-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="685"><span class="lineNum">     685 </span>                :<span class="lineCov">    2878601 :   bi-&gt;bits &gt;&gt;= start_bit % BITMAP_WORD_BITS;</span></a>
+<a name="686"><span class="lineNum">     686 </span>                :            : </a>
+<a name="687"><span class="lineNum">     687 </span>                :            :   /* If this word is zero, we must make sure we're not pointing at the</a>
+<a name="688"><span class="lineNum">     688 </span>                :            :      first bit, otherwise our incrementing to the next word boundary</a>
+<a name="689"><span class="lineNum">     689 </span>                :            :      will fail.  It won't matter if this increment moves us into the</a>
+<a name="690"><span class="lineNum">     690 </span>                :            :      next word.  */</a>
+<a name="691"><span class="lineNum">     691 </span>                :<span class="lineCov">    2878601 :   start_bit += !bi-&gt;bits;</span></a>
+<a name="692"><span class="lineNum">     692 </span>                :            : </a>
+<a name="693"><span class="lineNum">     693 </span>                :<span class="lineCov">    2878601 :   *bit_no = start_bit;</span></a>
+<a name="694"><span class="lineNum">     694 </span>                :<span class="lineCov">    2878601 : }</span></a>
+<a name="695"><span class="lineNum">     695 </span>                :            : </a>
+<a name="696"><span class="lineNum">     696 </span>                :            : /* Advance to the next bit in BI.  We don't advance to the next</a>
+<a name="697"><span class="lineNum">     697 </span>                :            :    nonzero bit yet.  */</a>
+<a name="698"><span class="lineNum">     698 </span>                :            : </a>
+<a name="699"><span class="lineNum">     699 </span>                :            : static inline void</a>
+<a name="700"><span class="lineNum">     700 </span>                :<span class="lineCov"> 5322175973 : bmp_iter_next (bitmap_iterator *bi, unsigned *bit_no)</span></a>
+<a name="701"><span class="lineNum">     701 </span>                :            : {</a>
+<a name="702"><span class="lineNum">     702 </span>                :<span class="lineCov"> 5322175973 :   bi-&gt;bits &gt;&gt;= 1;</span></a>
+<a name="703"><span class="lineNum">     703 </span>                :<span class="lineCov"> 5322175973 :   *bit_no += 1;</span></a>
+<a name="704"><span class="lineNum">     704 </span>                :<span class="lineCov"> 5322175973 : }</span></a>
+<a name="705"><span class="lineNum">     705 </span>                :            : </a>
+<a name="706"><span class="lineNum">     706 </span>                :            : /* Advance to first set bit in BI.  */</a>
+<a name="707"><span class="lineNum">     707 </span>                :            : </a>
+<a name="708"><span class="lineNum">     708 </span>                :            : static inline void</a>
+<a name="709"><span class="lineNum">     709 </span>                :<span class="lineCov"> 5345840163 : bmp_iter_next_bit (bitmap_iterator * bi, unsigned *bit_no)</span></a>
+<a name="710"><span class="lineNum">     710 </span>                :            : {</a>
+<a name="711"><span class="lineNum">     711 </span>                :            : #if (GCC_VERSION &gt;= 3004)</a>
+<a name="712"><span class="lineNum">     712 </span>                :            :   {</a>
+<a name="713"><span class="lineNum">     713 </span>                :<span class="lineCov"> 5345840163 :     unsigned int n = __builtin_ctzl (bi-&gt;bits);</span></a>
+<a name="714"><span class="lineNum">     714 </span>                :            :     gcc_assert (sizeof (unsigned long) == sizeof (BITMAP_WORD));</a>
+<a name="715"><span class="lineNum">     715 </span>                :<span class="lineCov"> 5345840163 :     bi-&gt;bits &gt;&gt;= n;</span></a>
+<a name="716"><span class="lineNum">     716 </span>                :<span class="lineCov"> 5345840163 :     *bit_no += n;</span></a>
+<a name="717"><span class="lineNum">     717 </span>                :            :   }</a>
+<a name="718"><span class="lineNum">     718 </span>                :            : #else</a>
+<a name="719"><span class="lineNum">     719 </span>                :            :   while (!(bi-&gt;bits &amp; 1))</a>
+<a name="720"><span class="lineNum">     720 </span>                :            :     {</a>
+<a name="721"><span class="lineNum">     721 </span>                :            :       bi-&gt;bits &gt;&gt;= 1;</a>
+<a name="722"><span class="lineNum">     722 </span>                :            :       *bit_no += 1;</a>
+<a name="723"><span class="lineNum">     723 </span>                :            :     }</a>
+<a name="724"><span class="lineNum">     724 </span>                :            : #endif</a>
+<a name="725"><span class="lineNum">     725 </span>                :<span class="lineCov"> 5345840163 : }</span></a>
+<a name="726"><span class="lineNum">     726 </span>                :            : </a>
+<a name="727"><span class="lineNum">     727 </span>                :            : /* Advance to the next nonzero bit of a single bitmap, we will have</a>
+<a name="728"><span class="lineNum">     728 </span>                :            :    already advanced past the just iterated bit.  Return true if there</a>
+<a name="729"><span class="lineNum">     729 </span>                :            :    is a bit to iterate.  */</a>
+<a name="730"><span class="lineNum">     730 </span>                :            : </a>
+<a name="731"><span class="lineNum">     731 </span>                :            : static inline bool</a>
+<a name="732"><span class="lineNum">     732 </span>                :<span class="lineCov"> 5464692268 : bmp_iter_set (bitmap_iterator *bi, unsigned *bit_no)</span></a>
+<a name="733"><span class="lineNum">     733 </span>                :            : {</a>
+<a name="734"><span class="lineNum">     734 </span>                :            :   /* If our current word is nonzero, it contains the bit we want.  */</a>
+<a name="735"><span class="lineNum">     735 </span>        [<span class="branchCov" title="Branch 0 was taken 5093725214 times"> + </span><span class="branchCov" title="Branch 1 was taken 370973943 times"> + </span>]:<span class="lineCov"> 5464692268 :   if (bi-&gt;bits)</span></a>
+<a name="736"><span class="lineNum">     736 </span>                :            :     {</a>
+<a name="737"><span class="lineNum">     737 </span>                :<span class="lineCov"> 5093725214 :     next_bit:</span></a>
+<a name="738"><span class="lineNum">     738 </span>                :<span class="lineCov"> 5340911365 :       bmp_iter_next_bit (bi, bit_no);</span></a>
+<a name="739"><span class="lineNum">     739 </span>                :<span class="lineCov"> 5340911365 :       return true;</span></a>
+<a name="740"><span class="lineNum">     740 </span>                :            :     }</a>
+<a name="741"><span class="lineNum">     741 </span>                :            : </a>
+<a name="742"><span class="lineNum">     742 </span>                :            :   /* Round up to the word boundary.  We might have just iterated past</a>
+<a name="743"><span class="lineNum">     743 </span>                :            :      the end of the last word, hence the -1.  It is not possible for</a>
+<a name="744"><span class="lineNum">     744 </span>                :            :      bit_no to point at the beginning of the now last word.  */</a>
+<a name="745"><span class="lineNum">     745 </span>                :<span class="lineCov">  370973943 :   *bit_no = ((*bit_no + BITMAP_WORD_BITS - 1)</span></a>
+<a name="746"><span class="lineNum">     746 </span>                :<span class="lineCov">  370973943 :              / BITMAP_WORD_BITS * BITMAP_WORD_BITS);</span></a>
+<a name="747"><span class="lineNum">     747 </span>                :<span class="lineCov">  370973943 :   bi-&gt;word_no++;</span></a>
+<a name="748"><span class="lineNum">     748 </span>                :            : </a>
+<a name="749"><span class="lineNum">     749 </span>                :            :   while (1)</a>
+<a name="750"><span class="lineNum">     750 </span>                :            :     {</a>
+<a name="751"><span class="lineNum">     751 </span>                :            :       /* Find the next nonzero word in this elt.  */</a>
+<a name="752"><span class="lineNum">     752 </span>        [<span class="branchCov" title="Branch 0 was taken 433001847 times"> + </span><span class="branchCov" title="Branch 1 was taken 280248577 times"> + </span>]:<span class="lineCov">  713250566 :       while (bi-&gt;word_no != BITMAP_ELEMENT_WORDS)</span></a>
+<a name="753"><span class="lineNum">     753 </span>                :            :         {</a>
+<a name="754"><span class="lineNum">     754 </span>                :<span class="lineCov">  433001847 :           bi-&gt;bits = bi-&gt;elt1-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="755"><span class="lineNum">     755 </span>        [<span class="branchCov" title="Branch 0 was taken 247187561 times"> + </span><span class="branchCov" title="Branch 1 was taken 185815064 times"> + </span>]:<span class="lineCov">  433001847 :           if (bi-&gt;bits)</span></a>
+<a name="756"><span class="lineNum">     756 </span>                :<span class="lineCov">  247187561 :             goto next_bit;</span></a>
+<a name="757"><span class="lineNum">     757 </span>                :<span class="lineCov">  185815064 :           *bit_no += BITMAP_WORD_BITS;</span></a>
+<a name="758"><span class="lineNum">     758 </span>                :<span class="lineCov">  185815064 :           bi-&gt;word_no++;</span></a>
+<a name="759"><span class="lineNum">     759 </span>                :            :         }</a>
+<a name="760"><span class="lineNum">     760 </span>                :            : </a>
+<a name="761"><span class="lineNum">     761 </span>                :            :       /* Make sure we didn't remove the element while iterating.  */</a>
+<a name="762"><span class="lineNum">     762 </span>                :            :       gcc_checking_assert (bi-&gt;elt1-&gt;indx != -1U);</a>
+<a name="763"><span class="lineNum">     763 </span>                :            : </a>
+<a name="764"><span class="lineNum">     764 </span>                :            :       /* Advance to the next element.  */</a>
+<a name="765"><span class="lineNum">     765 </span>                :<span class="lineCov">  280248577 :       bi-&gt;elt1 = bi-&gt;elt1-&gt;next;</span></a>
+<a name="766"><span class="lineNum">     766 </span>        [<span class="branchCov" title="Branch 0 was taken 123785669 times"> + </span><span class="branchCov" title="Branch 1 was taken 156463055 times"> + </span>]:<span class="lineCov">  280248577 :       if (!bi-&gt;elt1)</span></a>
+<a name="767"><span class="lineNum">     767 </span>                :<span class="lineCov">  123785669 :         return false;</span></a>
+<a name="768"><span class="lineNum">     768 </span>                :<span class="lineCov">  156463055 :       *bit_no = bi-&gt;elt1-&gt;indx * BITMAP_ELEMENT_ALL_BITS;</span></a>
+<a name="769"><span class="lineNum">     769 </span>                :<span class="lineCov">  156463055 :       bi-&gt;word_no = 0;</span></a>
+<a name="770"><span class="lineNum">     770 </span>                :            :     }</a>
+<a name="771"><span class="lineNum">     771 </span>                :            : }</a>
+<a name="772"><span class="lineNum">     772 </span>                :            : </a>
+<a name="773"><span class="lineNum">     773 </span>                :            : /* Advance to the next nonzero bit of an intersecting pair of</a>
+<a name="774"><span class="lineNum">     774 </span>                :            :    bitmaps.  We will have already advanced past the just iterated bit.</a>
+<a name="775"><span class="lineNum">     775 </span>                :            :    Return true if there is a bit to iterate.  */</a>
+<a name="776"><span class="lineNum">     776 </span>                :            : </a>
+<a name="777"><span class="lineNum">     777 </span>                :            : static inline bool</a>
+<a name="778"><span class="lineNum">     778 </span>                :<span class="lineCov">    4585340 : bmp_iter_and (bitmap_iterator *bi, unsigned *bit_no)</span></a>
+<a name="779"><span class="lineNum">     779 </span>                :            : {</a>
+<a name="780"><span class="lineNum">     780 </span>                :            :   /* If our current word is nonzero, it contains the bit we want.  */</a>
+<a name="781"><span class="lineNum">     781 </span>        [<span class="branchCov" title="Branch 0 was taken 1203809 times"> + </span><span class="branchCov" title="Branch 1 was taken 3381531 times"> + </span>]:<span class="lineCov">    4585340 :   if (bi-&gt;bits)</span></a>
+<a name="782"><span class="lineNum">     782 </span>                :            :     {</a>
+<a name="783"><span class="lineNum">     783 </span>                :<span class="lineCov">    1203809 :     next_bit:</span></a>
+<a name="784"><span class="lineNum">     784 </span>                :<span class="lineCov">    2036890 :       bmp_iter_next_bit (bi, bit_no);</span></a>
+<a name="785"><span class="lineNum">     785 </span>                :<span class="lineCov">    2036890 :       return true;</span></a>
+<a name="786"><span class="lineNum">     786 </span>                :            :     }</a>
+<a name="787"><span class="lineNum">     787 </span>                :            : </a>
+<a name="788"><span class="lineNum">     788 </span>                :            :   /* Round up to the word boundary.  We might have just iterated past</a>
+<a name="789"><span class="lineNum">     789 </span>                :            :      the end of the last word, hence the -1.  It is not possible for</a>
+<a name="790"><span class="lineNum">     790 </span>                :            :      bit_no to point at the beginning of the now last word.  */</a>
+<a name="791"><span class="lineNum">     791 </span>                :<span class="lineCov">    3381531 :   *bit_no = ((*bit_no + BITMAP_WORD_BITS - 1)</span></a>
+<a name="792"><span class="lineNum">     792 </span>                :<span class="lineCov">    3381531 :              / BITMAP_WORD_BITS * BITMAP_WORD_BITS);</span></a>
+<a name="793"><span class="lineNum">     793 </span>                :<span class="lineCov">    3381531 :   bi-&gt;word_no++;</span></a>
+<a name="794"><span class="lineNum">     794 </span>                :            : </a>
+<a name="795"><span class="lineNum">     795 </span>                :            :   while (1)</a>
+<a name="796"><span class="lineNum">     796 </span>                :            :     {</a>
+<a name="797"><span class="lineNum">     797 </span>                :            :       /* Find the next nonzero word in this elt.  */</a>
+<a name="798"><span class="lineNum">     798 </span>        [<span class="branchCov" title="Branch 0 was taken 2599485 times"> + </span><span class="branchCov" title="Branch 1 was taken 2942817 times"> + </span>]:<span class="lineCov">    5542302 :       while (bi-&gt;word_no != BITMAP_ELEMENT_WORDS)</span></a>
+<a name="799"><span class="lineNum">     799 </span>                :            :         {</a>
+<a name="800"><span class="lineNum">     800 </span>                :<span class="lineCov">    2599485 :           bi-&gt;bits = bi-&gt;elt1-&gt;bits[bi-&gt;word_no] &amp; bi-&gt;elt2-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="801"><span class="lineNum">     801 </span>        [<span class="branchCov" title="Branch 0 was taken 833080 times"> + </span><span class="branchCov" title="Branch 1 was taken 1766404 times"> + </span>]:<span class="lineCov">    2599485 :           if (bi-&gt;bits)</span></a>
+<a name="802"><span class="lineNum">     802 </span>                :<span class="lineCov">     833080 :             goto next_bit;</span></a>
+<a name="803"><span class="lineNum">     803 </span>                :<span class="lineCov">    1766404 :           *bit_no += BITMAP_WORD_BITS;</span></a>
+<a name="804"><span class="lineNum">     804 </span>                :<span class="lineCov">    1766404 :           bi-&gt;word_no++;</span></a>
+<a name="805"><span class="lineNum">     805 </span>                :            :         }</a>
+<a name="806"><span class="lineNum">     806 </span>                :            : </a>
+<a name="807"><span class="lineNum">     807 </span>                :            :       /* Advance to the next identical element.  */</a>
+<a name="808"><span class="lineNum">     808 </span>                :<span class="lineCov">      84072 :       do</span></a>
+<a name="809"><span class="lineNum">     809 </span>                :            :         {</a>
+<a name="810"><span class="lineNum">     810 </span>                :            :           /* Make sure we didn't remove the element while iterating.  */</a>
+<a name="811"><span class="lineNum">     811 </span>                :            :           gcc_checking_assert (bi-&gt;elt1-&gt;indx != -1U);</a>
+<a name="812"><span class="lineNum">     812 </span>                :            : </a>
+<a name="813"><span class="lineNum">     813 </span>                :            :           /* Advance elt1 while it is less than elt2.  We always want</a>
+<a name="814"><span class="lineNum">     814 </span>                :            :              to advance one elt.  */</a>
+<a name="815"><span class="lineNum">     815 </span>                :<span class="lineCov">      57524 :           do</span></a>
+<a name="816"><span class="lineNum">     816 </span>                :            :             {</a>
+<a name="817"><span class="lineNum">     817 </span>                :<span class="lineCov">    3084412 :               bi-&gt;elt1 = bi-&gt;elt1-&gt;next;</span></a>
+<a name="818"><span class="lineNum">     818 </span>        [<span class="branchCov" title="Branch 0 was taken 2084841 times"> + </span><span class="branchCov" title="Branch 1 was taken 999567 times"> + </span>]:<span class="lineCov">    3084412 :               if (!bi-&gt;elt1)</span></a>
+<a name="819"><span class="lineNum">     819 </span>                :<span class="lineCov">    2084841 :                 return false;</span></a>
+<a name="820"><span class="lineNum">     820 </span>                :            :             }</a>
+<a name="821"><span class="lineNum">     821 </span>        [<span class="branchCov" title="Branch 0 was taken 57524 times"> + </span><span class="branchCov" title="Branch 1 was taken 942043 times"> + </span>]:<span class="lineCov">     999567 :           while (bi-&gt;elt1-&gt;indx &lt; bi-&gt;elt2-&gt;indx);</span></a>
+<a name="822"><span class="lineNum">     822 </span>                :            : </a>
+<a name="823"><span class="lineNum">     823 </span>                :            :           /* Make sure we didn't remove the element while iterating.  */</a>
+<a name="824"><span class="lineNum">     824 </span>                :            :           gcc_checking_assert (bi-&gt;elt2-&gt;indx != -1U);</a>
+<a name="825"><span class="lineNum">     825 </span>                :            : </a>
+<a name="826"><span class="lineNum">     826 </span>                :            :           /* Advance elt2 to be no less than elt1.  This might not</a>
+<a name="827"><span class="lineNum">     827 </span>                :            :              advance.  */</a>
+<a name="828"><span class="lineNum">     828 </span>        [<span class="branchCov" title="Branch 0 was taken 1023061 times"> + </span><span class="branchCov" title="Branch 1 was taken 478440 times"> + </span>]:<span class="lineCov">    1501501 :           while (bi-&gt;elt2-&gt;indx &lt; bi-&gt;elt1-&gt;indx)</span></a>
+<a name="829"><span class="lineNum">     829 </span>                :            :             {</a>
+<a name="830"><span class="lineNum">     830 </span>                :<span class="lineCov">    1023061 :               bi-&gt;elt2 = bi-&gt;elt2-&gt;next;</span></a>
+<a name="831"><span class="lineNum">     831 </span>        [<span class="branchCov" title="Branch 0 was taken 463603 times"> + </span><span class="branchCov" title="Branch 1 was taken 559458 times"> + </span>]:<span class="lineCov">    1023061 :               if (!bi-&gt;elt2)</span></a>
+<a name="832"><span class="lineNum">     832 </span>                :<span class="lineCov">     463603 :                 return false;</span></a>
+<a name="833"><span class="lineNum">     833 </span>                :            :             }</a>
+<a name="834"><span class="lineNum">     834 </span>                :            :         }</a>
+<a name="835"><span class="lineNum">     835 </span>        [<span class="branchCov" title="Branch 0 was taken 84072 times"> + </span><span class="branchCov" title="Branch 1 was taken 394368 times"> + </span>]:<span class="lineCov">     478440 :       while (bi-&gt;elt1-&gt;indx != bi-&gt;elt2-&gt;indx);</span></a>
+<a name="836"><span class="lineNum">     836 </span>                :            : </a>
+<a name="837"><span class="lineNum">     837 </span>                :<span class="lineCov">     394368 :       *bit_no = bi-&gt;elt1-&gt;indx * BITMAP_ELEMENT_ALL_BITS;</span></a>
+<a name="838"><span class="lineNum">     838 </span>                :<span class="lineCov">     394368 :       bi-&gt;word_no = 0;</span></a>
+<a name="839"><span class="lineNum">     839 </span>                :            :     }</a>
+<a name="840"><span class="lineNum">     840 </span>                :            : }</a>
+<a name="841"><span class="lineNum">     841 </span>                :            : </a>
+<a name="842"><span class="lineNum">     842 </span>                :            : /* Advance to the next nonzero bit in the intersection of</a>
+<a name="843"><span class="lineNum">     843 </span>                :            :    complemented bitmaps.  We will have already advanced past the just</a>
+<a name="844"><span class="lineNum">     844 </span>                :            :    iterated bit.  */</a>
+<a name="845"><span class="lineNum">     845 </span>                :            : </a>
+<a name="846"><span class="lineNum">     846 </span>                :            : static inline bool</a>
+<a name="847"><span class="lineNum">     847 </span>                :<span class="lineCov">    5769938 : bmp_iter_and_compl (bitmap_iterator *bi, unsigned *bit_no)</span></a>
+<a name="848"><span class="lineNum">     848 </span>                :            : {</a>
+<a name="849"><span class="lineNum">     849 </span>                :            :   /* If our current word is nonzero, it contains the bit we want.  */</a>
+<a name="850"><span class="lineNum">     850 </span>        [<span class="branchCov" title="Branch 0 was taken 2569099 times"> + </span><span class="branchCov" title="Branch 1 was taken 3200836 times"> + </span>]:<span class="lineCov">    5769938 :   if (bi-&gt;bits)</span></a>
+<a name="851"><span class="lineNum">     851 </span>                :            :     {</a>
+<a name="852"><span class="lineNum">     852 </span>                :<span class="lineCov">    2569099 :     next_bit:</span></a>
+<a name="853"><span class="lineNum">     853 </span>                :<span class="lineCov">    2891934 :       bmp_iter_next_bit (bi, bit_no);</span></a>
+<a name="854"><span class="lineNum">     854 </span>                :<span class="lineCov">    2891934 :       return true;</span></a>
+<a name="855"><span class="lineNum">     855 </span>                :            :     }</a>
+<a name="856"><span class="lineNum">     856 </span>                :            : </a>
+<a name="857"><span class="lineNum">     857 </span>                :            :   /* Round up to the word boundary.  We might have just iterated past</a>
+<a name="858"><span class="lineNum">     858 </span>                :            :      the end of the last word, hence the -1.  It is not possible for</a>
+<a name="859"><span class="lineNum">     859 </span>                :            :      bit_no to point at the beginning of the now last word.  */</a>
+<a name="860"><span class="lineNum">     860 </span>                :<span class="lineCov">    3200836 :   *bit_no = ((*bit_no + BITMAP_WORD_BITS - 1)</span></a>
+<a name="861"><span class="lineNum">     861 </span>                :<span class="lineCov">    3200836 :              / BITMAP_WORD_BITS * BITMAP_WORD_BITS);</span></a>
+<a name="862"><span class="lineNum">     862 </span>                :<span class="lineCov">    3200836 :   bi-&gt;word_no++;</span></a>
+<a name="863"><span class="lineNum">     863 </span>                :            : </a>
+<a name="864"><span class="lineNum">     864 </span>                :            :   while (1)</a>
+<a name="865"><span class="lineNum">     865 </span>                :            :     {</a>
+<a name="866"><span class="lineNum">     866 </span>                :            :       /* Find the next nonzero word in this elt.  */</a>
+<a name="867"><span class="lineNum">     867 </span>        [<span class="branchCov" title="Branch 0 was taken 3170697 times"> + </span><span class="branchCov" title="Branch 1 was taken 3024353 times"> + </span>]:<span class="lineCov">    6195050 :       while (bi-&gt;word_no != BITMAP_ELEMENT_WORDS)</span></a>
+<a name="868"><span class="lineNum">     868 </span>                :            :         {</a>
+<a name="869"><span class="lineNum">     869 </span>                :<span class="lineCov">    3170697 :           bi-&gt;bits = bi-&gt;elt1-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="870"><span class="lineNum">     870 </span>  [<span class="branchCov" title="Branch 0 was taken 2284124 times"> + </span><span class="branchCov" title="Branch 1 was taken 886577 times"> + </span><span class="branchCov" title="Branch 2 was taken 2254834 times"> + </span><span class="branchCov" title="Branch 3 was taken 29286 times"> + </span>]:<span class="lineCov">    3170697 :           if (bi-&gt;elt2 &amp;&amp; bi-&gt;elt2-&gt;indx == bi-&gt;elt1-&gt;indx)</span></a>
+<a name="871"><span class="lineNum">     871 </span>                :<span class="lineCov">    2254834 :             bi-&gt;bits &amp;= ~bi-&gt;elt2-&gt;bits[bi-&gt;word_no];</span></a>
+<a name="872"><span class="lineNum">     872 </span>        [<span class="branchCov" title="Branch 0 was taken 322834 times"> + </span><span class="branchCov" title="Branch 1 was taken 2847860 times"> + </span>]:<span class="lineCov">    3170697 :           if (bi-&gt;bits)</span></a>
+<a name="873"><span class="lineNum">     873 </span>                :<span class="lineCov">     322834 :             goto next_bit;</span></a>
+<a name="874"><span class="lineNum">     874 </span>                :<span class="lineCov">    2847860 :           *bit_no += BITMAP_WORD_BITS;</span></a>
+<a name="875"><span class="lineNum">     875 </span>                :<span class="lineCov">    2847860 :           bi-&gt;word_no++;</span></a>
+<a name="876"><span class="lineNum">     876 </span>                :            :         }</a>
+<a name="877"><span class="lineNum">     877 </span>                :            : </a>
+<a name="878"><span class="lineNum">     878 </span>                :            :       /* Make sure we didn't remove the element while iterating.  */</a>
+<a name="879"><span class="lineNum">     879 </span>                :            :       gcc_checking_assert (bi-&gt;elt1-&gt;indx != -1U);</a>
+<a name="880"><span class="lineNum">     880 </span>                :            : </a>
+<a name="881"><span class="lineNum">     881 </span>                :            :       /* Advance to the next element of elt1.  */</a>
+<a name="882"><span class="lineNum">     882 </span>                :<span class="lineCov">    3024353 :       bi-&gt;elt1 = bi-&gt;elt1-&gt;next;</span></a>
+<a name="883"><span class="lineNum">     883 </span>        [<span class="branchCov" title="Branch 0 was taken 2877999 times"> + </span><span class="branchCov" title="Branch 1 was taken 146347 times"> + </span>]:<span class="lineCov">    3024353 :       if (!bi-&gt;elt1)</span></a>
+<a name="884"><span class="lineNum">     884 </span>                :<span class="lineCov">    2877999 :         return false;</span></a>
+<a name="885"><span class="lineNum">     885 </span>                :            : </a>
+<a name="886"><span class="lineNum">     886 </span>                :            :       /* Make sure we didn't remove the element while iterating.  */</a>
+<a name="887"><span class="lineNum">     887 </span>                :            :       gcc_checking_assert (! bi-&gt;elt2 || bi-&gt;elt2-&gt;indx != -1U);</a>
+<a name="888"><span class="lineNum">     888 </span>                :            : </a>
+<a name="889"><span class="lineNum">     889 </span>                :            :       /* Advance elt2 until it is no less than elt1.  */</a>
+<a name="890"><span class="lineNum">     890 </span>  [<span class="branchCov" title="Branch 0 was taken 215891 times"> + </span><span class="branchCov" title="Branch 1 was taken 43536 times"> + </span><span class="branchCov" title="Branch 2 was taken 113080 times"> + </span><span class="branchCov" title="Branch 3 was taken 102811 times"> + </span>]:<span class="lineCov">     259427 :       while (bi-&gt;elt2 &amp;&amp; bi-&gt;elt2-&gt;indx &lt; bi-&gt;elt1-&gt;indx)</span></a>
+<a name="891"><span class="lineNum">     891 </span>                :<span class="lineCov">     113080 :         bi-&gt;elt2 = bi-&gt;elt2-&gt;next;</span></a>
+<a name="892"><span class="lineNum">     892 </span>                :            : </a>
+<a name="893"><span class="lineNum">     893 </span>                :<span class="lineCov">     146347 :       *bit_no = bi-&gt;elt1-&gt;indx * BITMAP_ELEMENT_ALL_BITS;</span></a>
+<a name="894"><span class="lineNum">     894 </span>                :<span class="lineCov">     146347 :       bi-&gt;word_no = 0;</span></a>
+<a name="895"><span class="lineNum">     895 </span>                :            :     }</a>
+<a name="896"><span class="lineNum">     896 </span>                :            : }</a>
+<a name="897"><span class="lineNum">     897 </span>                :            : </a>
+<a name="898"><span class="lineNum">     898 </span>                :            : /* If you are modifying a bitmap you are currently iterating over you</a>
+<a name="899"><span class="lineNum">     899 </span>                :            :    have to ensure to</a>
+<a name="900"><span class="lineNum">     900 </span>                :            :      - never remove the current bit;</a>
+<a name="901"><span class="lineNum">     901 </span>                :            :      - if you set or clear a bit before the current bit this operation</a>
+<a name="902"><span class="lineNum">     902 </span>                :            :        will not affect the set of bits you are visiting during the iteration;</a>
+<a name="903"><span class="lineNum">     903 </span>                :            :      - if you set or clear a bit after the current bit it is unspecified</a>
+<a name="904"><span class="lineNum">     904 </span>                :            :        whether that affects the set of bits you are visiting during the</a>
+<a name="905"><span class="lineNum">     905 </span>                :            :        iteration.</a>
+<a name="906"><span class="lineNum">     906 </span>                :            :    If you want to remove the current bit you can delay this to the next</a>
+<a name="907"><span class="lineNum">     907 </span>                :            :    iteration (and after the iteration in case the last iteration is</a>
+<a name="908"><span class="lineNum">     908 </span>                :            :    affected).  */</a>
+<a name="909"><span class="lineNum">     909 </span>                :            : </a>
+<a name="910"><span class="lineNum">     910 </span>                :            : /* Loop over all bits set in BITMAP, starting with MIN and setting</a>
+<a name="911"><span class="lineNum">     911 </span>                :            :    BITNUM to the bit number.  ITER is a bitmap iterator.  BITNUM</a>
+<a name="912"><span class="lineNum">     912 </span>                :            :    should be treated as a read-only variable as it contains loop</a>
+<a name="913"><span class="lineNum">     913 </span>                :            :    state.  */</a>
+<a name="914"><span class="lineNum">     914 </span>                :            : </a>
+<a name="915"><span class="lineNum">     915 </span>                :            : #ifndef EXECUTE_IF_SET_IN_BITMAP</a>
+<a name="916"><span class="lineNum">     916 </span>                :            : /* See sbitmap.h for the other definition of EXECUTE_IF_SET_IN_BITMAP.  */</a>
+<a name="917"><span class="lineNum">     917 </span>                :            : #define EXECUTE_IF_SET_IN_BITMAP(BITMAP, MIN, BITNUM, ITER)             \</a>
+<a name="918"><span class="lineNum">     918 </span>                :            :   for (bmp_iter_set_init (&amp;(ITER), (BITMAP), (MIN), &amp;(BITNUM));         \</a>
+<a name="919"><span class="lineNum">     919 </span>                :            :        bmp_iter_set (&amp;(ITER), &amp;(BITNUM));                               \</a>
+<a name="920"><span class="lineNum">     920 </span>                :            :        bmp_iter_next (&amp;(ITER), &amp;(BITNUM)))</a>
+<a name="921"><span class="lineNum">     921 </span>                :            : #endif</a>
+<a name="922"><span class="lineNum">     922 </span>                :            : </a>
+<a name="923"><span class="lineNum">     923 </span>                :            : /* Loop over all the bits set in BITMAP1 &amp; BITMAP2, starting with MIN</a>
+<a name="924"><span class="lineNum">     924 </span>                :            :    and setting BITNUM to the bit number.  ITER is a bitmap iterator.</a>
+<a name="925"><span class="lineNum">     925 </span>                :            :    BITNUM should be treated as a read-only variable as it contains</a>
+<a name="926"><span class="lineNum">     926 </span>                :            :    loop state.  */</a>
+<a name="927"><span class="lineNum">     927 </span>                :            : </a>
+<a name="928"><span class="lineNum">     928 </span>                :            : #define EXECUTE_IF_AND_IN_BITMAP(BITMAP1, BITMAP2, MIN, BITNUM, ITER)   \</a>
+<a name="929"><span class="lineNum">     929 </span>                :            :   for (bmp_iter_and_init (&amp;(ITER), (BITMAP1), (BITMAP2), (MIN),             \</a>
+<a name="930"><span class="lineNum">     930 </span>                :            :                           &amp;(BITNUM));                                       \</a>
+<a name="931"><span class="lineNum">     931 </span>                :            :        bmp_iter_and (&amp;(ITER), &amp;(BITNUM));                               \</a>
+<a name="932"><span class="lineNum">     932 </span>                :            :        bmp_iter_next (&amp;(ITER), &amp;(BITNUM)))</a>
+<a name="933"><span class="lineNum">     933 </span>                :            : </a>
+<a name="934"><span class="lineNum">     934 </span>                :            : /* Loop over all the bits set in BITMAP1 &amp; ~BITMAP2, starting with MIN</a>
+<a name="935"><span class="lineNum">     935 </span>                :            :    and setting BITNUM to the bit number.  ITER is a bitmap iterator.</a>
+<a name="936"><span class="lineNum">     936 </span>                :            :    BITNUM should be treated as a read-only variable as it contains</a>
+<a name="937"><span class="lineNum">     937 </span>                :            :    loop state.  */</a>
+<a name="938"><span class="lineNum">     938 </span>                :            : </a>
+<a name="939"><span class="lineNum">     939 </span>                :            : #define EXECUTE_IF_AND_COMPL_IN_BITMAP(BITMAP1, BITMAP2, MIN, BITNUM, ITER) \</a>
+<a name="940"><span class="lineNum">     940 </span>                :            :   for (bmp_iter_and_compl_init (&amp;(ITER), (BITMAP1), (BITMAP2), (MIN),       \</a>
+<a name="941"><span class="lineNum">     941 </span>                :            :                                 &amp;(BITNUM));                         \</a>
+<a name="942"><span class="lineNum">     942 </span>                :            :        bmp_iter_and_compl (&amp;(ITER), &amp;(BITNUM));                         \</a>
+<a name="943"><span class="lineNum">     943 </span>                :            :        bmp_iter_next (&amp;(ITER), &amp;(BITNUM)))</a>
+<a name="944"><span class="lineNum">     944 </span>                :            : </a>
+<a name="945"><span class="lineNum">     945 </span>                :            : /* A class that ties the lifetime of a bitmap to its scope.  */</a>
+<a name="946"><span class="lineNum">     946 </span>                :            : class auto_bitmap</a>
+<a name="947"><span class="lineNum">     947 </span>                :            : {</a>
+<a name="948"><span class="lineNum">     948 </span>                :            :  public:</a>
+<a name="949"><span class="lineNum">     949 </span>                :<span class="lineCov">   10720835 :   auto_bitmap (ALONE_CXX_MEM_STAT_INFO)</span></a>
+<a name="950"><span class="lineNum">     950 </span>                :<span class="lineCov">   10720835 :     { bitmap_initialize (&amp;m_bits, &amp;bitmap_default_obstack PASS_MEM_STAT); }</span></a>
+<a name="951"><span class="lineNum">     951 </span>                :<span class="lineCov">    6899350 :   explicit auto_bitmap (bitmap_obstack *o CXX_MEM_STAT_INFO)</span></a>
+<a name="952"><span class="lineNum">     952 </span>                :<span class="lineCov">    6899350 :     { bitmap_initialize (&amp;m_bits, o PASS_MEM_STAT); }</span></a>
+<a name="953"><span class="lineNum">     953 </span>                :<span class="lineCov">   17620910 :   ~auto_bitmap () { bitmap_clear (&amp;m_bits); }</span></a>
+<a name="954"><span class="lineNum">     954 </span>                :            :   // Allow calling bitmap functions on our bitmap.</a>
+<a name="955"><span class="lineNum">     955 </span>                :<span class="lineCov">  216573540 :   operator bitmap () { return &amp;m_bits; }</span></a>
+<a name="956"><span class="lineNum">     956 </span>                :            : </a>
+<a name="957"><span class="lineNum">     957 </span>                :            :  private:</a>
+<a name="958"><span class="lineNum">     958 </span>                :            :   // Prevent making a copy that references our bitmap.</a>
+<a name="959"><span class="lineNum">     959 </span>                :            :   auto_bitmap (const auto_bitmap &amp;);</a>
+<a name="960"><span class="lineNum">     960 </span>                :            :   auto_bitmap &amp;operator = (const auto_bitmap &amp;);</a>
+<a name="961"><span class="lineNum">     961 </span>                :            : #if __cplusplus &gt;= 201103L</a>
+<a name="962"><span class="lineNum">     962 </span>                :            :   auto_bitmap (auto_bitmap &amp;&amp;);</a>
+<a name="963"><span class="lineNum">     963 </span>                :            :   auto_bitmap &amp;operator = (auto_bitmap &amp;&amp;);</a>
+<a name="964"><span class="lineNum">     964 </span>                :            : #endif</a>
+<a name="965"><span class="lineNum">     965 </span>                :            : </a>
+<a name="966"><span class="lineNum">     966 </span>                :            :   bitmap_head m_bits;</a>
+<a name="967"><span class="lineNum">     967 </span>                :            : };</a>
+<a name="968"><span class="lineNum">     968 </span>                :            : </a>
+<a name="969"><span class="lineNum">     969 </span>                :            : /* Base class for bitmap_view; see there for details.  */</a>
+<a name="970"><span class="lineNum">     970 </span>                :            : template&lt;typename T, typename Traits = array_traits&lt;T&gt; &gt;</a>
+<a name="971"><span class="lineNum">     971 </span>                :            : class base_bitmap_view</a>
+<a name="972"><span class="lineNum">     972 </span>                :            : {</a>
+<a name="973"><span class="lineNum">     973 </span>                :            : public:</a>
+<a name="974"><span class="lineNum">     974 </span>                :            :   typedef typename Traits::element_type array_element_type;</a>
+<a name="975"><span class="lineNum">     975 </span>                :            : </a>
+<a name="976"><span class="lineNum">     976 </span>                :            :   base_bitmap_view (const T &amp;, bitmap_element *);</a>
+<a name="977"><span class="lineNum">     977 </span>                :<span class="lineCov">    4667000 :   operator const_bitmap () const { return &amp;m_head; }</span></a>
+<a name="978"><span class="lineNum">     978 </span>                :            : </a>
+<a name="979"><span class="lineNum">     979 </span>                :            : private:</a>
+<a name="980"><span class="lineNum">     980 </span>                :            :   base_bitmap_view (const base_bitmap_view &amp;);</a>
+<a name="981"><span class="lineNum">     981 </span>                :            : </a>
+<a name="982"><span class="lineNum">     982 </span>                :            :   bitmap_head m_head;</a>
+<a name="983"><span class="lineNum">     983 </span>                :            : };</a>
+<a name="984"><span class="lineNum">     984 </span>                :            : </a>
+<a name="985"><span class="lineNum">     985 </span>                :            : /* Provides a read-only bitmap view of a single integer bitmask or a</a>
+<a name="986"><span class="lineNum">     986 </span>                :            :    constant-sized array of integer bitmasks, or of a wrapper around such</a>
+<a name="987"><span class="lineNum">     987 </span>                :            :    bitmasks.  */</a>
+<a name="988"><span class="lineNum">     988 </span>                :            : template&lt;typename T, typename Traits&gt;</a>
+<a name="989"><span class="lineNum">     989 </span>                :            : class bitmap_view&lt;T, Traits, true&gt; : public base_bitmap_view&lt;T, Traits&gt;</a>
+<a name="990"><span class="lineNum">     990 </span>                :            : {</a>
+<a name="991"><span class="lineNum">     991 </span>                :            : public:</a>
+<a name="992"><span class="lineNum">     992 </span>                :<span class="lineCov">    4667000 :   bitmap_view (const T &amp;array)</span></a>
+<a name="993"><span class="lineNum">     993 </span>                :<span class="lineCov">    4667000 :     : base_bitmap_view&lt;T, Traits&gt; (array, m_bitmap_elements) {}</span></a>
+<a name="994"><span class="lineNum">     994 </span>                :            : </a>
+<a name="995"><span class="lineNum">     995 </span>                :            : private:</a>
+<a name="996"><span class="lineNum">     996 </span>                :            :   /* How many bitmap_elements we need to hold a full T.  */</a>
+<a name="997"><span class="lineNum">     997 </span>                :            :   static const size_t num_bitmap_elements</a>
+<a name="998"><span class="lineNum">     998 </span>                :            :     = CEIL (CHAR_BIT</a>
+<a name="999"><span class="lineNum">     999 </span>                :            :             * sizeof (typename Traits::element_type)</a>
+<a name="1000"><span class="lineNum">    1000 </span>                :            :             * Traits::constant_size,</a>
+<a name="1001"><span class="lineNum">    1001 </span>                :            :             BITMAP_ELEMENT_ALL_BITS);</a>
+<a name="1002"><span class="lineNum">    1002 </span>                :            :   bitmap_element m_bitmap_elements[num_bitmap_elements];</a>
+<a name="1003"><span class="lineNum">    1003 </span>                :            : };</a>
+<a name="1004"><span class="lineNum">    1004 </span>                :            : </a>
+<a name="1005"><span class="lineNum">    1005 </span>                :            : /* Initialize the view for array ARRAY, using the array of bitmap</a>
+<a name="1006"><span class="lineNum">    1006 </span>                :            :    elements in BITMAP_ELEMENTS (which is known to contain enough</a>
+<a name="1007"><span class="lineNum">    1007 </span>                :            :    entries).  */</a>
+<a name="1008"><span class="lineNum">    1008 </span>                :            : template&lt;typename T, typename Traits&gt;</a>
+<a name="1009"><span class="lineNum">    1009 </span>                :<span class="lineCov">    4667000 : base_bitmap_view&lt;T, Traits&gt;::base_bitmap_view (const T &amp;array,</span></a>
+<a name="1010"><span class="lineNum">    1010 </span>                :<span class="lineCov">    4667000 :                                                bitmap_element *bitmap_elements)</span></a>
+<a name="1011"><span class="lineNum">    1011 </span>                :            : {</a>
+<a name="1012"><span class="lineNum">    1012 </span>                :<span class="lineCov">    4667000 :   m_head.obstack = NULL;</span></a>
+<a name="1013"><span class="lineNum">    1013 </span>                :            : </a>
+<a name="1014"><span class="lineNum">    1014 </span>                :            :   /* The code currently assumes that each element of ARRAY corresponds</a>
+<a name="1015"><span class="lineNum">    1015 </span>                :            :      to exactly one bitmap_element.  */</a>
+<a name="1016"><span class="lineNum">    1016 </span>                :<span class="lineCov">    4667000 :   const size_t array_element_bits = CHAR_BIT * sizeof (array_element_type);</span></a>
+<a name="1017"><span class="lineNum">    1017 </span>                :            :   STATIC_ASSERT (BITMAP_ELEMENT_ALL_BITS % array_element_bits == 0);</a>
+<a name="1018"><span class="lineNum">    1018 </span>                :<span class="lineCov">    4667000 :   size_t array_step = BITMAP_ELEMENT_ALL_BITS / array_element_bits;</span></a>
+<a name="1019"><span class="lineNum">    1019 </span>                :<span class="lineCov">    4667000 :   size_t array_size = Traits::size (array);</span></a>
+<a name="1020"><span class="lineNum">    1020 </span>                :            : </a>
+<a name="1021"><span class="lineNum">    1021 </span>                :            :   /* Process each potential bitmap_element in turn.  The loop is written</a>
+<a name="1022"><span class="lineNum">    1022 </span>                :            :      this way rather than per array element because usually there are</a>
+<a name="1023"><span class="lineNum">    1023 </span>                :            :      only a small number of array elements per bitmap element (typically</a>
+<a name="1024"><span class="lineNum">    1024 </span>                :            :      two or four).  The inner loops should therefore unroll completely.  */</a>
+<a name="1025"><span class="lineNum">    1025 </span>                :<span class="lineCov">    4667000 :   const array_element_type *array_elements = Traits::base (array);</span></a>
+<a name="1026"><span class="lineNum">    1026 </span>                :<span class="lineCov">    4667000 :   unsigned int indx = 0;</span></a>
+<a name="1027"><span class="lineNum">    1027 </span>                :<span class="lineCov">    9333990 :   for (size_t array_base = 0;</span></a>
+<a name="1028"><span class="lineNum">    1028 </span>        [<span class="branchCov" title="Branch 0 was taken 4667000 times"> + </span><span class="branchCov" title="Branch 1 was taken 4667000 times"> + </span>]:<span class="lineCov">    9333990 :        array_base &lt; array_size;</span></a>
+<a name="1029"><span class="lineNum">    1029 </span>                :            :        array_base += array_step, indx += 1)</a>
+<a name="1030"><span class="lineNum">    1030 </span>                :            :     {</a>
+<a name="1031"><span class="lineNum">    1031 </span>                :            :       /* How many array elements are in this particular bitmap_element.  */</a>
+<a name="1032"><span class="lineNum">    1032 </span>                :<span class="lineCov">    4667000 :       unsigned int array_count</span></a>
+<a name="1033"><span class="lineNum">    1033 </span>                :            :         = (STATIC_CONSTANT_P (array_size % array_step == 0)</a>
+<a name="1034"><span class="lineNum">    1034 </span>                :<span class="lineCov">    4667000 :            ? array_step : MIN (array_step, array_size - array_base));</span></a>
+<a name="1035"><span class="lineNum">    1035 </span>                :            : </a>
+<a name="1036"><span class="lineNum">    1036 </span>                :            :       /* See whether we need this bitmap element.  */</a>
+<a name="1037"><span class="lineNum">    1037 </span>                :<span class="lineCov">    4667000 :       array_element_type ior = array_elements[array_base];</span></a>
+<a name="1038"><span class="lineNum">    1038 </span>        [<span class="branchCov" title="Branch 0 was taken 4667000 times"> + </span><span class="branchCov" title="Branch 1 was taken 4667000 times"> + </span>]:<span class="lineCov">    9333990 :       for (size_t i = 1; i &lt; array_count; ++i)</span></a>
+<a name="1039"><span class="lineNum">    1039 </span>                :<span class="lineCov">    4667000 :         ior |= array_elements[array_base + i];</span></a>
+<a name="1040"><span class="lineNum">    1040 </span>        [<span class="branchCov" title="Branch 0 was taken 3870980 times"> + </span><span class="branchCov" title="Branch 1 was taken 796020 times"> + </span>]:<span class="lineCov">    4667000 :       if (ior == 0)</span></a>
+<a name="1041"><span class="lineNum">    1041 </span>                :<span class="lineCov">    3870980 :         continue;</span></a>
+<a name="1042"><span class="lineNum">    1042 </span>                :            : </a>
+<a name="1043"><span class="lineNum">    1043 </span>                :            :       /* Grab the next bitmap element and chain it.  */</a>
+<a name="1044"><span class="lineNum">    1044 </span>                :<span class="lineCov">     796020 :       bitmap_element *bitmap_element = bitmap_elements++;</span></a>
+<a name="1045"><span class="lineNum">    1045 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 796020 times"> + </span>]:<span class="lineCov">     796020 :       if (m_head.current)</span></a>
+<a name="1046"><span class="lineNum">    1046 </span>                :<span class="lineNoCov">          0 :         m_head.current-&gt;next = bitmap_element;</span></a>
+<a name="1047"><span class="lineNum">    1047 </span>                :            :       else</a>
+<a name="1048"><span class="lineNum">    1048 </span>                :<span class="lineCov">     796020 :         m_head.first = bitmap_element;</span></a>
+<a name="1049"><span class="lineNum">    1049 </span>                :<span class="lineCov">     796020 :       bitmap_element-&gt;prev = m_head.current;</span></a>
+<a name="1050"><span class="lineNum">    1050 </span>                :<span class="lineCov">     796020 :       bitmap_element-&gt;next = NULL;</span></a>
+<a name="1051"><span class="lineNum">    1051 </span>                :<span class="lineCov">     796020 :       bitmap_element-&gt;indx = indx;</span></a>
+<a name="1052"><span class="lineNum">    1052 </span>                :<span class="lineCov">     796020 :       m_head.current = bitmap_element;</span></a>
+<a name="1053"><span class="lineNum">    1053 </span>                :<span class="lineCov">     796020 :       m_head.indx = indx;</span></a>
+<a name="1054"><span class="lineNum">    1054 </span>                :            : </a>
+<a name="1055"><span class="lineNum">    1055 </span>                :            :       /* Fill in the bits of the bitmap element.  */</a>
+<a name="1056"><span class="lineNum">    1056 </span>                :            :       if (array_element_bits &lt; BITMAP_WORD_BITS)</a>
+<a name="1057"><span class="lineNum">    1057 </span>                :            :         {</a>
+<a name="1058"><span class="lineNum">    1058 </span>                :            :           /* Multiple array elements fit in one element of</a>
+<a name="1059"><span class="lineNum">    1059 </span>                :            :              bitmap_element-&gt;bits.  */</a>
+<a name="1060"><span class="lineNum">    1060 </span>                :            :           size_t array_i = array_base;</a>
+<a name="1061"><span class="lineNum">    1061 </span>                :            :           for (unsigned int word_i = 0; word_i &lt; BITMAP_ELEMENT_WORDS;</a>
+<a name="1062"><span class="lineNum">    1062 </span>                :            :                ++word_i)</a>
+<a name="1063"><span class="lineNum">    1063 </span>                :            :             {</a>
+<a name="1064"><span class="lineNum">    1064 </span>                :            :               BITMAP_WORD word = 0;</a>
+<a name="1065"><span class="lineNum">    1065 </span>                :            :               for (unsigned int shift = 0;</a>
+<a name="1066"><span class="lineNum">    1066 </span>                :            :                    shift &lt; BITMAP_WORD_BITS &amp;&amp; array_i &lt; array_size;</a>
+<a name="1067"><span class="lineNum">    1067 </span>                :            :                    shift += array_element_bits)</a>
+<a name="1068"><span class="lineNum">    1068 </span>                :            :                 word |= array_elements[array_i++] &lt;&lt; shift;</a>
+<a name="1069"><span class="lineNum">    1069 </span>                :            :               bitmap_element-&gt;bits[word_i] = word;</a>
+<a name="1070"><span class="lineNum">    1070 </span>                :            :             }</a>
+<a name="1071"><span class="lineNum">    1071 </span>                :            :         }</a>
+<a name="1072"><span class="lineNum">    1072 </span>                :            :       else</a>
+<a name="1073"><span class="lineNum">    1073 </span>                :            :         {</a>
+<a name="1074"><span class="lineNum">    1074 </span>                :            :           /* Array elements are the same size as elements of</a>
+<a name="1075"><span class="lineNum">    1075 </span>                :            :              bitmap_element-&gt;bits, or are an exact multiple of that size.  */</a>
+<a name="1076"><span class="lineNum">    1076 </span>                :<span class="lineCov">     796020 :           unsigned int word_i = 0;</span></a>
+<a name="1077"><span class="lineNum">    1077 </span>        [<span class="branchCov" title="Branch 0 was taken 1592040 times"> + </span><span class="branchCov" title="Branch 1 was taken 796020 times"> + </span>]:<span class="lineCov">    2388060 :           for (unsigned int i = 0; i &lt; array_count; ++i)</span></a>
+<a name="1078"><span class="lineNum">    1078 </span>        [<span class="branchCov" title="Branch 0 was taken 1592040 times"> + </span><span class="branchCov" title="Branch 1 was taken 1592040 times"> + </span>]:<span class="lineCov">    3184080 :             for (unsigned int shift = 0; shift &lt; array_element_bits;</span></a>
+<a name="1079"><span class="lineNum">    1079 </span>                :            :                  shift += BITMAP_WORD_BITS)</a>
+<a name="1080"><span class="lineNum">    1080 </span>                :<span class="lineCov">    1592040 :               bitmap_element-&gt;bits[word_i++]</span></a>
+<a name="1081"><span class="lineNum">    1081 </span>                :<span class="lineCov">    1592040 :                 = array_elements[array_base + i] &gt;&gt; shift;</span></a>
+<a name="1082"><span class="lineNum">    1082 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 796020 times"> + </span>]:<span class="lineCov">     796020 :           while (word_i &lt; BITMAP_ELEMENT_WORDS)</span></a>
+<a name="1083"><span class="lineNum">    1083 </span>                :<span class="lineNoCov">          0 :             bitmap_element-&gt;bits[word_i++] = 0;</span></a>
+<a name="1084"><span class="lineNum">    1084 </span>                :            :         }</a>
+<a name="1085"><span class="lineNum">    1085 </span>                :            :     }</a>
+<a name="1086"><span class="lineNum">    1086 </span>                :<span class="lineCov">    4667000 : }</span></a>
+<a name="1087"><span class="lineNum">    1087 </span>                :            : </a>
+<a name="1088"><span class="lineNum">    1088 </span>                :            : #endif /* GCC_BITMAP_H */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

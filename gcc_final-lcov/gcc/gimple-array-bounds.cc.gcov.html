@@ -1,0 +1,1165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage_test_main_ex.info - gcc/gimple-array-bounds.cc</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">gcc</a> - gimple-array-bounds.cc<span style="font-size: 80%;"> (source / <a href="gimple-array-bounds.cc.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage_test_main_ex.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">358</td>
+            <td class="headerCovTableEntry">485</td>
+            <td class="headerCovTableEntryLo">73.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-04-27 13:46:28</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Legend:</td>
+            <td class="headerValueLeg">            Lines:
+            <span class="coverLegendCov">hit</span>
+            <span class="coverLegendNoCov">not hit</span>
+            | Branches:
+            <span class="coverLegendCov">+</span> taken
+            <span class="coverLegendNoCov">-</span> not taken
+            <span class="coverLegendNoCov">#</span> not executed
+</td>
+            <td></td>
+            <td class="headerItem">Branches:</td>
+            <td class="headerCovTableEntry">321</td>
+            <td class="headerCovTableEntry">510</td>
+            <td class="headerCovTableEntryLo">62.9 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">           Branch data     Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>                :            : /* Array bounds checking.</a>
+<a name="2"><span class="lineNum">       2 </span>                :            :    Copyright (C) 2005-2021 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>                :            : </a>
+<a name="4"><span class="lineNum">       4 </span>                :            : This file is part of GCC.</a>
+<a name="5"><span class="lineNum">       5 </span>                :            : </a>
+<a name="6"><span class="lineNum">       6 </span>                :            : GCC is free software; you can redistribute it and/or modify</a>
+<a name="7"><span class="lineNum">       7 </span>                :            : it under the terms of the GNU General Public License as published by</a>
+<a name="8"><span class="lineNum">       8 </span>                :            : the Free Software Foundation; either version 3, or (at your option)</a>
+<a name="9"><span class="lineNum">       9 </span>                :            : any later version.</a>
+<a name="10"><span class="lineNum">      10 </span>                :            : </a>
+<a name="11"><span class="lineNum">      11 </span>                :            : GCC is distributed in the hope that it will be useful,</a>
+<a name="12"><span class="lineNum">      12 </span>                :            : but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="13"><span class="lineNum">      13 </span>                :            : MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="14"><span class="lineNum">      14 </span>                :            : GNU General Public License for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>                :            : </a>
+<a name="16"><span class="lineNum">      16 </span>                :            : You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>                :            : along with GCC; see the file COPYING3.  If not see</a>
+<a name="18"><span class="lineNum">      18 </span>                :            : &lt;http://www.gnu.org/licenses/&gt;.  */</a>
+<a name="19"><span class="lineNum">      19 </span>                :            : </a>
+<a name="20"><span class="lineNum">      20 </span>                :            : #include &quot;config.h&quot;</a>
+<a name="21"><span class="lineNum">      21 </span>                :            : #include &quot;system.h&quot;</a>
+<a name="22"><span class="lineNum">      22 </span>                :            : #include &quot;coretypes.h&quot;</a>
+<a name="23"><span class="lineNum">      23 </span>                :            : #include &quot;backend.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>                :            : #include &quot;tree.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>                :            : #include &quot;gimple.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>                :            : #include &quot;ssa.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>                :            : #include &quot;gimple-array-bounds.h&quot;</a>
+<a name="28"><span class="lineNum">      28 </span>                :            : #include &quot;gimple-iterator.h&quot;</a>
+<a name="29"><span class="lineNum">      29 </span>                :            : #include &quot;gimple-walk.h&quot;</a>
+<a name="30"><span class="lineNum">      30 </span>                :            : #include &quot;tree-dfa.h&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>                :            : #include &quot;fold-const.h&quot;</a>
+<a name="32"><span class="lineNum">      32 </span>                :            : #include &quot;diagnostic-core.h&quot;</a>
+<a name="33"><span class="lineNum">      33 </span>                :            : #include &quot;intl.h&quot;</a>
+<a name="34"><span class="lineNum">      34 </span>                :            : #include &quot;tree-vrp.h&quot;</a>
+<a name="35"><span class="lineNum">      35 </span>                :            : #include &quot;alloc-pool.h&quot;</a>
+<a name="36"><span class="lineNum">      36 </span>                :            : #include &quot;vr-values.h&quot;</a>
+<a name="37"><span class="lineNum">      37 </span>                :            : #include &quot;domwalk.h&quot;</a>
+<a name="38"><span class="lineNum">      38 </span>                :            : #include &quot;tree-cfg.h&quot;</a>
+<a name="39"><span class="lineNum">      39 </span>                :            : #include &quot;attribs.h&quot;</a>
+<a name="40"><span class="lineNum">      40 </span>                :            : #include &quot;builtins.h&quot;</a>
+<a name="41"><span class="lineNum">      41 </span>                :            : </a>
+<a name="42"><span class="lineNum">      42 </span>                :            : // This purposely returns a value_range, not a value_range_equiv, to</a>
+<a name="43"><span class="lineNum">      43 </span>                :            : // break the dependency on equivalences for this pass.</a>
+<a name="44"><span class="lineNum">      44 </span>                :            : </a>
+<a name="45"><span class="lineNum">      45 </span>                :            : const value_range *</a>
+<a name="46"><span class="lineNum">      46 </span>                :<span class="lineCov">      19366 : array_bounds_checker::get_value_range (const_tree op)</span></a>
+<a name="47"><span class="lineNum">      47 </span>                :            : {</a>
+<a name="48"><span class="lineNum">      48 </span>                :<span class="lineCov">      19366 :   return ranges-&gt;get_value_range (op);</span></a>
+<a name="49"><span class="lineNum">      49 </span>                :            : }</a>
+<a name="50"><span class="lineNum">      50 </span>                :            : </a>
+<a name="51"><span class="lineNum">      51 </span>                :            : /* Try to determine the DECL that REF refers to.  Return the DECL or</a>
+<a name="52"><span class="lineNum">      52 </span>                :            :    the expression closest to it.  Used in informational notes pointing</a>
+<a name="53"><span class="lineNum">      53 </span>                :            :    to referenced objects or function parameters.  */</a>
+<a name="54"><span class="lineNum">      54 </span>                :            : </a>
+<a name="55"><span class="lineNum">      55 </span>                :            : static tree</a>
+<a name="56"><span class="lineNum">      56 </span>                :<span class="lineCov">      16460 : get_base_decl (tree ref)</span></a>
+<a name="57"><span class="lineNum">      57 </span>                :            : {</a>
+<a name="58"><span class="lineNum">      58 </span>                :<span class="lineCov">      16460 :   tree base = get_base_address (ref);</span></a>
+<a name="59"><span class="lineNum">      59 </span>        [<span class="branchCov" title="Branch 0 was taken 11404 times"> + </span><span class="branchCov" title="Branch 1 was taken 5056 times"> + </span>]:<span class="lineCov">      16460 :   if (DECL_P (base))</span></a>
+<a name="60"><span class="lineNum">      60 </span>                :<span class="lineCov">      11404 :     return base;</span></a>
+<a name="61"><span class="lineNum">      61 </span>                :            : </a>
+<a name="62"><span class="lineNum">      62 </span>        [<span class="branchCov" title="Branch 0 was taken 5050 times"> + </span><span class="branchCov" title="Branch 1 was taken 6 times"> + </span>]:<span class="lineCov">       5056 :   if (TREE_CODE (base) == MEM_REF)</span></a>
+<a name="63"><span class="lineNum">      63 </span>                :<span class="lineCov">       5050 :     base = TREE_OPERAND (base, 0);</span></a>
+<a name="64"><span class="lineNum">      64 </span>                :            : </a>
+<a name="65"><span class="lineNum">      65 </span>        [<span class="branchCov" title="Branch 0 was taken 6 times"> + </span><span class="branchCov" title="Branch 1 was taken 5050 times"> + </span>]:<span class="lineCov">       5056 :   if (TREE_CODE (base) != SSA_NAME)</span></a>
+<a name="66"><span class="lineNum">      66 </span>                :<span class="lineCov">          6 :     return base;</span></a>
+<a name="67"><span class="lineNum">      67 </span>                :            : </a>
+<a name="68"><span class="lineNum">      68 </span>                :            :   do</a>
+<a name="69"><span class="lineNum">      69 </span>                :            :     {</a>
+<a name="70"><span class="lineNum">      70 </span>                :<span class="lineCov">      10415 :       gimple *def = SSA_NAME_DEF_STMT (base);</span></a>
+<a name="71"><span class="lineNum">      71 </span>        [<span class="branchCov" title="Branch 0 was taken 6658 times"> + </span><span class="branchCov" title="Branch 1 was taken 3757 times"> + </span>]:<span class="lineCov">      10415 :       if (gimple_assign_single_p (def))</span></a>
+<a name="72"><span class="lineNum">      72 </span>                :            :         {</a>
+<a name="73"><span class="lineNum">      73 </span>                :<span class="lineCov">       6658 :           base = gimple_assign_rhs1 (def);</span></a>
+<a name="74"><span class="lineNum">      74 </span>        [<span class="branchCov" title="Branch 0 was taken 1293 times"> + </span><span class="branchCov" title="Branch 1 was taken 5365 times"> + </span>]:<span class="lineCov">       6658 :           if (TREE_CODE (base) != ASSERT_EXPR)</span></a>
+<a name="75"><span class="lineNum">      75 </span>                :<span class="lineCov">       1293 :             return base;</span></a>
+<a name="76"><span class="lineNum">      76 </span>                :            : </a>
+<a name="77"><span class="lineNum">      77 </span>                :<span class="lineCov">       5365 :           base = TREE_OPERAND (base, 0);</span></a>
+<a name="78"><span class="lineNum">      78 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 5365 times"> + </span>]:<span class="lineCov">       5365 :           if (TREE_CODE (base) != SSA_NAME)</span></a>
+<a name="79"><span class="lineNum">      79 </span>                :<span class="lineNoCov">          0 :             return base;</span></a>
+<a name="80"><span class="lineNum">      80 </span>                :            : </a>
+<a name="81"><span class="lineNum">      81 </span>                :<span class="lineCov">       5365 :           continue;</span></a>
+<a name="82"><span class="lineNum">      82 </span>                :            :         }</a>
+<a name="83"><span class="lineNum">      83 </span>                :            : </a>
+<a name="84"><span class="lineNum">      84 </span>        [<span class="branchCov" title="Branch 0 was taken 1155 times"> + </span><span class="branchCov" title="Branch 1 was taken 2602 times"> + </span>]:<span class="lineCov">       3757 :       if (!gimple_nop_p (def))</span></a>
+<a name="85"><span class="lineNum">      85 </span>                :<span class="lineCov">       1155 :         return base;</span></a>
+<a name="86"><span class="lineNum">      86 </span>                :            : </a>
+<a name="87"><span class="lineNum">      87 </span>                :<span class="lineCov">       7967 :       break;</span></a>
+<a name="88"><span class="lineNum">      88 </span>                :            :     } while (true);</a>
+<a name="89"><span class="lineNum">      89 </span>                :            : </a>
+<a name="90"><span class="lineNum">      90 </span>  [<span class="branchCov" title="Branch 0 was taken 2602 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2602 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       2602 :   tree var = SSA_NAME_VAR (base);</span></a>
+<a name="91"><span class="lineNum">      91 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2602 times"> + </span>]:<span class="lineCov">       2602 :   if (TREE_CODE (var) != PARM_DECL)</span></a>
+<a name="92"><span class="lineNum">      92 </span>                :<span class="lineNoCov">          0 :     return base;</span></a>
+<a name="93"><span class="lineNum">      93 </span>                :            : </a>
+<a name="94"><span class="lineNum">      94 </span>                :<span class="lineCov">       2602 :   return var;</span></a>
+<a name="95"><span class="lineNum">      95 </span>                :            : }</a>
+<a name="96"><span class="lineNum">      96 </span>                :            : </a>
+<a name="97"><span class="lineNum">      97 </span>                :            : /* Return the constant byte size of the object or type referenced by</a>
+<a name="98"><span class="lineNum">      98 </span>                :            :    the MEM_REF ARG.  On success, set *PREF to the DECL or expression</a>
+<a name="99"><span class="lineNum">      99 </span>                :            :    ARG refers to.  Otherwise return null.  */</a>
+<a name="100"><span class="lineNum">     100 </span>                :            : </a>
+<a name="101"><span class="lineNum">     101 </span>                :            : static tree</a>
+<a name="102"><span class="lineNum">     102 </span>                :<span class="lineCov">        779 : get_ref_size (tree arg, tree *pref)</span></a>
+<a name="103"><span class="lineNum">     103 </span>                :            : {</a>
+<a name="104"><span class="lineNum">     104 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 779 times"> + </span>]:<span class="lineCov">        779 :   if (TREE_CODE (arg) != MEM_REF)</span></a>
+<a name="105"><span class="lineNum">     105 </span>                :<span class="lineNoCov">          0 :     return NULL_TREE;</span></a>
+<a name="106"><span class="lineNum">     106 </span>                :            : </a>
+<a name="107"><span class="lineNum">     107 </span>                :<span class="lineCov">        779 :   arg = TREE_OPERAND (arg, 0);</span></a>
+<a name="108"><span class="lineNum">     108 </span>                :<span class="lineCov">        779 :   tree type = TREE_TYPE (arg);</span></a>
+<a name="109"><span class="lineNum">     109 </span>  [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 776 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 3 times"> + </span>]:<span class="lineCov">        779 :   if (!POINTER_TYPE_P (type))</span></a>
+<a name="110"><span class="lineNum">     110 </span>                :<span class="lineNoCov">          0 :     return NULL_TREE;</span></a>
+<a name="111"><span class="lineNum">     111 </span>                :            : </a>
+<a name="112"><span class="lineNum">     112 </span>                :<span class="lineCov">        779 :   type = TREE_TYPE (type);</span></a>
+<a name="113"><span class="lineNum">     113 </span>        [<span class="branchCov" title="Branch 0 was taken 660 times"> + </span><span class="branchCov" title="Branch 1 was taken 119 times"> + </span>]:<span class="lineCov">        779 :   if (TREE_CODE (type) != ARRAY_TYPE)</span></a>
+<a name="114"><span class="lineNum">     114 </span>                :<span class="lineCov">        660 :     return NULL_TREE;</span></a>
+<a name="115"><span class="lineNum">     115 </span>                :            : </a>
+<a name="116"><span class="lineNum">     116 </span>                :<span class="lineCov">        119 :   tree nbytes = TYPE_SIZE_UNIT (type);</span></a>
+<a name="117"><span class="lineNum">     117 </span>  [<span class="branchCov" title="Branch 0 was taken 119 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 119 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">        119 :   if (!nbytes || TREE_CODE (nbytes) != INTEGER_CST)</span></a>
+<a name="118"><span class="lineNum">     118 </span>                :<span class="lineCov">        119 :     return NULL_TREE;</span></a>
+<a name="119"><span class="lineNum">     119 </span>                :            : </a>
+<a name="120"><span class="lineNum">     120 </span>                :<span class="lineNoCov">          0 :   *pref = get_base_decl (arg);</span></a>
+<a name="121"><span class="lineNum">     121 </span>                :<span class="lineNoCov">          0 :   return nbytes;</span></a>
+<a name="122"><span class="lineNum">     122 </span>                :            : }</a>
+<a name="123"><span class="lineNum">     123 </span>                :            : </a>
+<a name="124"><span class="lineNum">     124 </span>                :            : /* Return true if REF is (likely) an ARRAY_REF to a trailing array member</a>
+<a name="125"><span class="lineNum">     125 </span>                :            :    of a struct.  It refines array_at_struct_end_p by detecting a pointer</a>
+<a name="126"><span class="lineNum">     126 </span>                :            :    to an array and an array parameter declared using the [N] syntax (as</a>
+<a name="127"><span class="lineNum">     127 </span>                :            :    opposed to a pointer) and returning false.  Set *PREF to the decl or</a>
+<a name="128"><span class="lineNum">     128 </span>                :            :    expression REF refers to.  */</a>
+<a name="129"><span class="lineNum">     129 </span>                :            : </a>
+<a name="130"><span class="lineNum">     130 </span>                :            : static bool</a>
+<a name="131"><span class="lineNum">     131 </span>                :<span class="lineCov">      16460 : trailing_array (tree arg, tree *pref)</span></a>
+<a name="132"><span class="lineNum">     132 </span>                :            : {</a>
+<a name="133"><span class="lineNum">     133 </span>                :<span class="lineCov">      16460 :   tree ref = arg;</span></a>
+<a name="134"><span class="lineNum">     134 </span>                :<span class="lineCov">      16460 :   tree base = get_base_decl (arg);</span></a>
+<a name="135"><span class="lineNum">     135 </span>  [<span class="branchCov" title="Branch 0 was taken 16536 times"> + </span><span class="branchCov" title="Branch 1 was taken 16760 times"> + </span><span class="branchCov" title="Branch 2 was taken 76 times"> + </span><span class="branchCov" title="Branch 3 was taken 16460 times"> + </span>]:<span class="lineCov">      33296 :   while (TREE_CODE (ref) == ARRAY_REF || TREE_CODE (ref) == MEM_REF)</span></a>
+<a name="136"><span class="lineNum">     136 </span>                :<span class="lineCov">      16836 :     ref = TREE_OPERAND (ref, 0);</span></a>
+<a name="137"><span class="lineNum">     137 </span>                :            : </a>
+<a name="138"><span class="lineNum">     138 </span>        [<span class="branchCov" title="Branch 0 was taken 9088 times"> + </span><span class="branchCov" title="Branch 1 was taken 7372 times"> + </span>]:<span class="lineCov">      16460 :   if (TREE_CODE (ref) == COMPONENT_REF)</span></a>
+<a name="139"><span class="lineNum">     139 </span>                :            :     {</a>
+<a name="140"><span class="lineNum">     140 </span>                :<span class="lineCov">       9088 :       *pref = TREE_OPERAND (ref, 1);</span></a>
+<a name="141"><span class="lineNum">     141 </span>                :<span class="lineCov">       9088 :       tree type = TREE_TYPE (*pref);</span></a>
+<a name="142"><span class="lineNum">     142 </span>        [<span class="branchCov" title="Branch 0 was taken 9088 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       9088 :       if (TREE_CODE (type) == ARRAY_TYPE)</span></a>
+<a name="143"><span class="lineNum">     143 </span>                :            :         {</a>
+<a name="144"><span class="lineNum">     144 </span>                :            :           /* A multidimensional trailing array is not considered special</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :              no matter what its major bound is.  */</a>
+<a name="146"><span class="lineNum">     146 </span>                :<span class="lineCov">       9088 :           type = TREE_TYPE (type);</span></a>
+<a name="147"><span class="lineNum">     147 </span>        [<span class="branchCov" title="Branch 0 was taken 308 times"> + </span><span class="branchCov" title="Branch 1 was taken 8780 times"> + </span>]:<span class="lineCov">       9088 :           if (TREE_CODE (type) == ARRAY_TYPE)</span></a>
+<a name="148"><span class="lineNum">     148 </span>                :<span class="lineCov">        308 :             return false;</span></a>
+<a name="149"><span class="lineNum">     149 </span>                :            :         }</a>
+<a name="150"><span class="lineNum">     150 </span>                :            :     }</a>
+<a name="151"><span class="lineNum">     151 </span>                :            :   else</a>
+<a name="152"><span class="lineNum">     152 </span>                :<span class="lineCov">       7372 :     *pref = base;</span></a>
+<a name="153"><span class="lineNum">     153 </span>                :            : </a>
+<a name="154"><span class="lineNum">     154 </span>                :<span class="lineCov">      16152 :   tree basetype = TREE_TYPE (base);</span></a>
+<a name="155"><span class="lineNum">     155 </span>        [<span class="branchCov" title="Branch 0 was taken 2537 times"> + </span><span class="branchCov" title="Branch 1 was taken 13615 times"> + </span>]:<span class="lineCov">      16152 :   if (TREE_CODE (base) == PARM_DECL</span></a>
+<a name="156"><span class="lineNum">     156 </span>  [<span class="branchCov" title="Branch 0 was taken 230 times"> + </span><span class="branchCov" title="Branch 1 was taken 2307 times"> + </span><span class="branchCov" title="Branch 2 was taken 35 times"> + </span><span class="branchCov" title="Branch 3 was taken 195 times"> + </span>]:<span class="lineCov">       2537 :       &amp;&amp; POINTER_TYPE_P (basetype))</span></a>
+<a name="157"><span class="lineNum">     157 </span>                :            :     {</a>
+<a name="158"><span class="lineNum">     158 </span>                :<span class="lineCov">       2342 :       tree ptype = TREE_TYPE (basetype);</span></a>
+<a name="159"><span class="lineNum">     159 </span>        [<span class="branchCov" title="Branch 0 was taken 16 times"> + </span><span class="branchCov" title="Branch 1 was taken 2326 times"> + </span>]:<span class="lineCov">       2342 :       if (TREE_CODE (ptype) == ARRAY_TYPE)</span></a>
+<a name="160"><span class="lineNum">     160 </span>                :<span class="lineCov">         16 :         return false;</span></a>
+<a name="161"><span class="lineNum">     161 </span>                :            :     }</a>
+<a name="162"><span class="lineNum">     162 </span>                :            : </a>
+<a name="163"><span class="lineNum">     163 </span>                :<span class="lineCov">      16136 :   return array_at_struct_end_p (arg);</span></a>
+<a name="164"><span class="lineNum">     164 </span>                :            : }</a>
+<a name="165"><span class="lineNum">     165 </span>                :            : </a>
+<a name="166"><span class="lineNum">     166 </span>                :            : /* Checks one ARRAY_REF in REF, located at LOCUS. Ignores flexible</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :    arrays and &quot;struct&quot; hacks. If VRP can determine that the array</a>
+<a name="168"><span class="lineNum">     168 </span>                :            :    subscript is a constant, check if it is outside valid range.  If</a>
+<a name="169"><span class="lineNum">     169 </span>                :            :    the array subscript is a RANGE, warn if it is non-overlapping with</a>
+<a name="170"><span class="lineNum">     170 </span>                :            :    valid range.  IGNORE_OFF_BY_ONE is true if the ARRAY_REF is inside</a>
+<a name="171"><span class="lineNum">     171 </span>                :            :    a ADDR_EXPR.  Return  true if a warning has been issued or if</a>
+<a name="172"><span class="lineNum">     172 </span>                :            :    no-warning is set.  */</a>
+<a name="173"><span class="lineNum">     173 </span>                :            : </a>
+<a name="174"><span class="lineNum">     174 </span>                :            : bool</a>
+<a name="175"><span class="lineNum">     175 </span>                :<span class="lineCov">      19616 : array_bounds_checker::check_array_ref (location_t location, tree ref,</span></a>
+<a name="176"><span class="lineNum">     176 </span>                :            :                                        bool ignore_off_by_one)</a>
+<a name="177"><span class="lineNum">     177 </span>                :            : {</a>
+<a name="178"><span class="lineNum">     178 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 19612 times"> + </span>]:<span class="lineCov">      19616 :   if (TREE_NO_WARNING (ref))</span></a>
+<a name="179"><span class="lineNum">     179 </span>                :            :     /* Return true to have the caller prevent warnings for enclosing</a>
+<a name="180"><span class="lineNum">     180 </span>                :            :        refs.  */</a>
+<a name="181"><span class="lineNum">     181 </span>                :<span class="lineCov">          4 :     return true;</span></a>
+<a name="182"><span class="lineNum">     182 </span>                :            : </a>
+<a name="183"><span class="lineNum">     183 </span>                :<span class="lineCov">      19612 :   tree low_sub = TREE_OPERAND (ref, 1);</span></a>
+<a name="184"><span class="lineNum">     184 </span>                :<span class="lineCov">      19612 :   tree up_sub = low_sub;</span></a>
+<a name="185"><span class="lineNum">     185 </span>                :<span class="lineCov">      19612 :   tree up_bound = array_ref_up_bound (ref);</span></a>
+<a name="186"><span class="lineNum">     186 </span>                :            : </a>
+<a name="187"><span class="lineNum">     187 </span>                :            :   /* Referenced decl if one can be determined.  */</a>
+<a name="188"><span class="lineNum">     188 </span>                :<span class="lineCov">      19612 :   tree decl = NULL_TREE;</span></a>
+<a name="189"><span class="lineNum">     189 </span>                :            : </a>
+<a name="190"><span class="lineNum">     190 </span>                :            :   /* Set for accesses to interior zero-length arrays.  */</a>
+<a name="191"><span class="lineNum">     191 </span>                :<span class="lineCov">      19612 :   special_array_member sam{ };</span></a>
+<a name="192"><span class="lineNum">     192 </span>                :            : </a>
+<a name="193"><span class="lineNum">     193 </span>                :            :   tree up_bound_p1;</a>
+<a name="194"><span class="lineNum">     194 </span>                :            : </a>
+<a name="195"><span class="lineNum">     195 </span>                :<span class="lineCov">      19612 :   if (!up_bound</span></a>
+<a name="196"><span class="lineNum">     196 </span>        [<span class="branchCov" title="Branch 0 was taken 16460 times"> + </span><span class="branchCov" title="Branch 1 was taken 119 times"> + </span>]:<span class="lineCov">      16579 :       || TREE_CODE (up_bound) != INTEGER_CST</span></a>
+<a name="197"><span class="lineNum">     197 </span>  [<span class="branchCov" title="Branch 0 was taken 16579 times"> + </span><span class="branchCov" title="Branch 1 was taken 3033 times"> + </span><span class="branchCov" title="Branch 2 was taken 16460 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">      36191 :       || (warn_array_bounds &lt; 2 &amp;&amp; trailing_array (ref, &amp;decl)))</span></a>
+<span class="lineNum">         </span>   <span class="branchCov" title="Branch 4 was taken 1849 times"> + </span><span class="branchCov" title="Branch 5 was taken 14611 times"> + </span><span class="branchCov" title="Branch 6 was taken 5001 times"> + </span><span class="branchCov" title="Branch 7 was taken 14611 times"> + </span>]
+<a name="198"><span class="lineNum">     198 </span>                :            :     {</a>
+<a name="199"><span class="lineNum">     199 </span>                :            :       /* Accesses to trailing arrays via pointers may access storage</a>
+<a name="200"><span class="lineNum">     200 </span>                :            :          beyond the types array bounds.  For such arrays, or for flexible</a>
+<a name="201"><span class="lineNum">     201 </span>                :            :          array members, as well as for other arrays of an unknown size,</a>
+<a name="202"><span class="lineNum">     202 </span>                :            :          replace the upper bound with a more permissive one that assumes</a>
+<a name="203"><span class="lineNum">     203 </span>                :            :          the size of the largest object is PTRDIFF_MAX.  */</a>
+<a name="204"><span class="lineNum">     204 </span>                :<span class="lineCov">       5001 :       tree eltsize = array_ref_element_size (ref);</span></a>
+<a name="205"><span class="lineNum">     205 </span>                :            : </a>
+<a name="206"><span class="lineNum">     206 </span>                :<span class="lineCov">      10002 :       if (TREE_CODE (eltsize) != INTEGER_CST</span></a>
+<a name="207"><span class="lineNum">     207 </span>  [<span class="branchCov" title="Branch 0 was taken 5001 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 5001 times"> + </span> :<span class="lineCov">       5001 :           || integer_zerop (eltsize))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 5001 times"> + </span>]
+<a name="208"><span class="lineNum">     208 </span>                :            :         {</a>
+<a name="209"><span class="lineNum">     209 </span>                :<span class="lineNoCov">          0 :           up_bound = NULL_TREE;</span></a>
+<a name="210"><span class="lineNum">     210 </span>                :<span class="lineNoCov">          0 :           up_bound_p1 = NULL_TREE;</span></a>
+<a name="211"><span class="lineNum">     211 </span>                :            :         }</a>
+<a name="212"><span class="lineNum">     212 </span>                :            :       else</a>
+<a name="213"><span class="lineNum">     213 </span>                :            :         {</a>
+<a name="214"><span class="lineNum">     214 </span>                :<span class="lineCov">       5001 :           tree ptrdiff_max = TYPE_MAX_VALUE (ptrdiff_type_node);</span></a>
+<a name="215"><span class="lineNum">     215 </span>                :<span class="lineCov">       5001 :           tree maxbound = ptrdiff_max;</span></a>
+<a name="216"><span class="lineNum">     216 </span>                :<span class="lineCov">       5001 :           tree arg = TREE_OPERAND (ref, 0);</span></a>
+<a name="217"><span class="lineNum">     217 </span>                :            : </a>
+<a name="218"><span class="lineNum">     218 </span>                :<span class="lineCov">       5001 :           const bool compref = TREE_CODE (arg) == COMPONENT_REF;</span></a>
+<a name="219"><span class="lineNum">     219 </span>        [<span class="branchCov" title="Branch 0 was taken 2369 times"> + </span><span class="branchCov" title="Branch 1 was taken 2632 times"> + </span>]:<span class="lineCov">       5001 :           if (compref)</span></a>
+<a name="220"><span class="lineNum">     220 </span>                :            :             {</a>
+<a name="221"><span class="lineNum">     221 </span>                :            :               /* Try to determine the size of the trailing array from</a>
+<a name="222"><span class="lineNum">     222 </span>                :            :                  its initializer (if it has one).  */</a>
+<a name="223"><span class="lineNum">     223 </span>        [<span class="branchCov" title="Branch 0 was taken 1717 times"> + </span><span class="branchCov" title="Branch 1 was taken 652 times"> + </span>]:<span class="lineCov">       2369 :               if (tree refsize = component_ref_size (arg, &amp;sam))</span></a>
+<a name="224"><span class="lineNum">     224 </span>        [<span class="branchCov" title="Branch 0 was taken 1717 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       1717 :                 if (TREE_CODE (refsize) == INTEGER_CST)</span></a>
+<a name="225"><span class="lineNum">     225 </span>                :<span class="lineCov">       1717 :                   maxbound = refsize;</span></a>
+<a name="226"><span class="lineNum">     226 </span>                :            :             }</a>
+<a name="227"><span class="lineNum">     227 </span>                :            : </a>
+<a name="228"><span class="lineNum">     228 </span>        [<span class="branchCov" title="Branch 0 was taken 3284 times"> + </span><span class="branchCov" title="Branch 1 was taken 1717 times"> + </span>]:<span class="lineCov">       5001 :           if (maxbound == ptrdiff_max)</span></a>
+<a name="229"><span class="lineNum">     229 </span>                :            :             {</a>
+<a name="230"><span class="lineNum">     230 </span>                :            :               /* Try to determine the size of the base object.  Avoid</a>
+<a name="231"><span class="lineNum">     231 </span>                :            :                  COMPONENT_REF already tried above.  Using its DECL_SIZE</a>
+<a name="232"><span class="lineNum">     232 </span>                :            :                  size wouldn't necessarily be correct if the reference is</a>
+<a name="233"><span class="lineNum">     233 </span>                :            :                  to its flexible array member initialized in a different</a>
+<a name="234"><span class="lineNum">     234 </span>                :            :                  translation unit.  */</a>
+<a name="235"><span class="lineNum">     235 </span>                :<span class="lineCov">       3284 :               poly_int64 off;</span></a>
+<a name="236"><span class="lineNum">     236 </span>        [<span class="branchCov" title="Branch 0 was taken 3284 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       3284 :               if (tree base = get_addr_base_and_unit_offset (arg, &amp;off))</span></a>
+<a name="237"><span class="lineNum">     237 </span>                :            :                 {</a>
+<a name="238"><span class="lineNum">     238 </span>        [<span class="branchCov" title="Branch 0 was taken 779 times"> + </span><span class="branchCov" title="Branch 1 was taken 2505 times"> + </span>]:<span class="lineCov">       3284 :                   if (TREE_CODE (base) == MEM_REF)</span></a>
+<a name="239"><span class="lineNum">     239 </span>                :            :                     {</a>
+<a name="240"><span class="lineNum">     240 </span>                :            :                       /* Try to determine the size from a pointer to</a>
+<a name="241"><span class="lineNum">     241 </span>                :            :                          an array if BASE is one.  */</a>
+<a name="242"><span class="lineNum">     242 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 779 times"> + </span>]:<span class="lineCov">        779 :                       if (tree size = get_ref_size (base, &amp;decl))</span></a>
+<a name="243"><span class="lineNum">     243 </span>                :<span class="lineNoCov">          0 :                         maxbound = size;</span></a>
+<a name="244"><span class="lineNum">     244 </span>                :            :                     }</a>
+<a name="245"><span class="lineNum">     245 </span>  [<span class="branchCov" title="Branch 0 was taken 2505 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2505 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">       2505 :                   else if (!compref &amp;&amp; DECL_P (base))</span></a>
+<a name="246"><span class="lineNum">     246 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 2505 times"> + </span>]:<span class="lineCov">       2505 :                     if (tree basesize = DECL_SIZE_UNIT (base))</span></a>
+<a name="247"><span class="lineNum">     247 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                       if (TREE_CODE (basesize) == INTEGER_CST)</span></a>
+<a name="248"><span class="lineNum">     248 </span>                :            :                         {</a>
+<a name="249"><span class="lineNum">     249 </span>                :<span class="lineNoCov">          0 :                           maxbound = basesize;</span></a>
+<a name="250"><span class="lineNum">     250 </span>                :<span class="lineNoCov">          0 :                           decl = base;</span></a>
+<a name="251"><span class="lineNum">     251 </span>                :            :                         }</a>
+<a name="252"><span class="lineNum">     252 </span>                :            : </a>
+<a name="253"><span class="lineNum">     253 </span>        [<span class="branchCov" title="Branch 0 was taken 652 times"> + </span><span class="branchCov" title="Branch 1 was taken 2632 times"> + </span>]:<span class="lineCov">       3284 :                   if (known_gt (off, 0))</span></a>
+<a name="254"><span class="lineNum">     254 </span>                :<span class="lineCov">        652 :                     maxbound = wide_int_to_tree (sizetype,</span></a>
+<a name="255"><span class="lineNum">     255 </span>                :<span class="lineCov">       1304 :                                                  wi::sub (wi::to_wide (maxbound),</span></a>
+<a name="256"><span class="lineNum">     256 </span>                :<span class="lineCov">        652 :                                                           off));</span></a>
+<a name="257"><span class="lineNum">     257 </span>                :            :                 }</a>
+<a name="258"><span class="lineNum">     258 </span>                :            :             }</a>
+<a name="259"><span class="lineNum">     259 </span>                :            :           else</a>
+<a name="260"><span class="lineNum">     260 </span>                :<span class="lineCov">       1717 :             maxbound = fold_convert (sizetype, maxbound);</span></a>
+<a name="261"><span class="lineNum">     261 </span>                :            : </a>
+<a name="262"><span class="lineNum">     262 </span>                :<span class="lineCov">       5001 :           up_bound_p1 = int_const_binop (TRUNC_DIV_EXPR, maxbound, eltsize);</span></a>
+<a name="263"><span class="lineNum">     263 </span>                :            : </a>
+<a name="264"><span class="lineNum">     264 </span>        [<span class="branchCov" title="Branch 0 was taken 5001 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       5001 :           if (up_bound_p1 != NULL_TREE)</span></a>
+<a name="265"><span class="lineNum">     265 </span>                :<span class="lineCov">       5001 :             up_bound = int_const_binop (MINUS_EXPR, up_bound_p1,</span></a>
+<a name="266"><span class="lineNum">     266 </span>                :<span class="lineCov">      10002 :                                         build_int_cst (ptrdiff_type_node, 1));</span></a>
+<a name="267"><span class="lineNum">     267 </span>                :            :           else</a>
+<a name="268"><span class="lineNum">     268 </span>                :<span class="lineNoCov">          0 :             up_bound = NULL_TREE;</span></a>
+<a name="269"><span class="lineNum">     269 </span>                :            :         }</a>
+<a name="270"><span class="lineNum">     270 </span>                :            :     }</a>
+<a name="271"><span class="lineNum">     271 </span>                :            :   else</a>
+<a name="272"><span class="lineNum">     272 </span>                :<span class="lineCov">      14611 :     up_bound_p1 = int_const_binop (PLUS_EXPR, up_bound,</span></a>
+<a name="273"><span class="lineNum">     273 </span>                :<span class="lineCov">      29222 :                                    build_int_cst (TREE_TYPE (up_bound), 1));</span></a>
+<a name="274"><span class="lineNum">     274 </span>                :            : </a>
+<a name="275"><span class="lineNum">     275 </span>                :<span class="lineCov">      19612 :   tree low_bound = array_ref_low_bound (ref);</span></a>
+<a name="276"><span class="lineNum">     276 </span>                :            : </a>
+<a name="277"><span class="lineNum">     277 </span>                :<span class="lineCov">      19612 :   tree artype = TREE_TYPE (TREE_OPERAND (ref, 0));</span></a>
+<a name="278"><span class="lineNum">     278 </span>                :            : </a>
+<a name="279"><span class="lineNum">     279 </span>                :<span class="lineCov">      19612 :   bool warned = false;</span></a>
+<a name="280"><span class="lineNum">     280 </span>                :            : </a>
+<a name="281"><span class="lineNum">     281 </span>                :            :   /* Empty array.  */</a>
+<a name="282"><span class="lineNum">     282 </span>  [<span class="branchCov" title="Branch 0 was taken 19612 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 19612 times"> + </span> :<span class="lineCov">      19612 :   if (up_bound &amp;&amp; tree_int_cst_equal (low_bound, up_bound_p1))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 19612 times"> + </span>]
+<a name="283"><span class="lineNum">     283 </span>                :<span class="lineNoCov">          0 :     warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="284"><span class="lineNum">     284 </span>                :            :                          &quot;array subscript %E is outside array bounds of %qT&quot;,</a>
+<a name="285"><span class="lineNum">     285 </span>                :            :                          low_sub, artype);</a>
+<a name="286"><span class="lineNum">     286 </span>                :            : </a>
+<a name="287"><span class="lineNum">     287 </span>                :<span class="lineCov">      19612 :   const value_range *vr = NULL;</span></a>
+<a name="288"><span class="lineNum">     288 </span>        [<span class="branchCov" title="Branch 0 was taken 12563 times"> + </span><span class="branchCov" title="Branch 1 was taken 7049 times"> + </span>]:<span class="lineCov">      19612 :   if (TREE_CODE (low_sub) == SSA_NAME)</span></a>
+<a name="289"><span class="lineNum">     289 </span>                :            :     {</a>
+<a name="290"><span class="lineNum">     290 </span>                :<span class="lineCov">      12563 :       vr = get_value_range (low_sub);</span></a>
+<a name="291"><span class="lineNum">     291 </span>  [<span class="branchCov" title="Branch 0 was taken 12563 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 11659 times"> + </span><span class="branchCov" title="Branch 3 was taken 904 times"> + </span> :<span class="lineCov">      12563 :       if (!vr-&gt;undefined_p () &amp;&amp; !vr-&gt;varying_p ())</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 11659 times"> + </span><span class="branchCov" title="Branch 5 was taken 904 times"> + </span>]
+<a name="292"><span class="lineNum">     292 </span>                :            :         {</a>
+<a name="293"><span class="lineNum">     293 </span>        [<span class="branchCov" title="Branch 0 was taken 11265 times"> + </span><span class="branchCov" title="Branch 1 was taken 394 times"> + </span>]:<span class="lineCov">      11659 :           low_sub = vr-&gt;kind () == VR_RANGE ? vr-&gt;max () : vr-&gt;min ();</span></a>
+<a name="294"><span class="lineNum">     294 </span>        [<span class="branchCov" title="Branch 0 was taken 11265 times"> + </span><span class="branchCov" title="Branch 1 was taken 394 times"> + </span>]:<span class="lineCov">      11659 :           up_sub = vr-&gt;kind () == VR_RANGE ? vr-&gt;min () : vr-&gt;max ();</span></a>
+<a name="295"><span class="lineNum">     295 </span>                :            :         }</a>
+<a name="296"><span class="lineNum">     296 </span>                :            :     }</a>
+<a name="297"><span class="lineNum">     297 </span>                :            : </a>
+<a name="298"><span class="lineNum">     298 </span>        [<span class="branchCov" title="Branch 0 was taken 19612 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      19612 :   if (warned)</span></a>
+<a name="299"><span class="lineNum">     299 </span>                :            :     ; /* Do nothing.  */</a>
+<a name="300"><span class="lineNum">     300 </span>  [<span class="branchCov" title="Branch 0 was taken 12563 times"> + </span><span class="branchCov" title="Branch 1 was taken 7049 times"> + </span><span class="branchCov" title="Branch 2 was taken 394 times"> + </span><span class="branchCov" title="Branch 3 was taken 12169 times"> + </span> :<span class="lineCov">      19612 :   else if (vr &amp;&amp; vr-&gt;kind () == VR_ANTI_RANGE)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 394 times"> + </span><span class="branchCov" title="Branch 5 was taken 19218 times"> + </span>]
+<a name="301"><span class="lineNum">     301 </span>                :            :     {</a>
+<a name="302"><span class="lineNum">     302 </span>                :<span class="lineCov">        394 :       if (up_bound</span></a>
+<a name="303"><span class="lineNum">     303 </span>        [<span class="branchCov" title="Branch 0 was taken 383 times"> + </span><span class="branchCov" title="Branch 1 was taken 11 times"> + </span>]:<span class="lineCov">        394 :           &amp;&amp; TREE_CODE (up_sub) == INTEGER_CST</span></a>
+<a name="304"><span class="lineNum">     304 </span>                :<span class="lineCov">          4 :           &amp;&amp; (ignore_off_by_one</span></a>
+<a name="305"><span class="lineNum">     305 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          4 :               ? tree_int_cst_lt (up_bound, up_sub)</span></a>
+<a name="306"><span class="lineNum">     306 </span>        [<span class="branchCov" title="Branch 0 was taken 92 times"> + </span><span class="branchCov" title="Branch 1 was taken 287 times"> + </span>]:<span class="lineCov">        379 :               : tree_int_cst_le (up_bound, up_sub))</span></a>
+<a name="307"><span class="lineNum">     307 </span>        [<span class="branchCov" title="Branch 0 was taken 94 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">         94 :           &amp;&amp; TREE_CODE (low_sub) == INTEGER_CST</span></a>
+<a name="308"><span class="lineNum">     308 </span>  [<span class="branchCov" title="Branch 0 was taken 394 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 4 times"> + </span><span class="branchCov" title="Branch 3 was taken 379 times"> + </span> :<span class="lineCov">       1171 :           &amp;&amp; tree_int_cst_le (low_sub, low_bound))</span></a>
+<span class="lineNum">         </span>   <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 94 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 394 times"> + </span>]
+<a name="309"><span class="lineNum">     309 </span>                :<span class="lineNoCov">          0 :         warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="310"><span class="lineNum">     310 </span>                :            :                              &quot;array subscript [%E, %E] is outside &quot;</a>
+<a name="311"><span class="lineNum">     311 </span>                :            :                              &quot;array bounds of %qT&quot;,</a>
+<a name="312"><span class="lineNum">     312 </span>                :            :                              low_sub, up_sub, artype);</a>
+<a name="313"><span class="lineNum">     313 </span>                :            :     }</a>
+<a name="314"><span class="lineNum">     314 </span>                :<span class="lineCov">      19218 :   else if (up_bound</span></a>
+<a name="315"><span class="lineNum">     315 </span>        [<span class="branchCov" title="Branch 0 was taken 18308 times"> + </span><span class="branchCov" title="Branch 1 was taken 910 times"> + </span>]:<span class="lineCov">      19218 :            &amp;&amp; TREE_CODE (up_sub) == INTEGER_CST</span></a>
+<a name="316"><span class="lineNum">     316 </span>  [<span class="branchCov" title="Branch 0 was taken 19218 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 505 times"> + </span><span class="branchCov" title="Branch 3 was taken 17803 times"> + </span> :<span class="lineCov">      56744 :            &amp;&amp; (ignore_off_by_one</span></a>
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 19218 times"> + </span>]
+<a name="317"><span class="lineNum">     317 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 505 times"> + </span>]:<span class="lineCov">        505 :                ? !tree_int_cst_le (up_sub, up_bound_p1)</span></a>
+<a name="318"><span class="lineNum">     318 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 17803 times"> + </span>]:<span class="lineCov">      17803 :                : !tree_int_cst_le (up_sub, up_bound)))</span></a>
+<a name="319"><span class="lineNum">     319 </span>                :<span class="lineNoCov">          0 :     warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="320"><span class="lineNum">     320 </span>                :            :                          &quot;array subscript %E is above array bounds of %qT&quot;,</a>
+<a name="321"><span class="lineNum">     321 </span>                :            :                          up_sub, artype);</a>
+<a name="322"><span class="lineNum">     322 </span>                :<span class="lineCov">      38436 :   else if (TREE_CODE (low_sub) == INTEGER_CST</span></a>
+<a name="323"><span class="lineNum">     323 </span>  [<span class="branchCov" title="Branch 0 was taken 17629 times"> + </span><span class="branchCov" title="Branch 1 was taken 1589 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 17629 times"> + </span> :<span class="lineCov">      19218 :            &amp;&amp; tree_int_cst_lt (low_sub, low_bound))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 19218 times"> + </span>]
+<a name="324"><span class="lineNum">     324 </span>                :<span class="lineNoCov">          0 :     warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="325"><span class="lineNum">     325 </span>                :            :                          &quot;array subscript %E is below array bounds of %qT&quot;,</a>
+<a name="326"><span class="lineNum">     326 </span>                :            :                          low_sub, artype);</a>
+<a name="327"><span class="lineNum">     327 </span>                :            : </a>
+<a name="328"><span class="lineNum">     328 </span>  [<span class="branchCov" title="Branch 0 was taken 19612 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 19612 times"> + </span>]:<span class="lineCov">      19612 :   if (!warned &amp;&amp; sam == special_array_member::int_0)</span></a>
+<a name="329"><span class="lineNum">     329 </span>                :<span class="lineNoCov">          0 :     warned = warning_at (location, OPT_Wzero_length_bounds,</span></a>
+<a name="330"><span class="lineNum">     330 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                          (TREE_CODE (low_sub) == INTEGER_CST</span></a>
+<a name="331"><span class="lineNum">     331 </span>                :            :                           ? G_(&quot;array subscript %E is outside the bounds &quot;</a>
+<a name="332"><span class="lineNum">     332 </span>                :            :                                &quot;of an interior zero-length array %qT&quot;)</a>
+<a name="333"><span class="lineNum">     333 </span>                :            :                           : G_(&quot;array subscript %qE is outside the bounds &quot;</a>
+<a name="334"><span class="lineNum">     334 </span>                :            :                                &quot;of an interior zero-length array %qT&quot;)),</a>
+<a name="335"><span class="lineNum">     335 </span>                :            :                          low_sub, artype);</a>
+<a name="336"><span class="lineNum">     336 </span>                :            : </a>
+<a name="337"><span class="lineNum">     337 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 19612 times"> + </span>]:<span class="lineCov">      19612 :   if (warned)</span></a>
+<a name="338"><span class="lineNum">     338 </span>                :            :     {</a>
+<a name="339"><span class="lineNum">     339 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       if (dump_file &amp;&amp; (dump_flags &amp; TDF_DETAILS))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="340"><span class="lineNum">     340 </span>                :            :         {</a>
+<a name="341"><span class="lineNum">     341 </span>                :<span class="lineNoCov">          0 :           fprintf (dump_file, &quot;Array bound warning for &quot;);</span></a>
+<a name="342"><span class="lineNum">     342 </span>                :<span class="lineNoCov">          0 :           dump_generic_expr (MSG_NOTE, TDF_SLIM, ref);</span></a>
+<a name="343"><span class="lineNum">     343 </span>                :<span class="lineNoCov">          0 :           fprintf (dump_file, &quot;\n&quot;);</span></a>
+<a name="344"><span class="lineNum">     344 </span>                :            :         }</a>
+<a name="345"><span class="lineNum">     345 </span>                :            : </a>
+<a name="346"><span class="lineNum">     346 </span>                :            :       /* Avoid more warnings when checking more significant subscripts</a>
+<a name="347"><span class="lineNum">     347 </span>                :            :          of the same expression.  */</a>
+<a name="348"><span class="lineNum">     348 </span>                :<span class="lineNoCov">          0 :       ref = TREE_OPERAND (ref, 0);</span></a>
+<a name="349"><span class="lineNum">     349 </span>                :<span class="lineNoCov">          0 :       TREE_NO_WARNING (ref) = 1;</span></a>
+<a name="350"><span class="lineNum">     350 </span>                :            : </a>
+<a name="351"><span class="lineNum">     351 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (decl)</span></a>
+<a name="352"><span class="lineNum">     352 </span>                :<span class="lineNoCov">          0 :         ref = decl;</span></a>
+<a name="353"><span class="lineNum">     353 </span>                :            : </a>
+<a name="354"><span class="lineNum">     354 </span>                :<span class="lineNoCov">          0 :       tree rec = NULL_TREE;</span></a>
+<a name="355"><span class="lineNum">     355 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (TREE_CODE (ref) == COMPONENT_REF)</span></a>
+<a name="356"><span class="lineNum">     356 </span>                :            :         {</a>
+<a name="357"><span class="lineNum">     357 </span>                :            :           /* For a reference to a member of a struct object also mention</a>
+<a name="358"><span class="lineNum">     358 </span>                :            :              the object if it's known.  It may be defined in a different</a>
+<a name="359"><span class="lineNum">     359 </span>                :            :              function than the out-of-bounds access.  */</a>
+<a name="360"><span class="lineNum">     360 </span>                :<span class="lineNoCov">          0 :           rec = TREE_OPERAND (ref, 0);</span></a>
+<a name="361"><span class="lineNum">     361 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :           if (!VAR_P (rec))</span></a>
+<a name="362"><span class="lineNum">     362 </span>                :<span class="lineNoCov">          0 :             rec = NULL_TREE;</span></a>
+<a name="363"><span class="lineNum">     363 </span>                :<span class="lineNoCov">          0 :           ref = TREE_OPERAND (ref, 1);</span></a>
+<a name="364"><span class="lineNum">     364 </span>                :            :         }</a>
+<a name="365"><span class="lineNum">     365 </span>                :            : </a>
+<a name="366"><span class="lineNum">     366 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (DECL_P (ref))</span></a>
+<a name="367"><span class="lineNum">     367 </span>                :<span class="lineNoCov">          0 :         inform (DECL_SOURCE_LOCATION (ref), &quot;while referencing %qD&quot;, ref);</span></a>
+<a name="368"><span class="lineNum">     368 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (rec &amp;&amp; DECL_P (rec))</span></a>
+<a name="369"><span class="lineNum">     369 </span>                :<span class="lineNoCov">          0 :         inform (DECL_SOURCE_LOCATION (rec), &quot;defined here %qD&quot;, rec);</span></a>
+<a name="370"><span class="lineNum">     370 </span>                :            :     }</a>
+<a name="371"><span class="lineNum">     371 </span>                :            : </a>
+<a name="372"><span class="lineNum">     372 </span>                :<span class="lineCov">      19612 :   return warned;</span></a>
+<a name="373"><span class="lineNum">     373 </span>                :            : }</a>
+<a name="374"><span class="lineNum">     374 </span>                :            : </a>
+<a name="375"><span class="lineNum">     375 </span>                :            : /* Wrapper around build_array_type_nelts that makes sure the array</a>
+<a name="376"><span class="lineNum">     376 </span>                :            :    can be created at all and handles zero sized arrays specially.  */</a>
+<a name="377"><span class="lineNum">     377 </span>                :            : </a>
+<a name="378"><span class="lineNum">     378 </span>                :            : static tree</a>
+<a name="379"><span class="lineNum">     379 </span>                :<span class="lineCov">        534 : build_printable_array_type (tree eltype, unsigned HOST_WIDE_INT nelts)</span></a>
+<a name="380"><span class="lineNum">     380 </span>                :            : {</a>
+<a name="381"><span class="lineNum">     381 </span>                :<span class="lineCov">       1068 :   if (TYPE_SIZE_UNIT (eltype)</span></a>
+<a name="382"><span class="lineNum">     382 </span>        [<span class="branchCov" title="Branch 0 was taken 534 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        534 :       &amp;&amp; TREE_CODE (TYPE_SIZE_UNIT (eltype)) == INTEGER_CST</span></a>
+<a name="383"><span class="lineNum">     383 </span>        [<span class="branchCov" title="Branch 0 was taken 534 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        534 :       &amp;&amp; !integer_zerop (TYPE_SIZE_UNIT (eltype))</span></a>
+<a name="384"><span class="lineNum">     384 </span>  [<span class="branchCov" title="Branch 0 was taken 534 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 514 times"> + </span><span class="branchCov" title="Branch 3 was taken 20 times"> + </span>]:<span class="lineCov">        534 :       &amp;&amp; TYPE_ALIGN_UNIT (eltype) &gt; 1</span></a>
+<a name="385"><span class="lineNum">     385 </span>  [<span class="branchCov" title="Branch 0 was taken 534 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 514 times"> + </span>]:<span class="lineCov">       1068 :       &amp;&amp; wi::zext (wi::to_wide (TYPE_SIZE_UNIT (eltype)),</span></a>
+<a name="386"><span class="lineNum">     386 </span>  [<span class="branchCov" title="Branch 0 was taken 514 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 534 times"> + </span>]:<span class="lineCov">       1048 :                    ffs_hwi (TYPE_ALIGN_UNIT (eltype)) - 1) != 0)</span></a>
+<a name="387"><span class="lineNum">     387 </span>                :<span class="lineNoCov">          0 :     eltype = TYPE_MAIN_VARIANT (eltype);</span></a>
+<a name="388"><span class="lineNum">     388 </span>                :            : </a>
+<a name="389"><span class="lineNum">     389 </span>        [<span class="branchCov" title="Branch 0 was taken 534 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        534 :   if (nelts)</span></a>
+<a name="390"><span class="lineNum">     390 </span>                :<span class="lineCov">        534 :     return build_array_type_nelts (eltype, nelts);</span></a>
+<a name="391"><span class="lineNum">     391 </span>                :            : </a>
+<a name="392"><span class="lineNum">     392 </span>                :<span class="lineNoCov">          0 :   tree idxtype = build_range_type (sizetype, size_zero_node, NULL_TREE);</span></a>
+<a name="393"><span class="lineNum">     393 </span>                :<span class="lineNoCov">          0 :   tree arrtype = build_array_type (eltype, idxtype);</span></a>
+<a name="394"><span class="lineNum">     394 </span>                :<span class="lineNoCov">          0 :   arrtype = build_distinct_type_copy (TYPE_MAIN_VARIANT (arrtype));</span></a>
+<a name="395"><span class="lineNum">     395 </span>                :<span class="lineNoCov">          0 :   TYPE_SIZE (arrtype) = bitsize_zero_node;</span></a>
+<a name="396"><span class="lineNum">     396 </span>                :<span class="lineNoCov">          0 :   TYPE_SIZE_UNIT (arrtype) = size_zero_node;</span></a>
+<a name="397"><span class="lineNum">     397 </span>                :<span class="lineNoCov">          0 :   return arrtype;</span></a>
+<a name="398"><span class="lineNum">     398 </span>                :            : }</a>
+<a name="399"><span class="lineNum">     399 </span>                :            : </a>
+<a name="400"><span class="lineNum">     400 </span>                :            : /* Checks one MEM_REF in REF, located at LOCATION, for out-of-bounds</a>
+<a name="401"><span class="lineNum">     401 </span>                :            :    references to string constants.  If VRP can determine that the array</a>
+<a name="402"><span class="lineNum">     402 </span>                :            :    subscript is a constant, check if it is outside valid range.</a>
+<a name="403"><span class="lineNum">     403 </span>                :            :    If the array subscript is a RANGE, warn if it is non-overlapping</a>
+<a name="404"><span class="lineNum">     404 </span>                :            :    with valid range.</a>
+<a name="405"><span class="lineNum">     405 </span>                :            :    IGNORE_OFF_BY_ONE is true if the MEM_REF is inside an ADDR_EXPR</a>
+<a name="406"><span class="lineNum">     406 </span>                :            :    (used to allow one-past-the-end indices for code that takes</a>
+<a name="407"><span class="lineNum">     407 </span>                :            :    the address of the just-past-the-end element of an array).</a>
+<a name="408"><span class="lineNum">     408 </span>                :            :    Returns true if a warning has been issued.  */</a>
+<a name="409"><span class="lineNum">     409 </span>                :            : </a>
+<a name="410"><span class="lineNum">     410 </span>                :            : bool</a>
+<a name="411"><span class="lineNum">     411 </span>                :<span class="lineCov">      80729 : array_bounds_checker::check_mem_ref (location_t location, tree ref,</span></a>
+<a name="412"><span class="lineNum">     412 </span>                :            :                                      bool ignore_off_by_one)</a>
+<a name="413"><span class="lineNum">     413 </span>                :            : {</a>
+<a name="414"><span class="lineNum">     414 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 80729 times"> + </span>]:<span class="lineCov">      80729 :   if (TREE_NO_WARNING (ref))</span></a>
+<a name="415"><span class="lineNum">     415 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="416"><span class="lineNum">     416 </span>                :            : </a>
+<a name="417"><span class="lineNum">     417 </span>                :<span class="lineCov">      80729 :   tree arg = TREE_OPERAND (ref, 0);</span></a>
+<a name="418"><span class="lineNum">     418 </span>                :            :   /* The constant and variable offset of the reference.  */</a>
+<a name="419"><span class="lineNum">     419 </span>                :<span class="lineCov">      80729 :   tree cstoff = TREE_OPERAND (ref, 1);</span></a>
+<a name="420"><span class="lineNum">     420 </span>                :<span class="lineCov">      80729 :   tree varoff = NULL_TREE;</span></a>
+<a name="421"><span class="lineNum">     421 </span>                :            : </a>
+<a name="422"><span class="lineNum">     422 </span>                :<span class="lineCov">      80729 :   const offset_int maxobjsize = tree_to_shwi (max_object_size ());</span></a>
+<a name="423"><span class="lineNum">     423 </span>                :            : </a>
+<a name="424"><span class="lineNum">     424 </span>                :            :   /* The zero-based array or string constant bounds in bytes.  Initially</a>
+<a name="425"><span class="lineNum">     425 </span>                :            :      set to [-MAXOBJSIZE - 1, MAXOBJSIZE]  until a tighter bound is</a>
+<a name="426"><span class="lineNum">     426 </span>                :            :      determined.  */</a>
+<a name="427"><span class="lineNum">     427 </span>                :<span class="lineCov">      80729 :   offset_int arrbounds[2] = { -maxobjsize - 1, maxobjsize };</span></a>
+<a name="428"><span class="lineNum">     428 </span>                :            : </a>
+<a name="429"><span class="lineNum">     429 </span>                :            :   /* The minimum and maximum intermediate offset.  For a reference</a>
+<a name="430"><span class="lineNum">     430 </span>                :            :      to be valid, not only does the final offset/subscript must be</a>
+<a name="431"><span class="lineNum">     431 </span>                :            :      in bounds but all intermediate offsets should be as well.</a>
+<a name="432"><span class="lineNum">     432 </span>                :            :      GCC may be able to deal gracefully with such out-of-bounds</a>
+<a name="433"><span class="lineNum">     433 </span>                :            :      offsets so the checking is only enabled at -Warray-bounds=2</a>
+<a name="434"><span class="lineNum">     434 </span>                :            :      where it may help detect bugs in uses of the intermediate</a>
+<a name="435"><span class="lineNum">     435 </span>                :            :      offsets that could otherwise not be detectable.  */</a>
+<a name="436"><span class="lineNum">     436 </span>                :<span class="lineCov">      80729 :   offset_int ioff = wi::to_offset (fold_convert (ptrdiff_type_node, cstoff));</span></a>
+<a name="437"><span class="lineNum">     437 </span>                :<span class="lineCov">      80729 :   offset_int extrema[2] = { 0, wi::abs (ioff) };</span></a>
+<a name="438"><span class="lineNum">     438 </span>                :            : </a>
+<a name="439"><span class="lineNum">     439 </span>                :            :   /* The range of the byte offset into the reference.  */</a>
+<a name="440"><span class="lineNum">     440 </span>                :<span class="lineCov">      80729 :   offset_int offrange[2] = { 0, 0 };</span></a>
+<a name="441"><span class="lineNum">     441 </span>                :            : </a>
+<a name="442"><span class="lineNum">     442 </span>                :            :   /* The statement used to allocate the array or null.  */</a>
+<a name="443"><span class="lineNum">     443 </span>                :<span class="lineCov">      80729 :   gimple *alloc_stmt = NULL;</span></a>
+<a name="444"><span class="lineNum">     444 </span>                :            :   /* For an allocation statement, the low bound of the size range.  */</a>
+<a name="445"><span class="lineNum">     445 </span>                :<span class="lineCov">      80729 :   offset_int minbound = 0;</span></a>
+<a name="446"><span class="lineNum">     446 </span>                :            : </a>
+<a name="447"><span class="lineNum">     447 </span>                :            :   /* Determine the offsets and increment OFFRANGE for the bounds of each.</a>
+<a name="448"><span class="lineNum">     448 </span>                :            :      The loop computes the range of the final offset for expressions such</a>
+<a name="449"><span class="lineNum">     449 </span>                :            :      as (A + i0 + ... + iN)[CSTOFF] where i0 through iN are SSA_NAMEs in</a>
+<a name="450"><span class="lineNum">     450 </span>                :            :      some range.  */</a>
+<a name="451"><span class="lineNum">     451 </span>                :<span class="lineCov">      80729 :   const unsigned limit = param_ssa_name_def_chain_limit;</span></a>
+<a name="452"><span class="lineNum">     452 </span>  [<span class="branchCov" title="Branch 0 was taken 105817 times"> + </span><span class="branchCov" title="Branch 1 was taken 20813 times"> + </span><span class="branchCov" title="Branch 2 was taken 105817 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">     126630 :   for (unsigned n = 0; TREE_CODE (arg) == SSA_NAME &amp;&amp; n &lt; limit; ++n)</span></a>
+<a name="453"><span class="lineNum">     453 </span>                :            :     {</a>
+<a name="454"><span class="lineNum">     454 </span>                :<span class="lineCov">     105817 :       gimple *def = SSA_NAME_DEF_STMT (arg);</span></a>
+<a name="455"><span class="lineNum">     455 </span>        [<span class="branchCov" title="Branch 0 was taken 4924 times"> + </span><span class="branchCov" title="Branch 1 was taken 100893 times"> + </span>]:<span class="lineCov">     105817 :       if (is_gimple_call (def))</span></a>
+<a name="456"><span class="lineNum">     456 </span>                :            :         {</a>
+<a name="457"><span class="lineNum">     457 </span>                :            :           /* Determine the byte size of the array from an allocation call.  */</a>
+<a name="458"><span class="lineNum">     458 </span>        [<span class="branchCov" title="Branch 0 was taken 9848 times"> + </span><span class="branchCov" title="Branch 1 was taken 4924 times"> + </span>]:<span class="lineCov">      14772 :           wide_int sizrng[2];</span></a>
+<a name="459"><span class="lineNum">     459 </span>        [<span class="branchCov" title="Branch 0 was taken 885 times"> + </span><span class="branchCov" title="Branch 1 was taken 4039 times"> + </span>]:<span class="lineCov">       4924 :           if (gimple_call_alloc_size (def, sizrng))</span></a>
+<a name="460"><span class="lineNum">     460 </span>                :            :             {</a>
+<a name="461"><span class="lineNum">     461 </span>                :<span class="lineCov">        885 :               arrbounds[0] = 0;</span></a>
+<a name="462"><span class="lineNum">     462 </span>                :<span class="lineCov">        885 :               arrbounds[1] = offset_int::from (sizrng[1], UNSIGNED);</span></a>
+<a name="463"><span class="lineNum">     463 </span>                :<span class="lineCov">        885 :               minbound = offset_int::from (sizrng[0], UNSIGNED);</span></a>
+<a name="464"><span class="lineNum">     464 </span>                :<span class="lineCov">        885 :               alloc_stmt = def;</span></a>
+<a name="465"><span class="lineNum">     465 </span>                :            :             }</a>
+<a name="466"><span class="lineNum">     466 </span>                :<span class="lineCov">       4924 :           break;</span></a>
+<a name="467"><span class="lineNum">     467 </span>                :            :         }</a>
+<a name="468"><span class="lineNum">     468 </span>                :            : </a>
+<a name="469"><span class="lineNum">     469 </span>        [<span class="branchCov" title="Branch 0 was taken 23551 times"> + </span><span class="branchCov" title="Branch 1 was taken 77342 times"> + </span>]:<span class="lineCov">     100893 :       if (gimple_nop_p (def))</span></a>
+<a name="470"><span class="lineNum">     470 </span>                :            :         {</a>
+<a name="471"><span class="lineNum">     471 </span>                :            :           /* For a function argument try to determine the byte size</a>
+<a name="472"><span class="lineNum">     472 </span>                :            :              of the array from the current function declaratation</a>
+<a name="473"><span class="lineNum">     473 </span>                :            :              (e.g., attribute access or related).  */</a>
+<a name="474"><span class="lineNum">     474 </span>        [<span class="branchCov" title="Branch 0 was taken 47102 times"> + </span><span class="branchCov" title="Branch 1 was taken 23551 times"> + </span>]:<span class="lineCov">      70653 :           wide_int wr[2];</span></a>
+<a name="475"><span class="lineNum">     475 </span>                :<span class="lineCov">      23551 :           tree ref = gimple_parm_array_size (arg, wr);</span></a>
+<a name="476"><span class="lineNum">     476 </span>        [<span class="branchCov" title="Branch 0 was taken 23524 times"> + </span><span class="branchCov" title="Branch 1 was taken 27 times"> + </span>]:<span class="lineCov">      23551 :           if (!ref)</span></a>
+<a name="477"><span class="lineNum">     477 </span>                :<span class="lineCov">      23524 :             break;</span></a>
+<a name="478"><span class="lineNum">     478 </span>                :<span class="lineCov">         27 :           arrbounds[0] = offset_int::from (wr[0], UNSIGNED);</span></a>
+<a name="479"><span class="lineNum">     479 </span>                :<span class="lineCov">         27 :           arrbounds[1] = offset_int::from (wr[1], UNSIGNED);</span></a>
+<a name="480"><span class="lineNum">     480 </span>                :<span class="lineCov">         27 :           arg = ref;</span></a>
+<a name="481"><span class="lineNum">     481 </span>                :<span class="lineCov">         27 :           break;</span></a>
+<a name="482"><span class="lineNum">     482 </span>                :            :         }</a>
+<a name="483"><span class="lineNum">     483 </span>                :            : </a>
+<a name="484"><span class="lineNum">     484 </span>        [<span class="branchCov" title="Branch 0 was taken 6513 times"> + </span><span class="branchCov" title="Branch 1 was taken 70829 times"> + </span>]:<span class="lineCov">      77342 :       if (!is_gimple_assign (def))</span></a>
+<a name="485"><span class="lineNum">     485 </span>                :<span class="lineCov">       6513 :         break;</span></a>
+<a name="486"><span class="lineNum">     486 </span>                :            : </a>
+<a name="487"><span class="lineNum">     487 </span>                :<span class="lineCov">      70829 :       tree_code code = gimple_assign_rhs_code (def);</span></a>
+<a name="488"><span class="lineNum">     488 </span>        [<span class="branchCov" title="Branch 0 was taken 6932 times"> + </span><span class="branchCov" title="Branch 1 was taken 63897 times"> + </span>]:<span class="lineCov">      70829 :       if (code == POINTER_PLUS_EXPR)</span></a>
+<a name="489"><span class="lineNum">     489 </span>                :            :         {</a>
+<a name="490"><span class="lineNum">     490 </span>                :<span class="lineCov">       6932 :           arg = gimple_assign_rhs1 (def);</span></a>
+<a name="491"><span class="lineNum">     491 </span>                :<span class="lineCov">       6932 :           varoff = gimple_assign_rhs2 (def);</span></a>
+<a name="492"><span class="lineNum">     492 </span>                :            :         }</a>
+<a name="493"><span class="lineNum">     493 </span>        [<span class="branchCov" title="Branch 0 was taken 42671 times"> + </span><span class="branchCov" title="Branch 1 was taken 21226 times"> + </span>]:<span class="lineCov">      63897 :       else if (code == ASSERT_EXPR)</span></a>
+<a name="494"><span class="lineNum">     494 </span>                :            :         {</a>
+<a name="495"><span class="lineNum">     495 </span>                :<span class="lineCov">      42671 :           arg = TREE_OPERAND (gimple_assign_rhs1 (def), 0);</span></a>
+<a name="496"><span class="lineNum">     496 </span>                :<span class="lineCov">      42671 :           continue;</span></a>
+<a name="497"><span class="lineNum">     497 </span>                :            :         }</a>
+<a name="498"><span class="lineNum">     498 </span>                :            :       else</a>
+<a name="499"><span class="lineNum">     499 </span>                :<span class="lineCov">      21226 :         return false;</span></a>
+<a name="500"><span class="lineNum">     500 </span>                :            : </a>
+<a name="501"><span class="lineNum">     501 </span>                :            :       /* VAROFF should always be a SSA_NAME here (and not even</a>
+<a name="502"><span class="lineNum">     502 </span>                :            :          INTEGER_CST) but there's no point in taking chances.  */</a>
+<a name="503"><span class="lineNum">     503 </span>        [<span class="branchCov" title="Branch 0 was taken 129 times"> + </span><span class="branchCov" title="Branch 1 was taken 6803 times"> + </span>]:<span class="lineCov">       6932 :       if (TREE_CODE (varoff) != SSA_NAME)</span></a>
+<a name="504"><span class="lineNum">     504 </span>                :<span class="lineCov">        129 :         break;</span></a>
+<a name="505"><span class="lineNum">     505 </span>                :            : </a>
+<a name="506"><span class="lineNum">     506 </span>                :<span class="lineCov">       6803 :       const value_range* const vr = get_value_range (varoff);</span></a>
+<a name="507"><span class="lineNum">     507 </span>  [<span class="branchCov" title="Branch 0 was taken 6803 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 6803 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">       6803 :       if (!vr || vr-&gt;undefined_p () || vr-&gt;varying_p ())</span></a>
+<span class="lineNum">         </span>   <span class="branchCov" title="Branch 4 was taken 3246 times"> + </span><span class="branchCov" title="Branch 5 was taken 3557 times"> + </span><span class="branchCov" title="Branch 6 was taken 3246 times"> + </span><span class="branchCov" title="Branch 7 was taken 3557 times"> + </span>]
+<a name="508"><span class="lineNum">     508 </span>                :<span class="lineCov">       3246 :         break;</span></a>
+<a name="509"><span class="lineNum">     509 </span>                :            : </a>
+<a name="510"><span class="lineNum">     510 </span>        [<span class="branchCov" title="Branch 0 was taken 327 times"> + </span><span class="branchCov" title="Branch 1 was taken 3230 times"> + </span>]:<span class="lineCov">       3557 :       if (!vr-&gt;constant_p ())</span></a>
+<a name="511"><span class="lineNum">     511 </span>                :<span class="lineCov">        327 :         break;</span></a>
+<a name="512"><span class="lineNum">     512 </span>                :            : </a>
+<a name="513"><span class="lineNum">     513 </span>        [<span class="branchCov" title="Branch 0 was taken 2821 times"> + </span><span class="branchCov" title="Branch 1 was taken 409 times"> + </span>]:<span class="lineCov">       3230 :       if (vr-&gt;kind () == VR_RANGE)</span></a>
+<a name="514"><span class="lineNum">     514 </span>                :            :         {</a>
+<a name="515"><span class="lineNum">     515 </span>                :            :           offset_int min</a>
+<a name="516"><span class="lineNum">     516 </span>                :<span class="lineCov">       2821 :             = wi::to_offset (fold_convert (ptrdiff_type_node, vr-&gt;min ()));</span></a>
+<a name="517"><span class="lineNum">     517 </span>                :            :           offset_int max</a>
+<a name="518"><span class="lineNum">     518 </span>                :<span class="lineCov">       2821 :             = wi::to_offset (fold_convert (ptrdiff_type_node, vr-&gt;max ()));</span></a>
+<a name="519"><span class="lineNum">     519 </span>        [<span class="branchCov" title="Branch 0 was taken 1776 times"> + </span><span class="branchCov" title="Branch 1 was taken 1045 times"> + </span>]:<span class="lineCov">       2821 :           if (min &lt; max)</span></a>
+<a name="520"><span class="lineNum">     520 </span>                :            :             {</a>
+<a name="521"><span class="lineNum">     521 </span>                :<span class="lineCov">       1776 :               offrange[0] += min;</span></a>
+<a name="522"><span class="lineNum">     522 </span>                :<span class="lineCov">       1776 :               offrange[1] += max;</span></a>
+<a name="523"><span class="lineNum">     523 </span>                :            :             }</a>
+<a name="524"><span class="lineNum">     524 </span>                :            :           else</a>
+<a name="525"><span class="lineNum">     525 </span>                :            :             {</a>
+<a name="526"><span class="lineNum">     526 </span>                :            :               /* When MIN &gt;= MAX, the offset is effectively in a union</a>
+<a name="527"><span class="lineNum">     527 </span>                :            :                  of two ranges: [-MAXOBJSIZE -1, MAX] and [MIN, MAXOBJSIZE].</a>
+<a name="528"><span class="lineNum">     528 </span>                :            :                  Since there is no way to represent such a range across</a>
+<a name="529"><span class="lineNum">     529 </span>                :            :                  additions, conservatively add [-MAXOBJSIZE -1, MAXOBJSIZE]</a>
+<a name="530"><span class="lineNum">     530 </span>                :            :                  to OFFRANGE.  */</a>
+<a name="531"><span class="lineNum">     531 </span>                :<span class="lineCov">       1045 :               offrange[0] += arrbounds[0];</span></a>
+<a name="532"><span class="lineNum">     532 </span>                :<span class="lineCov">       1045 :               offrange[1] += arrbounds[1];</span></a>
+<a name="533"><span class="lineNum">     533 </span>                :            :             }</a>
+<a name="534"><span class="lineNum">     534 </span>                :            :         }</a>
+<a name="535"><span class="lineNum">     535 </span>                :            :       else</a>
+<a name="536"><span class="lineNum">     536 </span>                :            :         {</a>
+<a name="537"><span class="lineNum">     537 </span>                :            :           /* For an anti-range, analogously to the above, conservatively</a>
+<a name="538"><span class="lineNum">     538 </span>                :            :              add [-MAXOBJSIZE -1, MAXOBJSIZE] to OFFRANGE.  */</a>
+<a name="539"><span class="lineNum">     539 </span>                :<span class="lineCov">        409 :           offrange[0] += arrbounds[0];</span></a>
+<a name="540"><span class="lineNum">     540 </span>                :<span class="lineCov">        409 :           offrange[1] += arrbounds[1];</span></a>
+<a name="541"><span class="lineNum">     541 </span>                :            :         }</a>
+<a name="542"><span class="lineNum">     542 </span>                :            : </a>
+<a name="543"><span class="lineNum">     543 </span>                :            :       /* Keep track of the minimum and maximum offset.  */</a>
+<a name="544"><span class="lineNum">     544 </span>  [<span class="branchCov" title="Branch 0 was taken 23 times"> + </span><span class="branchCov" title="Branch 1 was taken 3207 times"> + </span><span class="branchCov" title="Branch 2 was taken 23 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">       3230 :       if (offrange[1] &lt; 0 &amp;&amp; offrange[1] &lt; extrema[0])</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 23 times"> + </span><span class="branchCov" title="Branch 5 was taken 3207 times"> + </span>]
+<a name="545"><span class="lineNum">     545 </span>                :<span class="lineCov">         23 :         extrema[0] = offrange[1];</span></a>
+<a name="546"><span class="lineNum">     546 </span>  [<span class="branchCov" title="Branch 0 was taken 275 times"> + </span><span class="branchCov" title="Branch 1 was taken 2955 times"> + </span><span class="branchCov" title="Branch 2 was taken 272 times"> + </span><span class="branchCov" title="Branch 3 was taken 3 times"> + </span> :<span class="lineCov">       3230 :       if (offrange[0] &gt; 0 &amp;&amp; offrange[0] &gt; extrema[1])</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 272 times"> + </span><span class="branchCov" title="Branch 5 was taken 2958 times"> + </span>]
+<a name="547"><span class="lineNum">     547 </span>                :<span class="lineCov">        272 :         extrema[1] = offrange[0];</span></a>
+<a name="548"><span class="lineNum">     548 </span>                :            : </a>
+<a name="549"><span class="lineNum">     549 </span>        [<span class="branchCov" title="Branch 0 was taken 15 times"> + </span><span class="branchCov" title="Branch 1 was taken 3215 times"> + </span>]:<span class="lineCov">       3230 :       if (offrange[0] &lt; arrbounds[0])</span></a>
+<a name="550"><span class="lineNum">     550 </span>                :<span class="lineCov">         15 :         offrange[0] = arrbounds[0];</span></a>
+<a name="551"><span class="lineNum">     551 </span>                :            : </a>
+<a name="552"><span class="lineNum">     552 </span>        [<span class="branchCov" title="Branch 0 was taken 24 times"> + </span><span class="branchCov" title="Branch 1 was taken 3206 times"> + </span>]:<span class="lineCov">       3230 :       if (offrange[1] &gt; arrbounds[1])</span></a>
+<a name="553"><span class="lineNum">     553 </span>                :<span class="lineCov">         24 :         offrange[1] = arrbounds[1];</span></a>
+<a name="554"><span class="lineNum">     554 </span>                :            :     }</a>
+<a name="555"><span class="lineNum">     555 </span>                :            : </a>
+<a name="556"><span class="lineNum">     556 </span>                :<span class="lineCov">      59503 :   tree reftype = NULL_TREE;</span></a>
+<a name="557"><span class="lineNum">     557 </span>                :<span class="lineCov">      59503 :   offset_int eltsize = -1;</span></a>
+<a name="558"><span class="lineNum">     558 </span>        [<span class="branchCov" title="Branch 0 was taken 912 times"> + </span><span class="branchCov" title="Branch 1 was taken 58591 times"> + </span>]:<span class="lineCov">      59503 :   if (arrbounds[0] &gt;= 0)</span></a>
+<a name="559"><span class="lineNum">     559 </span>                :            :     {</a>
+<a name="560"><span class="lineNum">     560 </span>                :            :       /* The byte size of the array has already been determined above</a>
+<a name="561"><span class="lineNum">     561 </span>                :            :          based on a pointer ARG.  Set ELTSIZE to the size of the type</a>
+<a name="562"><span class="lineNum">     562 </span>                :            :          it points to and REFTYPE to the array with the size, rounded</a>
+<a name="563"><span class="lineNum">     563 </span>                :            :          down as necessary.  */</a>
+<a name="564"><span class="lineNum">     564 </span>                :<span class="lineCov">        912 :       reftype = TREE_TYPE (TREE_TYPE (arg));</span></a>
+<a name="565"><span class="lineNum">     565 </span>        [<span class="branchCov" title="Branch 0 was taken 119 times"> + </span><span class="branchCov" title="Branch 1 was taken 793 times"> + </span>]:<span class="lineCov">        912 :       if (TREE_CODE (reftype) == ARRAY_TYPE)</span></a>
+<a name="566"><span class="lineNum">     566 </span>                :<span class="lineCov">        119 :         reftype = TREE_TYPE (reftype);</span></a>
+<a name="567"><span class="lineNum">     567 </span>        [<span class="branchCov" title="Branch 0 was taken 506 times"> + </span><span class="branchCov" title="Branch 1 was taken 406 times"> + </span>]:<span class="lineCov">        912 :       if (tree refsize = TYPE_SIZE_UNIT (reftype))</span></a>
+<a name="568"><span class="lineNum">     568 </span>        [<span class="branchCov" title="Branch 0 was taken 506 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">        506 :         if (TREE_CODE (refsize) == INTEGER_CST)</span></a>
+<a name="569"><span class="lineNum">     569 </span>                :<span class="lineCov">        506 :           eltsize = wi::to_offset (refsize);</span></a>
+<a name="570"><span class="lineNum">     570 </span>                :            : </a>
+<a name="571"><span class="lineNum">     571 </span>        [<span class="branchCov" title="Branch 0 was taken 406 times"> + </span><span class="branchCov" title="Branch 1 was taken 506 times"> + </span>]:<span class="lineCov">        912 :       if (eltsize &lt; 0)</span></a>
+<a name="572"><span class="lineNum">     572 </span>                :<span class="lineCov">        406 :         return false;</span></a>
+<a name="573"><span class="lineNum">     573 </span>                :            : </a>
+<a name="574"><span class="lineNum">     574 </span>                :<span class="lineCov">        506 :       offset_int nelts = arrbounds[1] / eltsize;</span></a>
+<a name="575"><span class="lineNum">     575 </span>                :<span class="lineCov">        506 :       reftype = build_printable_array_type (reftype, nelts.to_uhwi ());</span></a>
+<a name="576"><span class="lineNum">     576 </span>                :            :     }</a>
+<a name="577"><span class="lineNum">     577 </span>        [<span class="branchCov" title="Branch 0 was taken 20898 times"> + </span><span class="branchCov" title="Branch 1 was taken 37693 times"> + </span>]:<span class="lineCov">      58591 :   else if (TREE_CODE (arg) == ADDR_EXPR)</span></a>
+<a name="578"><span class="lineNum">     578 </span>                :            :     {</a>
+<a name="579"><span class="lineNum">     579 </span>                :<span class="lineCov">      20898 :       arg = TREE_OPERAND (arg, 0);</span></a>
+<a name="580"><span class="lineNum">     580 </span>        [<span class="branchCov" title="Branch 0 was taken 20775 times"> + </span><span class="branchCov" title="Branch 1 was taken 123 times"> + </span>]:<span class="lineCov">      20898 :       if (TREE_CODE (arg) != STRING_CST</span></a>
+<a name="581"><span class="lineNum">     581 </span>        [<span class="branchCov" title="Branch 0 was taken 20503 times"> + </span><span class="branchCov" title="Branch 1 was taken 272 times"> + </span>]:<span class="lineCov">      20775 :           &amp;&amp; TREE_CODE (arg) != PARM_DECL</span></a>
+<a name="582"><span class="lineNum">     582 </span>        [<span class="branchCov" title="Branch 0 was taken 74 times"> + </span><span class="branchCov" title="Branch 1 was taken 20429 times"> + </span>]:<span class="lineCov">      20503 :           &amp;&amp; TREE_CODE (arg) != VAR_DECL)</span></a>
+<a name="583"><span class="lineNum">     583 </span>                :<span class="lineCov">         74 :         return false;</span></a>
+<a name="584"><span class="lineNum">     584 </span>                :            : </a>
+<a name="585"><span class="lineNum">     585 </span>                :            :       /* The type of the object being referred to.  It can be an array,</a>
+<a name="586"><span class="lineNum">     586 </span>                :            :          string literal, or a non-array type when the MEM_REF represents</a>
+<a name="587"><span class="lineNum">     587 </span>                :            :          a reference/subscript via a pointer to an object that is not</a>
+<a name="588"><span class="lineNum">     588 </span>                :            :          an element of an array.  Incomplete types are excluded as well</a>
+<a name="589"><span class="lineNum">     589 </span>                :            :          because their size is not known.  */</a>
+<a name="590"><span class="lineNum">     590 </span>                :<span class="lineCov">      20824 :       reftype = TREE_TYPE (arg);</span></a>
+<a name="591"><span class="lineNum">     591 </span>  [<span class="branchCov" title="Branch 0 was taken 20821 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span><span class="branchCov" title="Branch 2 was taken 20821 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span>]:<span class="lineCov">      20824 :       if (POINTER_TYPE_P (reftype)</span></a>
+<a name="592"><span class="lineNum">     592 </span>        [<span class="branchCov" title="Branch 0 was taken 20478 times"> + </span><span class="branchCov" title="Branch 1 was taken 343 times"> + </span>]:<span class="lineCov">      20821 :           || !COMPLETE_TYPE_P (reftype)</span></a>
+<a name="593"><span class="lineNum">     593 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 20478 times"> + </span>]:<span class="lineCov">      20478 :           || TREE_CODE (TYPE_SIZE_UNIT (reftype)) != INTEGER_CST)</span></a>
+<a name="594"><span class="lineNum">     594 </span>                :<span class="lineCov">        346 :         return false;</span></a>
+<a name="595"><span class="lineNum">     595 </span>                :            : </a>
+<a name="596"><span class="lineNum">     596 </span>                :            :       /* Except in declared objects, references to trailing array members</a>
+<a name="597"><span class="lineNum">     597 </span>                :            :          of structs and union objects are excluded because MEM_REF doesn't</a>
+<a name="598"><span class="lineNum">     598 </span>                :            :          make it possible to identify the member where the reference</a>
+<a name="599"><span class="lineNum">     599 </span>                :            :          originated.  */</a>
+<a name="600"><span class="lineNum">     600 </span>  [<span class="branchCov" title="Branch 0 was taken 4625 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 4625 times"> + </span>]:<span class="lineCov">       4625 :       if (RECORD_OR_UNION_TYPE_P (reftype)</span></a>
+<a name="601"><span class="lineNum">     601 </span>  [<span class="branchCov" title="Branch 0 was taken 4625 times"> + </span><span class="branchCov" title="Branch 1 was taken 15853 times"> + </span><span class="branchCov" title="Branch 2 was taken 15584 times"> + </span><span class="branchCov" title="Branch 3 was taken 269 times"> + </span> :<span class="lineCov">      40687 :           &amp;&amp; (!VAR_P (arg)</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 269 times"> + </span><span class="branchCov" title="Branch 5 was taken 20209 times"> + </span>]
+<a name="602"><span class="lineNum">     602 </span>  [<span class="branchCov" title="Branch 0 was taken 112 times"> + </span><span class="branchCov" title="Branch 1 was taken 15472 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 112 times"> + </span>]:<span class="lineCov">      15584 :               || (DECL_EXTERNAL (arg) &amp;&amp; array_at_struct_end_p (ref))))</span></a>
+<a name="603"><span class="lineNum">     603 </span>                :<span class="lineCov">        269 :         return false;</span></a>
+<a name="604"><span class="lineNum">     604 </span>                :            : </a>
+<a name="605"><span class="lineNum">     605 </span>                :            :       /* FIXME: Should this be 1 for Fortran?  */</a>
+<a name="606"><span class="lineNum">     606 </span>                :<span class="lineCov">      20209 :       arrbounds[0] = 0;</span></a>
+<a name="607"><span class="lineNum">     607 </span>                :            : </a>
+<a name="608"><span class="lineNum">     608 </span>        [<span class="branchCov" title="Branch 0 was taken 4529 times"> + </span><span class="branchCov" title="Branch 1 was taken 15680 times"> + </span>]:<span class="lineCov">      20209 :       if (TREE_CODE (reftype) == ARRAY_TYPE)</span></a>
+<a name="609"><span class="lineNum">     609 </span>                :            :         {</a>
+<a name="610"><span class="lineNum">     610 </span>                :            :           /* Set to the size of the array element (and adjust below).  */</a>
+<a name="611"><span class="lineNum">     611 </span>                :<span class="lineCov">       4529 :           eltsize = wi::to_offset (TYPE_SIZE_UNIT (TREE_TYPE (reftype)));</span></a>
+<a name="612"><span class="lineNum">     612 </span>                :            :           /* Use log2 of size to convert the array byte size in to its</a>
+<a name="613"><span class="lineNum">     613 </span>                :            :              upper bound in elements.  */</a>
+<a name="614"><span class="lineNum">     614 </span>                :<span class="lineCov">       4529 :           const offset_int eltsizelog2 = wi::floor_log2 (eltsize);</span></a>
+<a name="615"><span class="lineNum">     615 </span>        [<span class="branchCov" title="Branch 0 was taken 4529 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       4529 :           if (tree dom = TYPE_DOMAIN (reftype))</span></a>
+<a name="616"><span class="lineNum">     616 </span>                :            :             {</a>
+<a name="617"><span class="lineNum">     617 </span>                :<span class="lineCov">       4529 :               tree bnds[] = { TYPE_MIN_VALUE (dom), TYPE_MAX_VALUE (dom) };</span></a>
+<a name="618"><span class="lineNum">     618 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 4529 times"> + </span>]:<span class="lineCov">       4529 :               if (TREE_CODE (arg) == COMPONENT_REF)</span></a>
+<a name="619"><span class="lineNum">     619 </span>                :            :                 {</a>
+<a name="620"><span class="lineNum">     620 </span>                :<span class="lineNoCov">          0 :                   offset_int size = maxobjsize;</span></a>
+<a name="621"><span class="lineNum">     621 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                   if (tree fldsize = component_ref_size (arg))</span></a>
+<a name="622"><span class="lineNum">     622 </span>                :<span class="lineNoCov">          0 :                     size = wi::to_offset (fldsize);</span></a>
+<a name="623"><span class="lineNum">     623 </span>                :<span class="lineNoCov">          0 :                   arrbounds[1] = wi::lrshift (size, eltsizelog2);</span></a>
+<a name="624"><span class="lineNum">     624 </span>                :            :                 }</a>
+<a name="625"><span class="lineNum">     625 </span>  [<span class="branchCov" title="Branch 0 was taken 4529 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 4529 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">       4529 :               else if (array_at_struct_end_p (arg) || !bnds[0] || !bnds[1])</span></a>
+<span class="lineNum">         </span>   <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchCov" title="Branch 5 was taken 4529 times"> + </span><span class="branchNoCov" title="Branch 6 was not taken"> - </span><span class="branchCov" title="Branch 7 was taken 4529 times"> + </span>]
+<a name="626"><span class="lineNum">     626 </span>                :<span class="lineNoCov">          0 :                 arrbounds[1] = wi::lrshift (maxobjsize, eltsizelog2);</span></a>
+<a name="627"><span class="lineNum">     627 </span>                :            :               else</a>
+<a name="628"><span class="lineNum">     628 </span>                :<span class="lineCov">       4529 :                 arrbounds[1] = (wi::to_offset (bnds[1]) - wi::to_offset (bnds[0])</span></a>
+<a name="629"><span class="lineNum">     629 </span>                :<span class="lineCov">       9058 :                                 + 1) * eltsize;</span></a>
+<a name="630"><span class="lineNum">     630 </span>                :            :             }</a>
+<a name="631"><span class="lineNum">     631 </span>                :            :           else</a>
+<a name="632"><span class="lineNum">     632 </span>                :<span class="lineNoCov">          0 :             arrbounds[1] = wi::lrshift (maxobjsize, eltsizelog2);</span></a>
+<a name="633"><span class="lineNum">     633 </span>                :            : </a>
+<a name="634"><span class="lineNum">     634 </span>                :            :           /* Determine a tighter bound of the non-array element type.  */</a>
+<a name="635"><span class="lineNum">     635 </span>                :<span class="lineCov">       4529 :           tree eltype = TREE_TYPE (reftype);</span></a>
+<a name="636"><span class="lineNum">     636 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 4529 times"> + </span>]:<span class="lineCov">       4531 :           while (TREE_CODE (eltype) == ARRAY_TYPE)</span></a>
+<a name="637"><span class="lineNum">     637 </span>                :<span class="lineCov">          2 :             eltype = TREE_TYPE (eltype);</span></a>
+<a name="638"><span class="lineNum">     638 </span>                :<span class="lineCov">       4529 :           eltsize = wi::to_offset (TYPE_SIZE_UNIT (eltype));</span></a>
+<a name="639"><span class="lineNum">     639 </span>                :            :         }</a>
+<a name="640"><span class="lineNum">     640 </span>                :            :       else</a>
+<a name="641"><span class="lineNum">     641 </span>                :            :         {</a>
+<a name="642"><span class="lineNum">     642 </span>                :<span class="lineCov">      15680 :           eltsize = 1;</span></a>
+<a name="643"><span class="lineNum">     643 </span>                :<span class="lineCov">      15680 :           tree size = TYPE_SIZE_UNIT (reftype);</span></a>
+<a name="644"><span class="lineNum">     644 </span>        [<span class="branchCov" title="Branch 0 was taken 15677 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">      15680 :           if (VAR_P (arg))</span></a>
+<a name="645"><span class="lineNum">     645 </span>        [<span class="branchCov" title="Branch 0 was taken 15677 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      15677 :             if (tree initsize = DECL_SIZE_UNIT (arg))</span></a>
+<a name="646"><span class="lineNum">     646 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 15677 times"> + </span>]:<span class="lineCov">      15677 :               if (tree_int_cst_lt (size, initsize))</span></a>
+<a name="647"><span class="lineNum">     647 </span>                :<span class="lineNoCov">          0 :                 size = initsize;</span></a>
+<a name="648"><span class="lineNum">     648 </span>                :            : </a>
+<a name="649"><span class="lineNum">     649 </span>                :<span class="lineCov">      15680 :           arrbounds[1] = wi::to_offset (size);</span></a>
+<a name="650"><span class="lineNum">     650 </span>                :            :         }</a>
+<a name="651"><span class="lineNum">     651 </span>                :            :     }</a>
+<a name="652"><span class="lineNum">     652 </span>                :            :   else</a>
+<a name="653"><span class="lineNum">     653 </span>                :<span class="lineCov">      37693 :     return false;</span></a>
+<a name="654"><span class="lineNum">     654 </span>                :            : </a>
+<a name="655"><span class="lineNum">     655 </span>                :<span class="lineCov">      20715 :   offrange[0] += ioff;</span></a>
+<a name="656"><span class="lineNum">     656 </span>                :<span class="lineCov">      20715 :   offrange[1] += ioff;</span></a>
+<a name="657"><span class="lineNum">     657 </span>                :            : </a>
+<a name="658"><span class="lineNum">     658 </span>                :            :   /* Compute the more permissive upper bound when IGNORE_OFF_BY_ONE</a>
+<a name="659"><span class="lineNum">     659 </span>                :            :      is set (when taking the address of the one-past-last element</a>
+<a name="660"><span class="lineNum">     660 </span>                :            :      of an array) but always use the stricter bound in diagnostics. */</a>
+<a name="661"><span class="lineNum">     661 </span>                :<span class="lineCov">      20715 :   offset_int ubound = arrbounds[1];</span></a>
+<a name="662"><span class="lineNum">     662 </span>        [<span class="branchCov" title="Branch 0 was taken 5062 times"> + </span><span class="branchCov" title="Branch 1 was taken 15653 times"> + </span>]:<span class="lineCov">      20715 :   if (ignore_off_by_one)</span></a>
+<a name="663"><span class="lineNum">     663 </span>                :<span class="lineCov">       5062 :     ubound += eltsize;</span></a>
+<a name="664"><span class="lineNum">     664 </span>                :            : </a>
+<a name="665"><span class="lineNum">     665 </span>                :<span class="lineCov">      20715 :   bool warned = false;</span></a>
+<a name="666"><span class="lineNum">     666 </span>                :            :   /* Set if the lower bound of the subscript is out of bounds.  */</a>
+<a name="667"><span class="lineNum">     667 </span>                :<span class="lineCov">      20715 :   const bool lboob = (arrbounds[0] == arrbounds[1]</span></a>
+<a name="668"><span class="lineNum">     668 </span>        [<span class="branchCov" title="Branch 0 was taken 20715 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      20715 :                       || offrange[0] &gt;= ubound</span></a>
+<a name="669"><span class="lineNum">     669 </span>  [<span class="branchCov" title="Branch 0 was taken 20715 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 20715 times"> + </span>]:<span class="lineCov">      41430 :                       || offrange[1] &lt; arrbounds[0]);</span></a>
+<a name="670"><span class="lineNum">     670 </span>                :            :   /* Set if only the upper bound of the subscript is out of bounds.</a>
+<a name="671"><span class="lineNum">     671 </span>                :            :      This can happen when using a bigger type to index into an array</a>
+<a name="672"><span class="lineNum">     672 </span>                :            :      of a smaller type, as is common with unsigned char.  */</a>
+<a name="673"><span class="lineNum">     673 </span>                :<span class="lineCov">      20715 :   tree axstype = TREE_TYPE (ref);</span></a>
+<a name="674"><span class="lineNum">     674 </span>                :<span class="lineCov">      20715 :   offset_int axssize = 0;</span></a>
+<a name="675"><span class="lineNum">     675 </span>        [<span class="branchCov" title="Branch 0 was taken 20683 times"> + </span><span class="branchCov" title="Branch 1 was taken 32 times"> + </span>]:<span class="lineCov">      20715 :   if (TREE_CODE (axstype) != UNION_TYPE)</span></a>
+<a name="676"><span class="lineNum">     676 </span>        [<span class="branchCov" title="Branch 0 was taken 20683 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      20683 :     if (tree access_size = TYPE_SIZE_UNIT (axstype))</span></a>
+<a name="677"><span class="lineNum">     677 </span>        [<span class="branchCov" title="Branch 0 was taken 20564 times"> + </span><span class="branchCov" title="Branch 1 was taken 119 times"> + </span>]:<span class="lineCov">      20683 :       if (TREE_CODE (access_size) == INTEGER_CST)</span></a>
+<a name="678"><span class="lineNum">     678 </span>                :<span class="lineCov">      20564 :         axssize = wi::to_offset (access_size);</span></a>
+<a name="679"><span class="lineNum">     679 </span>                :            : </a>
+<a name="680"><span class="lineNum">     680 </span>  [<span class="branchCov" title="Branch 0 was taken 20715 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2793 times"> + </span><span class="branchCov" title="Branch 3 was taken 17922 times"> + </span>]:<span class="lineCov">      20715 :   const bool uboob = !lboob &amp;&amp; offrange[0] + axssize &gt; ubound;</span></a>
+<a name="681"><span class="lineNum">     681 </span>  [<span class="branchCov" title="Branch 0 was taken 20715 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 2793 times"> + </span><span class="branchCov" title="Branch 3 was taken 17922 times"> + </span>]:<span class="lineCov">      20715 :   if (lboob || uboob)</span></a>
+<a name="682"><span class="lineNum">     682 </span>                :            :     {</a>
+<a name="683"><span class="lineNum">     683 </span>                :            :       /* Treat a reference to a non-array object as one to an array</a>
+<a name="684"><span class="lineNum">     684 </span>                :            :          of a single element.  */</a>
+<a name="685"><span class="lineNum">     685 </span>        [<span class="branchCov" title="Branch 0 was taken 28 times"> + </span><span class="branchCov" title="Branch 1 was taken 2765 times"> + </span>]:<span class="lineCov">       2793 :       if (TREE_CODE (reftype) != ARRAY_TYPE)</span></a>
+<a name="686"><span class="lineNum">     686 </span>                :<span class="lineCov">         28 :         reftype = build_printable_array_type (reftype, 1);</span></a>
+<a name="687"><span class="lineNum">     687 </span>                :            : </a>
+<a name="688"><span class="lineNum">     688 </span>                :            :       /* Extract the element type out of MEM_REF and use its size</a>
+<a name="689"><span class="lineNum">     689 </span>                :            :          to compute the index to print in the diagnostic; arrays</a>
+<a name="690"><span class="lineNum">     690 </span>                :            :          in MEM_REF don't mean anything.  A type with no size like</a>
+<a name="691"><span class="lineNum">     691 </span>                :            :          void is as good as having a size of 1.  */</a>
+<a name="692"><span class="lineNum">     692 </span>                :<span class="lineCov">       2793 :       tree type = TREE_TYPE (ref);</span></a>
+<a name="693"><span class="lineNum">     693 </span>        [<span class="branchCov" title="Branch 0 was taken 2777 times"> + </span><span class="branchCov" title="Branch 1 was taken 2793 times"> + </span>]:<span class="lineCov">       5570 :       while (TREE_CODE (type) == ARRAY_TYPE)</span></a>
+<a name="694"><span class="lineNum">     694 </span>                :<span class="lineCov">       2777 :         type = TREE_TYPE (type);</span></a>
+<a name="695"><span class="lineNum">     695 </span>        [<span class="branchCov" title="Branch 0 was taken 2793 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">       2793 :       if (tree size = TYPE_SIZE_UNIT (type))</span></a>
+<a name="696"><span class="lineNum">     696 </span>                :            :         {</a>
+<a name="697"><span class="lineNum">     697 </span>                :<span class="lineCov">       2793 :           offrange[0] = offrange[0] / wi::to_offset (size);</span></a>
+<a name="698"><span class="lineNum">     698 </span>                :<span class="lineCov">       2793 :           offrange[1] = offrange[1] / wi::to_offset (size);</span></a>
+<a name="699"><span class="lineNum">     699 </span>                :            :         }</a>
+<a name="700"><span class="lineNum">     700 </span>                :            :     }</a>
+<a name="701"><span class="lineNum">     701 </span>                :            : </a>
+<a name="702"><span class="lineNum">     702 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 20715 times"> + </span>]:<span class="lineCov">      20715 :   if (lboob)</span></a>
+<a name="703"><span class="lineNum">     703 </span>                :            :     {</a>
+<a name="704"><span class="lineNum">     704 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (offrange[0] == offrange[1])</span></a>
+<a name="705"><span class="lineNum">     705 </span>                :<span class="lineNoCov">          0 :         warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="706"><span class="lineNum">     706 </span>                :            :                              &quot;array subscript %wi is outside array bounds &quot;</a>
+<a name="707"><span class="lineNum">     707 </span>                :            :                              &quot;of %qT&quot;,</a>
+<a name="708"><span class="lineNum">     708 </span>                :            :                              offrange[0].to_shwi (), reftype);</a>
+<a name="709"><span class="lineNum">     709 </span>                :            :       else</a>
+<a name="710"><span class="lineNum">     710 </span>                :<span class="lineNoCov">          0 :         warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="711"><span class="lineNum">     711 </span>                :            :                              &quot;array subscript [%wi, %wi] is outside &quot;</a>
+<a name="712"><span class="lineNum">     712 </span>                :            :                              &quot;array bounds of %qT&quot;,</a>
+<a name="713"><span class="lineNum">     713 </span>                :            :                              offrange[0].to_shwi (),</a>
+<a name="714"><span class="lineNum">     714 </span>                :            :                              offrange[1].to_shwi (), reftype);</a>
+<a name="715"><span class="lineNum">     715 </span>                :            :     }</a>
+<a name="716"><span class="lineNum">     716 </span>  [<span class="branchCov" title="Branch 0 was taken 2793 times"> + </span><span class="branchCov" title="Branch 1 was taken 17922 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 2793 times"> + </span>]:<span class="lineCov">      20715 :   else if (uboob &amp;&amp; !ignore_off_by_one)</span></a>
+<a name="717"><span class="lineNum">     717 </span>                :            :     {</a>
+<a name="718"><span class="lineNum">     718 </span>                :<span class="lineNoCov">          0 :       tree backtype = reftype;</span></a>
+<a name="719"><span class="lineNum">     719 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (alloc_stmt)</span></a>
+<a name="720"><span class="lineNum">     720 </span>                :            :         /* If the memory was dynamically allocated refer to it as if</a>
+<a name="721"><span class="lineNum">     721 </span>                :            :            it were an untyped array of bytes.  */</a>
+<a name="722"><span class="lineNum">     722 </span>                :<span class="lineNoCov">          0 :         backtype = build_array_type_nelts (unsigned_char_type_node,</span></a>
+<a name="723"><span class="lineNum">     723 </span>                :<span class="lineNoCov">          0 :                                            arrbounds[1].to_uhwi ());</span></a>
+<a name="724"><span class="lineNum">     724 </span>                :            : </a>
+<a name="725"><span class="lineNum">     725 </span>                :<span class="lineNoCov">          0 :       warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="726"><span class="lineNum">     726 </span>                :            :                            &quot;array subscript %&lt;%T[%wi]%&gt; is partly &quot;</a>
+<a name="727"><span class="lineNum">     727 </span>                :            :                            &quot;outside array bounds of %qT&quot;,</a>
+<a name="728"><span class="lineNum">     728 </span>                :            :                            axstype, offrange[0].to_shwi (), backtype);</a>
+<a name="729"><span class="lineNum">     729 </span>                :            :     }</a>
+<a name="730"><span class="lineNum">     730 </span>                :            : </a>
+<a name="731"><span class="lineNum">     731 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 20715 times"> + </span>]:<span class="lineCov">      20715 :   if (warned)</span></a>
+<a name="732"><span class="lineNum">     732 </span>                :            :     {</a>
+<a name="733"><span class="lineNum">     733 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (DECL_P (arg))</span></a>
+<a name="734"><span class="lineNum">     734 </span>                :<span class="lineNoCov">          0 :         inform (DECL_SOURCE_LOCATION (arg), &quot;while referencing %qD&quot;, arg);</span></a>
+<a name="735"><span class="lineNum">     735 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       else if (alloc_stmt)</span></a>
+<a name="736"><span class="lineNum">     736 </span>                :            :         {</a>
+<a name="737"><span class="lineNum">     737 </span>                :<span class="lineNoCov">          0 :           location_t loc = gimple_location (alloc_stmt);</span></a>
+<a name="738"><span class="lineNum">     738 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :           if (gimple_call_builtin_p (alloc_stmt, BUILT_IN_ALLOCA_WITH_ALIGN))</span></a>
+<a name="739"><span class="lineNum">     739 </span>                :            :             {</a>
+<a name="740"><span class="lineNum">     740 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :               if (minbound == arrbounds[1])</span></a>
+<a name="741"><span class="lineNum">     741 </span>                :<span class="lineNoCov">          0 :                 inform (loc, &quot;referencing a variable length array &quot;</span></a>
+<a name="742"><span class="lineNum">     742 </span>                :            :                         &quot;of size %wu&quot;, minbound.to_uhwi ());</a>
+<a name="743"><span class="lineNum">     743 </span>                :            :               else</a>
+<a name="744"><span class="lineNum">     744 </span>                :<span class="lineNoCov">          0 :                 inform (loc, &quot;referencing a variable length array &quot;</span></a>
+<a name="745"><span class="lineNum">     745 </span>                :            :                         &quot;of size between %wu and %wu&quot;,</a>
+<a name="746"><span class="lineNum">     746 </span>                :            :                         minbound.to_uhwi (), arrbounds[1].to_uhwi ());</a>
+<a name="747"><span class="lineNum">     747 </span>                :            :             }</a>
+<a name="748"><span class="lineNum">     748 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :           else if (tree fndecl = gimple_call_fndecl (alloc_stmt))</span></a>
+<a name="749"><span class="lineNum">     749 </span>                :            :             {</a>
+<a name="750"><span class="lineNum">     750 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :               if (minbound == arrbounds[1])</span></a>
+<a name="751"><span class="lineNum">     751 </span>                :<span class="lineNoCov">          0 :                 inform (loc, &quot;referencing an object of size %wu &quot;</span></a>
+<a name="752"><span class="lineNum">     752 </span>                :            :                         &quot;allocated by %qD&quot;,</a>
+<a name="753"><span class="lineNum">     753 </span>                :            :                         minbound.to_uhwi (), fndecl);</a>
+<a name="754"><span class="lineNum">     754 </span>                :            :               else</a>
+<a name="755"><span class="lineNum">     755 </span>                :<span class="lineNoCov">          0 :                 inform (loc, &quot;referencing an object of size between &quot;</span></a>
+<a name="756"><span class="lineNum">     756 </span>                :            :                         &quot;%wu and %wu allocated by %qD&quot;,</a>
+<a name="757"><span class="lineNum">     757 </span>                :            :                         minbound.to_uhwi (), arrbounds[1].to_uhwi (), fndecl);</a>
+<a name="758"><span class="lineNum">     758 </span>                :            :             }</a>
+<a name="759"><span class="lineNum">     759 </span>                :            :           else</a>
+<a name="760"><span class="lineNum">     760 </span>                :            :             {</a>
+<a name="761"><span class="lineNum">     761 </span>                :<span class="lineNoCov">          0 :               tree fntype = gimple_call_fntype (alloc_stmt);</span></a>
+<a name="762"><span class="lineNum">     762 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :               if (minbound == arrbounds[1])</span></a>
+<a name="763"><span class="lineNum">     763 </span>                :<span class="lineNoCov">          0 :                 inform (loc, &quot;referencing an object of size %wu &quot;</span></a>
+<a name="764"><span class="lineNum">     764 </span>                :            :                         &quot;allocated by %qT&quot;,</a>
+<a name="765"><span class="lineNum">     765 </span>                :            :                         minbound.to_uhwi (), fntype);</a>
+<a name="766"><span class="lineNum">     766 </span>                :            :               else</a>
+<a name="767"><span class="lineNum">     767 </span>                :<span class="lineNoCov">          0 :                 inform (loc, &quot;referencing an object of size between &quot;</span></a>
+<a name="768"><span class="lineNum">     768 </span>                :            :                         &quot;%wu and %wu allocated by %qT&quot;,</a>
+<a name="769"><span class="lineNum">     769 </span>                :            :                         minbound.to_uhwi (), arrbounds[1].to_uhwi (), fntype);</a>
+<a name="770"><span class="lineNum">     770 </span>                :            :             }</a>
+<a name="771"><span class="lineNum">     771 </span>                :            :         }</a>
+<a name="772"><span class="lineNum">     772 </span>                :            : </a>
+<a name="773"><span class="lineNum">     773 </span>                :<span class="lineNoCov">          0 :       TREE_NO_WARNING (ref) = 1;</span></a>
+<a name="774"><span class="lineNum">     774 </span>                :<span class="lineNoCov">          0 :       return true;</span></a>
+<a name="775"><span class="lineNum">     775 </span>                :            :     }</a>
+<a name="776"><span class="lineNum">     776 </span>                :            : </a>
+<a name="777"><span class="lineNum">     777 </span>        [<span class="branchCov" title="Branch 0 was taken 20715 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span>]:<span class="lineCov">      20715 :   if (warn_array_bounds &lt; 2)</span></a>
+<a name="778"><span class="lineNum">     778 </span>                :<span class="lineCov">      20715 :     return false;</span></a>
+<a name="779"><span class="lineNum">     779 </span>                :            : </a>
+<a name="780"><span class="lineNum">     780 </span>                :            :   /* At level 2 check also intermediate offsets.  */</a>
+<a name="781"><span class="lineNum">     781 </span>                :<span class="lineNoCov">          0 :   int i = 0;</span></a>
+<a name="782"><span class="lineNum">     782 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :   if (extrema[i] &lt; -arrbounds[1] || extrema[i = 1] &gt; ubound)</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="783"><span class="lineNum">     783 </span>                :            :     {</a>
+<a name="784"><span class="lineNum">     784 </span>                :<span class="lineNoCov">          0 :       HOST_WIDE_INT tmpidx = extrema[i].to_shwi () / eltsize.to_shwi ();</span></a>
+<a name="785"><span class="lineNum">     785 </span>                :            : </a>
+<a name="786"><span class="lineNum">     786 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="787"><span class="lineNum">     787 </span>                :            :                       &quot;intermediate array offset %wi is outside array bounds &quot;</a>
+<a name="788"><span class="lineNum">     788 </span>                :            :                       &quot;of %qT&quot;, tmpidx, reftype))</a>
+<a name="789"><span class="lineNum">     789 </span>                :            :         {</a>
+<a name="790"><span class="lineNum">     790 </span>                :<span class="lineNoCov">          0 :           TREE_NO_WARNING (ref) = 1;</span></a>
+<a name="791"><span class="lineNum">     791 </span>                :<span class="lineNoCov">          0 :           return true;</span></a>
+<a name="792"><span class="lineNum">     792 </span>                :            :         }</a>
+<a name="793"><span class="lineNum">     793 </span>                :            :     }</a>
+<a name="794"><span class="lineNum">     794 </span>                :            : </a>
+<a name="795"><span class="lineNum">     795 </span>                :<span class="lineNoCov">          0 :   return false;</span></a>
+<a name="796"><span class="lineNum">     796 </span>                :            : }</a>
+<a name="797"><span class="lineNum">     797 </span>                :            : </a>
+<a name="798"><span class="lineNum">     798 </span>                :            : /* Searches if the expr T, located at LOCATION computes</a>
+<a name="799"><span class="lineNum">     799 </span>                :            :    address of an ARRAY_REF, and call check_array_ref on it.  */</a>
+<a name="800"><span class="lineNum">     800 </span>                :            : </a>
+<a name="801"><span class="lineNum">     801 </span>                :            : void</a>
+<a name="802"><span class="lineNum">     802 </span>                :<span class="lineCov">     186416 : array_bounds_checker::check_addr_expr (location_t location, tree t)</span></a>
+<a name="803"><span class="lineNum">     803 </span>                :            : {</a>
+<a name="804"><span class="lineNum">     804 </span>                :            :   /* For the most significant subscript only, accept taking the address</a>
+<a name="805"><span class="lineNum">     805 </span>                :            :      of the just-past-the-end element.  */</a>
+<a name="806"><span class="lineNum">     806 </span>                :<span class="lineCov">     186416 :   bool ignore_off_by_one = true;</span></a>
+<a name="807"><span class="lineNum">     807 </span>                :            : </a>
+<a name="808"><span class="lineNum">     808 </span>                :            :   /* Check each ARRAY_REF and MEM_REF in the reference chain. */</a>
+<a name="809"><span class="lineNum">     809 </span>                :<span class="lineCov">      41174 :   do</span></a>
+<a name="810"><span class="lineNum">     810 </span>                :            :     {</a>
+<a name="811"><span class="lineNum">     811 </span>                :<span class="lineCov">     227590 :       bool warned = false;</span></a>
+<a name="812"><span class="lineNum">     812 </span>        [<span class="branchCov" title="Branch 0 was taken 653 times"> + </span><span class="branchCov" title="Branch 1 was taken 226937 times"> + </span>]:<span class="lineCov">     227590 :       if (TREE_CODE (t) == ARRAY_REF)</span></a>
+<a name="813"><span class="lineNum">     813 </span>                :            :         {</a>
+<a name="814"><span class="lineNum">     814 </span>                :<span class="lineCov">        653 :           warned = check_array_ref (location, t, ignore_off_by_one);</span></a>
+<a name="815"><span class="lineNum">     815 </span>                :<span class="lineCov">        653 :           ignore_off_by_one = false;</span></a>
+<a name="816"><span class="lineNum">     816 </span>                :            :         }</a>
+<a name="817"><span class="lineNum">     817 </span>        [<span class="branchCov" title="Branch 0 was taken 17505 times"> + </span><span class="branchCov" title="Branch 1 was taken 209432 times"> + </span>]:<span class="lineCov">     226937 :       else if (TREE_CODE (t) == MEM_REF)</span></a>
+<a name="818"><span class="lineNum">     818 </span>                :<span class="lineCov">      17505 :         warned = check_mem_ref (location, t, ignore_off_by_one);</span></a>
+<a name="819"><span class="lineNum">     819 </span>                :            : </a>
+<a name="820"><span class="lineNum">     820 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 227590 times"> + </span>]:<span class="lineCov">     227590 :       if (warned)</span></a>
+<a name="821"><span class="lineNum">     821 </span>                :<span class="lineNoCov">          0 :         TREE_NO_WARNING (t) = true;</span></a>
+<a name="822"><span class="lineNum">     822 </span>                :            : </a>
+<a name="823"><span class="lineNum">     823 </span>                :<span class="lineCov">     227590 :       t = TREE_OPERAND (t, 0);</span></a>
+<a name="824"><span class="lineNum">     824 </span>                :            :     }</a>
+<a name="825"><span class="lineNum">     825 </span>  [<span class="branchCov" title="Branch 0 was taken 203921 times"> + </span><span class="branchCov" title="Branch 1 was taken 23669 times"> + </span><span class="branchCov" title="Branch 2 was taken 17505 times"> + </span><span class="branchCov" title="Branch 3 was taken 186416 times"> + </span> :<span class="lineCov">     227590 :   while (handled_component_p (t) || TREE_CODE (t) == MEM_REF);</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 41174 times"> + </span><span class="branchCov" title="Branch 5 was taken 186416 times"> + </span>]
+<a name="826"><span class="lineNum">     826 </span>                :            : </a>
+<a name="827"><span class="lineNum">     827 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 186416 times"> + </span>]:<span class="lineCov">     186416 :   if (TREE_CODE (t) != MEM_REF</span></a>
+<a name="828"><span class="lineNum">     828 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || TREE_CODE (TREE_OPERAND (t, 0)) != ADDR_EXPR</span></a>
+<a name="829"><span class="lineNum">     829 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || TREE_NO_WARNING (t))</span></a>
+<a name="830"><span class="lineNum">     830 </span>                :<span class="lineCov">     186416 :     return;</span></a>
+<a name="831"><span class="lineNum">     831 </span>                :            : </a>
+<a name="832"><span class="lineNum">     832 </span>                :<span class="lineNoCov">          0 :   tree tem = TREE_OPERAND (TREE_OPERAND (t, 0), 0);</span></a>
+<a name="833"><span class="lineNum">     833 </span>                :            :   tree low_bound, up_bound, el_sz;</a>
+<a name="834"><span class="lineNum">     834 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (TREE_CODE (TREE_TYPE (tem)) != ARRAY_TYPE</span></a>
+<a name="835"><span class="lineNum">     835 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || TREE_CODE (TREE_TYPE (TREE_TYPE (tem))) == ARRAY_TYPE</span></a>
+<a name="836"><span class="lineNum">     836 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || !TYPE_DOMAIN (TREE_TYPE (tem)))</span></a>
+<a name="837"><span class="lineNum">     837 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="838"><span class="lineNum">     838 </span>                :            : </a>
+<a name="839"><span class="lineNum">     839 </span>                :<span class="lineNoCov">          0 :   low_bound = TYPE_MIN_VALUE (TYPE_DOMAIN (TREE_TYPE (tem)));</span></a>
+<a name="840"><span class="lineNum">     840 </span>                :<span class="lineNoCov">          0 :   up_bound = TYPE_MAX_VALUE (TYPE_DOMAIN (TREE_TYPE (tem)));</span></a>
+<a name="841"><span class="lineNum">     841 </span>                :<span class="lineNoCov">          0 :   el_sz = TYPE_SIZE_UNIT (TREE_TYPE (TREE_TYPE (tem)));</span></a>
+<a name="842"><span class="lineNum">     842 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!low_bound</span></a>
+<a name="843"><span class="lineNum">     843 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || TREE_CODE (low_bound) != INTEGER_CST</span></a>
+<a name="844"><span class="lineNum">     844 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || !up_bound</span></a>
+<a name="845"><span class="lineNum">     845 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || TREE_CODE (up_bound) != INTEGER_CST</span></a>
+<a name="846"><span class="lineNum">     846 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || !el_sz</span></a>
+<a name="847"><span class="lineNum">     847 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       || TREE_CODE (el_sz) != INTEGER_CST)</span></a>
+<a name="848"><span class="lineNum">     848 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="849"><span class="lineNum">     849 </span>                :            : </a>
+<a name="850"><span class="lineNum">     850 </span>                :<span class="lineNoCov">          0 :   offset_int idx;</span></a>
+<a name="851"><span class="lineNum">     851 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (!mem_ref_offset (t).is_constant (&amp;idx))</span></a>
+<a name="852"><span class="lineNum">     852 </span>                :<span class="lineNoCov">          0 :     return;</span></a>
+<a name="853"><span class="lineNum">     853 </span>                :            : </a>
+<a name="854"><span class="lineNum">     854 </span>                :<span class="lineNoCov">          0 :   bool warned = false;</span></a>
+<a name="855"><span class="lineNum">     855 </span>                :<span class="lineNoCov">          0 :   idx = wi::sdiv_trunc (idx, wi::to_offset (el_sz));</span></a>
+<a name="856"><span class="lineNum">     856 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (idx &lt; 0)</span></a>
+<a name="857"><span class="lineNum">     857 </span>                :            :     {</a>
+<a name="858"><span class="lineNum">     858 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       if (dump_file &amp;&amp; (dump_flags &amp; TDF_DETAILS))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="859"><span class="lineNum">     859 </span>                :            :         {</a>
+<a name="860"><span class="lineNum">     860 </span>                :<span class="lineNoCov">          0 :           fprintf (dump_file, &quot;Array bound warning for &quot;);</span></a>
+<a name="861"><span class="lineNum">     861 </span>                :<span class="lineNoCov">          0 :           dump_generic_expr (MSG_NOTE, TDF_SLIM, t);</span></a>
+<a name="862"><span class="lineNum">     862 </span>                :<span class="lineNoCov">          0 :           fprintf (dump_file, &quot;\n&quot;);</span></a>
+<a name="863"><span class="lineNum">     863 </span>                :            :         }</a>
+<a name="864"><span class="lineNum">     864 </span>                :<span class="lineNoCov">          0 :       warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="865"><span class="lineNum">     865 </span>                :            :                            &quot;array subscript %wi is below &quot;</a>
+<a name="866"><span class="lineNum">     866 </span>                :            :                            &quot;array bounds of %qT&quot;,</a>
+<a name="867"><span class="lineNum">     867 </span>                :            :                            idx.to_shwi (), TREE_TYPE (tem));</a>
+<a name="868"><span class="lineNum">     868 </span>                :            :     }</a>
+<a name="869"><span class="lineNum">     869 </span>                :<span class="lineNoCov">          0 :   else if (idx &gt; (wi::to_offset (up_bound)</span></a>
+<a name="870"><span class="lineNum">     870 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :                   - wi::to_offset (low_bound) + 1))</span></a>
+<a name="871"><span class="lineNum">     871 </span>                :            :     {</a>
+<a name="872"><span class="lineNum">     872 </span>  [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span><span class="branchNoExec" title="Branch 2 was not executed"> # </span><span class="branchNoExec" title="Branch 3 was not executed"> # </span> :<span class="lineNoCov">          0 :       if (dump_file &amp;&amp; (dump_flags &amp; TDF_DETAILS))</span></a>
+<span class="lineNum">         </span>         <span class="branchNoExec" title="Branch 4 was not executed"> # </span><span class="branchNoExec" title="Branch 5 was not executed"> # </span>]
+<a name="873"><span class="lineNum">     873 </span>                :            :         {</a>
+<a name="874"><span class="lineNum">     874 </span>                :<span class="lineNoCov">          0 :           fprintf (dump_file, &quot;Array bound warning for &quot;);</span></a>
+<a name="875"><span class="lineNum">     875 </span>                :<span class="lineNoCov">          0 :           dump_generic_expr (MSG_NOTE, TDF_SLIM, t);</span></a>
+<a name="876"><span class="lineNum">     876 </span>                :<span class="lineNoCov">          0 :           fprintf (dump_file, &quot;\n&quot;);</span></a>
+<a name="877"><span class="lineNum">     877 </span>                :            :         }</a>
+<a name="878"><span class="lineNum">     878 </span>                :<span class="lineNoCov">          0 :       warned = warning_at (location, OPT_Warray_bounds,</span></a>
+<a name="879"><span class="lineNum">     879 </span>                :            :                            &quot;array subscript %wu is above &quot;</a>
+<a name="880"><span class="lineNum">     880 </span>                :            :                            &quot;array bounds of %qT&quot;,</a>
+<a name="881"><span class="lineNum">     881 </span>                :            :                            idx.to_uhwi (), TREE_TYPE (tem));</a>
+<a name="882"><span class="lineNum">     882 </span>                :            :     }</a>
+<a name="883"><span class="lineNum">     883 </span>                :            : </a>
+<a name="884"><span class="lineNum">     884 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :   if (warned)</span></a>
+<a name="885"><span class="lineNum">     885 </span>                :            :     {</a>
+<a name="886"><span class="lineNum">     886 </span>        [<span class="branchNoExec" title="Branch 0 was not executed"> # </span><span class="branchNoExec" title="Branch 1 was not executed"> # </span>]:<span class="lineNoCov">          0 :       if (DECL_P (t))</span></a>
+<a name="887"><span class="lineNum">     887 </span>                :<span class="lineNoCov">          0 :         inform (DECL_SOURCE_LOCATION (t), &quot;while referencing %qD&quot;, t);</span></a>
+<a name="888"><span class="lineNum">     888 </span>                :            : </a>
+<a name="889"><span class="lineNum">     889 </span>                :<span class="lineNoCov">          0 :       TREE_NO_WARNING (t) = 1;</span></a>
+<a name="890"><span class="lineNum">     890 </span>                :            :     }</a>
+<a name="891"><span class="lineNum">     891 </span>                :            : }</a>
+<a name="892"><span class="lineNum">     892 </span>                :            : </a>
+<a name="893"><span class="lineNum">     893 </span>                :            : /* Return true if T is a reference to a member of a base class that's within</a>
+<a name="894"><span class="lineNum">     894 </span>                :            :    the bounds of the enclosing complete object.  The function &quot;hacks&quot; around</a>
+<a name="895"><span class="lineNum">     895 </span>                :            :    problems discussed in pr98266 and pr97595.  */</a>
+<a name="896"><span class="lineNum">     896 </span>                :            : </a>
+<a name="897"><span class="lineNum">     897 </span>                :            : static bool</a>
+<a name="898"><span class="lineNum">     898 </span>                :<span class="lineCov">    1683130 : inbounds_memaccess_p (tree t)</span></a>
+<a name="899"><span class="lineNum">     899 </span>                :            : {</a>
+<a name="900"><span class="lineNum">     900 </span>        [<span class="branchCov" title="Branch 0 was taken 1509820 times"> + </span><span class="branchCov" title="Branch 1 was taken 173309 times"> + </span>]:<span class="lineCov">    1683130 :   if (TREE_CODE (t) != COMPONENT_REF)</span></a>
+<a name="901"><span class="lineNum">     901 </span>                :<span class="lineCov">    1509820 :     return false;</span></a>
+<a name="902"><span class="lineNum">     902 </span>                :            : </a>
+<a name="903"><span class="lineNum">     903 </span>                :<span class="lineCov">     173309 :   tree mref = TREE_OPERAND (t, 0);</span></a>
+<a name="904"><span class="lineNum">     904 </span>        [<span class="branchCov" title="Branch 0 was taken 59712 times"> + </span><span class="branchCov" title="Branch 1 was taken 113597 times"> + </span>]:<span class="lineCov">     173309 :   if (TREE_CODE (mref) != MEM_REF)</span></a>
+<a name="905"><span class="lineNum">     905 </span>                :<span class="lineCov">      59712 :     return false;</span></a>
+<a name="906"><span class="lineNum">     906 </span>                :            : </a>
+<a name="907"><span class="lineNum">     907 </span>                :            :   /* Consider the access if its type is a derived class.  */</a>
+<a name="908"><span class="lineNum">     908 </span>                :<span class="lineCov">     113597 :   tree mreftype = TREE_TYPE (mref);</span></a>
+<a name="909"><span class="lineNum">     909 </span>  [<span class="branchCov" title="Branch 0 was taken 136 times"> + </span><span class="branchCov" title="Branch 1 was taken 113461 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 136 times"> + </span> :<span class="lineCov">     113597 :   if (!RECORD_OR_UNION_TYPE_P (mreftype)</span></a>
+<span class="lineNum">         </span>         <span class="branchNoCov" title="Branch 4 was not taken"> - </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<a name="910"><span class="lineNum">     910 </span>        [<span class="branchCov" title="Branch 0 was taken 15778 times"> + </span><span class="branchCov" title="Branch 1 was taken 97819 times"> + </span>]:<span class="lineCov">     113597 :       || !TYPE_BINFO (mreftype))</span></a>
+<a name="911"><span class="lineNum">     911 </span>                :<span class="lineCov">      15778 :     return false;</span></a>
+<a name="912"><span class="lineNum">     912 </span>                :            : </a>
+<a name="913"><span class="lineNum">     913 </span>                :            :   /* Compute the size of the referenced object (it could be dynamically</a>
+<a name="914"><span class="lineNum">     914 </span>                :            :      allocated).  */</a>
+<a name="915"><span class="lineNum">     915 </span>                :<span class="lineCov">      97819 :   access_ref aref;   // unused</span></a>
+<a name="916"><span class="lineNum">     916 </span>                :<span class="lineCov">      97819 :   tree refop = TREE_OPERAND (mref, 0);</span></a>
+<a name="917"><span class="lineNum">     917 </span>                :<span class="lineCov">      97819 :   tree refsize = compute_objsize (refop, 1, &amp;aref);</span></a>
+<a name="918"><span class="lineNum">     918 </span>  [<span class="branchCov" title="Branch 0 was taken 97781 times"> + </span><span class="branchCov" title="Branch 1 was taken 38 times"> + </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 97781 times"> + </span>]:<span class="lineCov">      97819 :   if (!refsize || TREE_CODE (refsize) != INTEGER_CST)</span></a>
+<a name="919"><span class="lineNum">     919 </span>                :<span class="lineCov">         38 :     return false;</span></a>
+<a name="920"><span class="lineNum">     920 </span>                :            : </a>
+<a name="921"><span class="lineNum">     921 </span>                :            :   /* Compute the byte offset of the member within its enclosing class.  */</a>
+<a name="922"><span class="lineNum">     922 </span>                :<span class="lineCov">      97781 :   tree fld = TREE_OPERAND (t, 1);</span></a>
+<a name="923"><span class="lineNum">     923 </span>                :<span class="lineCov">      97781 :   tree fldpos = byte_position (fld);</span></a>
+<a name="924"><span class="lineNum">     924 </span>        [<span class="branchNoCov" title="Branch 0 was not taken"> - </span><span class="branchCov" title="Branch 1 was taken 97781 times"> + </span>]:<span class="lineCov">      97781 :   if (TREE_CODE (fldpos) != INTEGER_CST)</span></a>
+<a name="925"><span class="lineNum">     925 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="926"><span class="lineNum">     926 </span>                :            : </a>
+<a name="927"><span class="lineNum">     927 </span>                :            :   /* Compute the byte offset of the member with the outermost complete</a>
+<a name="928"><span class="lineNum">     928 </span>                :            :      object by adding its offset computed above to the MEM_REF offset.  */</a>
+<a name="929"><span class="lineNum">     929 </span>                :<span class="lineCov">      97781 :   tree refoff = TREE_OPERAND (mref, 1);</span></a>
+<a name="930"><span class="lineNum">     930 </span>                :<span class="lineCov">      97781 :   tree fldoff = int_const_binop (PLUS_EXPR, fldpos, refoff);</span></a>
+<a name="931"><span class="lineNum">     931 </span>                :            :   /* Return false if the member offset is greater or equal to the size</a>
+<a name="932"><span class="lineNum">     932 </span>                :            :      of the complete object.  */</a>
+<a name="933"><span class="lineNum">     933 </span>        [<span class="branchCov" title="Branch 0 was taken 1365 times"> + </span><span class="branchCov" title="Branch 1 was taken 96416 times"> + </span>]:<span class="lineCov">      97781 :   if (!tree_int_cst_lt (fldoff, refsize))</span></a>
+<a name="934"><span class="lineNum">     934 </span>                :<span class="lineCov">       1365 :     return false;</span></a>
+<a name="935"><span class="lineNum">     935 </span>                :            : </a>
+<a name="936"><span class="lineNum">     936 </span>                :<span class="lineCov">      96416 :   tree fldsiz = DECL_SIZE_UNIT (fld);</span></a>
+<a name="937"><span class="lineNum">     937 </span>  [<span class="branchCov" title="Branch 0 was taken 96416 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchNoCov" title="Branch 2 was not taken"> - </span><span class="branchCov" title="Branch 3 was taken 96416 times"> + </span>]:<span class="lineCov">      96416 :   if (!fldsiz || TREE_CODE (fldsiz) != INTEGER_CST)</span></a>
+<a name="938"><span class="lineNum">     938 </span>                :<span class="lineNoCov">          0 :     return false;</span></a>
+<a name="939"><span class="lineNum">     939 </span>                :            : </a>
+<a name="940"><span class="lineNum">     940 </span>                :            :   /* Return true if the offset just past the end of the member is less</a>
+<a name="941"><span class="lineNum">     941 </span>                :            :      than or equal to the size of the complete object.  */</a>
+<a name="942"><span class="lineNum">     942 </span>                :<span class="lineCov">      96416 :   tree fldend = int_const_binop (PLUS_EXPR, fldoff, fldsiz);</span></a>
+<a name="943"><span class="lineNum">     943 </span>                :<span class="lineCov">      96416 :   return tree_int_cst_le (fldend, refsize);</span></a>
+<a name="944"><span class="lineNum">     944 </span>                :            : }</a>
+<a name="945"><span class="lineNum">     945 </span>                :            : </a>
+<a name="946"><span class="lineNum">     946 </span>                :            : /* Callback for walk_tree to check a tree for out of bounds array</a>
+<a name="947"><span class="lineNum">     947 </span>                :            :    accesses.  The array_bounds_checker class is passed in DATA.  */</a>
+<a name="948"><span class="lineNum">     948 </span>                :            : </a>
+<a name="949"><span class="lineNum">     949 </span>                :            : tree</a>
+<a name="950"><span class="lineNum">     950 </span>                :<span class="lineCov">    1951740 : array_bounds_checker::check_array_bounds (tree *tp, int *walk_subtree,</span></a>
+<a name="951"><span class="lineNum">     951 </span>                :            :                                           void *data)</a>
+<a name="952"><span class="lineNum">     952 </span>                :            : {</a>
+<a name="953"><span class="lineNum">     953 </span>                :<span class="lineCov">    1951740 :   tree t = *tp;</span></a>
+<a name="954"><span class="lineNum">     954 </span>                :<span class="lineCov">    1951740 :   struct walk_stmt_info *wi = (struct walk_stmt_info *) data;</span></a>
+<a name="955"><span class="lineNum">     955 </span>                :            :   location_t location;</a>
+<a name="956"><span class="lineNum">     956 </span>                :            : </a>
+<a name="957"><span class="lineNum">     957 </span>  [<span class="branchCov" title="Branch 0 was taken 1951740 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 449137 times"> + </span><span class="branchCov" title="Branch 3 was taken 1502600 times"> + </span> :<span class="lineCov">    1951740 :   if (EXPR_HAS_LOCATION (t))</span></a>
+<span class="lineNum">         </span><span class="branchCov" title="Branch 4 was taken 449137 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span><span class="branchCov" title="Branch 6 was taken 313062 times"> + </span><span class="branchCov" title="Branch 7 was taken 1638670 times"> + </span><span class="branchCov" title="Branch 8 was taken 313062 times"> + </span> 
+<span class="lineNum">         </span><span class="branchNoCov" title="Branch 9 was not taken"> - </span><span class="branchCov" title="Branch 10 was taken 313062 times"> + </span><span class="branchNoCov" title="Branch 11 was not taken"> - </span><span class="branchCov" title="Branch 12 was taken 313062 times"> + </span><span class="branchNoCov" title="Branch 13 was not taken"> - </span> 
+<span class="lineNum">         </span><span class="branchCov" title="Branch 14 was taken 1638670 times"> + </span><span class="branchNoCov" title="Branch 15 was not taken"> - </span><span class="branchCov" title="Branch 16 was taken 136075 times"> + </span><span class="branchCov" title="Branch 17 was taken 1502600 times"> + </span><span class="branchCov" title="Branch 18 was taken 136075 times"> + </span> 
+<span class="lineNum">         </span>      <span class="branchNoCov" title="Branch 19 was not taken"> - </span><span class="branchCov" title="Branch 20 was taken 274128 times"> + </span><span class="branchCov" title="Branch 21 was taken 1677610 times"> + </span>]
+<a name="958"><span class="lineNum">     958 </span>  [<span class="branchCov" title="Branch 0 was taken 274128 times"> + </span><span class="branchNoCov" title="Branch 1 was not taken"> - </span><span class="branchCov" title="Branch 2 was taken 274128 times"> + </span><span class="branchNoCov" title="Branch 3 was not taken"> - </span> :<span class="lineCov">     274128 :     location = EXPR_LOCATION (t);</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 274128 times"> + </span><span class="branchNoCov" title="Branch 5 was not taken"> - </span>]
+<a name="959"><span class="lineNum">     959 </span>                :            :   else</a>
+<a name="960"><span class="lineNum">     960 </span>                :<span class="lineCov">    1677610 :     location = gimple_location (wi-&gt;stmt);</span></a>
+<a name="961"><span class="lineNum">     961 </span>                :            : </a>
+<a name="962"><span class="lineNum">     962 </span>                :<span class="lineCov">    1951740 :   *walk_subtree = TRUE;</span></a>
+<a name="963"><span class="lineNum">     963 </span>                :            : </a>
+<a name="964"><span class="lineNum">     964 </span>                :<span class="lineCov">    1951740 :   bool warned = false;</span></a>
+<a name="965"><span class="lineNum">     965 </span>                :<span class="lineCov">    1951740 :   array_bounds_checker *checker = (array_bounds_checker *) wi-&gt;info;</span></a>
+<a name="966"><span class="lineNum">     966 </span>        [<span class="branchCov" title="Branch 0 was taken 18963 times"> + </span><span class="branchCov" title="Branch 1 was taken 1932770 times"> + </span>]:<span class="lineCov">    1951740 :   if (TREE_CODE (t) == ARRAY_REF)</span></a>
+<a name="967"><span class="lineNum">     967 </span>                :<span class="lineCov">      18963 :     warned = checker-&gt;check_array_ref (location, t,</span></a>
+<a name="968"><span class="lineNum">     968 </span>                :            :                                        false/*ignore_off_by_one*/);</a>
+<a name="969"><span class="lineNum">     969 </span>        [<span class="branchCov" title="Branch 0 was taken 63224 times"> + </span><span class="branchCov" title="Branch 1 was taken 1869550 times"> + </span>]:<span class="lineCov">    1932770 :   else if (TREE_CODE (t) == MEM_REF)</span></a>
+<a name="970"><span class="lineNum">     970 </span>                :<span class="lineCov">      63224 :     warned = checker-&gt;check_mem_ref (location, t,</span></a>
+<a name="971"><span class="lineNum">     971 </span>                :            :                                      false /*ignore_off_by_one*/);</a>
+<a name="972"><span class="lineNum">     972 </span>        [<span class="branchCov" title="Branch 0 was taken 186416 times"> + </span><span class="branchCov" title="Branch 1 was taken 1683130 times"> + </span>]:<span class="lineCov">    1869550 :   else if (TREE_CODE (t) == ADDR_EXPR)</span></a>
+<a name="973"><span class="lineNum">     973 </span>                :            :     {</a>
+<a name="974"><span class="lineNum">     974 </span>                :<span class="lineCov">     186416 :       checker-&gt;check_addr_expr (location, t);</span></a>
+<a name="975"><span class="lineNum">     975 </span>                :<span class="lineCov">     186416 :       *walk_subtree = false;</span></a>
+<a name="976"><span class="lineNum">     976 </span>                :            :     }</a>
+<a name="977"><span class="lineNum">     977 </span>        [<span class="branchCov" title="Branch 0 was taken 96416 times"> + </span><span class="branchCov" title="Branch 1 was taken 1586720 times"> + </span>]:<span class="lineCov">    1683130 :   else if (inbounds_memaccess_p (t))</span></a>
+<a name="978"><span class="lineNum">     978 </span>                :            :     /* Hack: Skip MEM_REF checks in accesses to a member of a base class</a>
+<a name="979"><span class="lineNum">     979 </span>                :            :        at an offset that's within the bounds of the enclosing object.</a>
+<a name="980"><span class="lineNum">     980 </span>                :            :        See pr98266 and pr97595.  */</a>
+<a name="981"><span class="lineNum">     981 </span>                :<span class="lineCov">      96416 :     *walk_subtree = false;</span></a>
+<a name="982"><span class="lineNum">     982 </span>                :            : </a>
+<a name="983"><span class="lineNum">     983 </span>                :            :   /* Propagate the no-warning bit to the outer expression.  */</a>
+<a name="984"><span class="lineNum">     984 </span>        [<span class="branchCov" title="Branch 0 was taken 4 times"> + </span><span class="branchCov" title="Branch 1 was taken 1951730 times"> + </span>]:<span class="lineCov">    1951740 :   if (warned)</span></a>
+<a name="985"><span class="lineNum">     985 </span>                :<span class="lineCov">          4 :     TREE_NO_WARNING (t) = true;</span></a>
+<a name="986"><span class="lineNum">     986 </span>                :            : </a>
+<a name="987"><span class="lineNum">     987 </span>                :<span class="lineCov">    1951740 :   return NULL_TREE;</span></a>
+<a name="988"><span class="lineNum">     988 </span>                :            : }</a>
+<a name="989"><span class="lineNum">     989 </span>                :            : </a>
+<a name="990"><span class="lineNum">     990 </span>                :            : /* A dom_walker subclass for use by check_all_array_refs, to walk over</a>
+<a name="991"><span class="lineNum">     991 </span>                :            :    all statements of all reachable BBs and call check_array_bounds on</a>
+<a name="992"><span class="lineNum">     992 </span>                :            :    them.  */</a>
+<a name="993"><span class="lineNum">     993 </span>                :            : </a>
+<a name="994"><span class="lineNum">     994 </span>                :            : class check_array_bounds_dom_walker : public dom_walker</a>
+<a name="995"><span class="lineNum">     995 </span>                :            : {</a>
+<a name="996"><span class="lineNum">     996 </span>                :            : public:</a>
+<a name="997"><span class="lineNum">     997 </span>                :<span class="lineCov">      17950 :   check_array_bounds_dom_walker (array_bounds_checker *checker)</span></a>
+<a name="998"><span class="lineNum">     998 </span>                :<span class="lineCov">      17950 :     : dom_walker (CDI_DOMINATORS,</span></a>
+<a name="999"><span class="lineNum">     999 </span>                :            :                   /* Discover non-executable edges, preserving EDGE_EXECUTABLE</a>
+<a name="1000"><span class="lineNum">    1000 </span>                :            :                      flags, so that we can merge in information on</a>
+<a name="1001"><span class="lineNum">    1001 </span>                :            :                      non-executable edges from vrp_folder .  */</a>
+<a name="1002"><span class="lineNum">    1002 </span>                :            :                   REACHABLE_BLOCKS_PRESERVING_FLAGS),</a>
+<a name="1003"><span class="lineNum">    1003 </span>                :<span class="lineCov">      17950 :     checker (checker) { }</span></a>
+<a name="1004"><span class="lineNum">    1004 </span>                :<span class="lineCov">      17950 :   ~check_array_bounds_dom_walker () {}</span></a>
+<a name="1005"><span class="lineNum">    1005 </span>                :            : </a>
+<a name="1006"><span class="lineNum">    1006 </span>                :            :   edge before_dom_children (basic_block) FINAL OVERRIDE;</a>
+<a name="1007"><span class="lineNum">    1007 </span>                :            : </a>
+<a name="1008"><span class="lineNum">    1008 </span>                :            : private:</a>
+<a name="1009"><span class="lineNum">    1009 </span>                :            :   array_bounds_checker *checker;</a>
+<a name="1010"><span class="lineNum">    1010 </span>                :            : };</a>
+<a name="1011"><span class="lineNum">    1011 </span>                :            : </a>
+<a name="1012"><span class="lineNum">    1012 </span>                :            : /* Implementation of dom_walker::before_dom_children.</a>
+<a name="1013"><span class="lineNum">    1013 </span>                :            : </a>
+<a name="1014"><span class="lineNum">    1014 </span>                :            :    Walk over all statements of BB and call check_array_bounds on them,</a>
+<a name="1015"><span class="lineNum">    1015 </span>                :            :    and determine if there's a unique successor edge.  */</a>
+<a name="1016"><span class="lineNum">    1016 </span>                :            : </a>
+<a name="1017"><span class="lineNum">    1017 </span>                :            : edge</a>
+<a name="1018"><span class="lineNum">    1018 </span>                :<span class="lineCov">     261161 : check_array_bounds_dom_walker::before_dom_children (basic_block bb)</span></a>
+<a name="1019"><span class="lineNum">    1019 </span>                :            : {</a>
+<a name="1020"><span class="lineNum">    1020 </span>                :            :   gimple_stmt_iterator si;</a>
+<a name="1021"><span class="lineNum">    1021 </span>        [<span class="branchCov" title="Branch 0 was taken 2383610 times"> + </span><span class="branchCov" title="Branch 1 was taken 261161 times"> + </span>]:<span class="lineCov">    2644770 :   for (si = gsi_start_bb (bb); !gsi_end_p (si); gsi_next (&amp;si))</span></a>
+<a name="1022"><span class="lineNum">    1022 </span>                :            :     {</a>
+<a name="1023"><span class="lineNum">    1023 </span>                :<span class="lineCov">    2383610 :       gimple *stmt = gsi_stmt (si);</span></a>
+<a name="1024"><span class="lineNum">    1024 </span>                :            :       struct walk_stmt_info wi;</a>
+<a name="1025"><span class="lineNum">    1025 </span>                :<span class="lineCov">    2383610 :       if (!gimple_has_location (stmt)</span></a>
+<a name="1026"><span class="lineNum">    1026 </span>  [<span class="branchCov" title="Branch 0 was taken 2051360 times"> + </span><span class="branchCov" title="Branch 1 was taken 332254 times"> + </span><span class="branchCov" title="Branch 2 was taken 1380140 times"> + </span><span class="branchCov" title="Branch 3 was taken 671218 times"> + </span> :<span class="lineCov">    2383610 :           || is_gimple_debug (stmt))</span></a>
+<span class="lineNum">         </span>         <span class="branchCov" title="Branch 4 was taken 1712390 times"> + </span><span class="branchCov" title="Branch 5 was taken 671218 times"> + </span>]
+<a name="1027"><span class="lineNum">    1027 </span>                :<span class="lineCov">    1712390 :         continue;</span></a>
+<a name="1028"><span class="lineNum">    1028 </span>                :            : </a>
+<a name="1029"><span class="lineNum">    1029 </span>                :<span class="lineCov">     671218 :       memset (&amp;wi, 0, sizeof (wi));</span></a>
+<a name="1030"><span class="lineNum">    1030 </span>                :            : </a>
+<a name="1031"><span class="lineNum">    1031 </span>                :<span class="lineCov">     671218 :       wi.info = checker;</span></a>
+<a name="1032"><span class="lineNum">    1032 </span>                :            : </a>
+<a name="1033"><span class="lineNum">    1033 </span>                :<span class="lineCov">     671218 :       walk_gimple_op (stmt, array_bounds_checker::check_array_bounds, &amp;wi);</span></a>
+<a name="1034"><span class="lineNum">    1034 </span>                :            :     }</a>
+<a name="1035"><span class="lineNum">    1035 </span>                :            : </a>
+<a name="1036"><span class="lineNum">    1036 </span>                :            :   /* Determine if there's a unique successor edge, and if so, return</a>
+<a name="1037"><span class="lineNum">    1037 </span>                :            :      that back to dom_walker, ensuring that we don't visit blocks that</a>
+<a name="1038"><span class="lineNum">    1038 </span>                :            :      became unreachable during the VRP propagation</a>
+<a name="1039"><span class="lineNum">    1039 </span>                :            :      (PR tree-optimization/83312).  */</a>
+<a name="1040"><span class="lineNum">    1040 </span>                :<span class="lineCov">     261161 :   return find_taken_edge (bb, NULL_TREE);</span></a>
+<a name="1041"><span class="lineNum">    1041 </span>                :            : }</a>
+<a name="1042"><span class="lineNum">    1042 </span>                :            : </a>
+<a name="1043"><span class="lineNum">    1043 </span>                :            : void</a>
+<a name="1044"><span class="lineNum">    1044 </span>                :<span class="lineCov">      17950 : array_bounds_checker::check ()</span></a>
+<a name="1045"><span class="lineNum">    1045 </span>                :            : {</a>
+<a name="1046"><span class="lineNum">    1046 </span>                :<span class="lineCov">      35900 :   check_array_bounds_dom_walker w (this);</span></a>
+<a name="1047"><span class="lineNum">    1047 </span>                :<span class="lineCov">      17950 :   w.walk (ENTRY_BLOCK_PTR_FOR_FN (fun));</span></a>
+<a name="1048"><span class="lineNum">    1048 </span>                :<span class="lineCov">      17950 : }</span></a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
