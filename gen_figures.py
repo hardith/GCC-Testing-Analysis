@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.api.types import CategoricalDtype
-
+import numpy as np
 
 def generateExtensionPlot():
     df = pd.read_csv("csv-data/ExtensionsData.csv")
@@ -10,7 +10,10 @@ def generateExtensionPlot():
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#8c564b"]
     explode = (0, 0, 0, 0,0,0)  
     patches, texts = plt.pie(count_data,explode=explode)
-    plt.legend(patches, language_data, loc='center left', bbox_to_anchor=(-0.1, 1.))
+    y = np.array(list(count_data))
+    porcent = 100.*y/y.sum()
+    labels = ['{0} - {1:1.2f} %'.format(i,j) for i,j in zip(np.char.array(list(language_data)), porcent)]
+    plt.legend(patches, labels, loc='center left', bbox_to_anchor=(-0.1, 1.),fontsize=8)
     plt.axis('equal')
     plt.title("Types of languages in GCC")
     plt.savefig('figures/extension.png', bbox_inches='tight')
@@ -165,10 +168,10 @@ def quarterlyData():
 
 
 generateExtensionPlot()
-changesPerWeek()
-topContributers()
-quarterlyData()
-generateAssertFilesPlot()
-generateAssertFilesProdPlot()
-generateLanguageBasedTestFiles()
-generateLanguageBasedDebugFiles()
+# changesPerWeek()
+# topContributers()
+# quarterlyData()
+# generateAssertFilesPlot()
+# generateAssertFilesProdPlot()
+# generateLanguageBasedTestFiles()
+# generateLanguageBasedDebugFiles()
