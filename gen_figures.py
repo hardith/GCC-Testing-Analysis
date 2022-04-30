@@ -8,13 +8,122 @@ def generateExtensionPlot():
     language_data = df.get("Language")
     count_data = df.get("Count")
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#8c564b"]
-    explode = (0, 0, 0, 0,0,0.2)  
+    explode = (0, 0, 0, 0,0,0)  
     patches, texts = plt.pie(count_data,explode=explode)
     plt.legend(patches, language_data, loc='center left', bbox_to_anchor=(-0.1, 1.))
     plt.axis('equal')
     plt.title("Types of languages in GCC")
     plt.savefig('figures/extension.png', bbox_inches='tight')
 
+def generateLanguageBasedTestFiles():
+    df = pd.read_csv("csv-data/LanguageTestFiles.csv")
+    name_data = df.get("Name")
+    count_data = df.get("Count")
+
+    # print(count_data)
+    def addlabels(x,y):
+        for i in range(len(x)):
+            plt.text(i, y[i], y[i], ha = 'center')
+
+    df.plot(x="Name", y=["Count"], kind="bar", figsize=(9, 8))
+    # plt.bar(list(name_data),list(count_data))
+    plt.tight_layout()
+    addlabels(list(name_data),list(count_data))
+    plt.title("No of test files in each languages")
+    plt.xlabel("Types of Languages")
+    plt.ylabel("Count")
+    plt.savefig('figures/LanguageTestFiles.png', bbox_inches='tight')
+
+def generateLanguageBasedDebugFiles():
+    df = pd.read_csv("csv-data/LanguageDebugFiles.csv")
+    name_data = df.get("Name")
+    count_data = df.get("Count")
+
+    # print(count_data)
+    def addlabels(x,y):
+        for i in range(len(x)):
+            plt.text(i, y[i], y[i], ha = 'center')
+
+    df.plot(x="Name", y=["Count"], kind="bar", figsize=(9, 8))
+    # plt.bar(list(name_data),list(count_data))
+    plt.tight_layout()
+    addlabels(list(name_data),list(count_data))
+    plt.title("No of Debug files in each languages")
+    plt.xlabel("Types of Languages")
+    plt.ylabel("Count")
+    plt.savefig('figures/LanguageDebugFiles.png', bbox_inches='tight')
+
+
+def generateAssertFilesPlot():
+    df = pd.read_csv("csv-data/AssertFiles.csv")
+    assertSum = int(df['Assert'].sum())
+    gcc_assertSum = int(df['gcc_assert'].sum())
+    gcc_checking_assertSum = int(df['gcc_checking_assert'].sum())
+    ASSERT_ALWAYSSum = int(df['ASSERT_ALWAYS'].sum())
+    FFI_ASSERTSum = int(df['FFI_ASSERT'].sum())
+    CHECKSum = int(df['CHECK'].sum())
+    _Static_assertSum = int(df['_Static_assert'].sum())
+    VERIFYSum = int(df['VERIFY'].sum())
+
+    assertCountlst = [assertSum,gcc_assertSum,gcc_checking_assertSum,ASSERT_ALWAYSSum,FFI_ASSERTSum,CHECKSum,_Static_assertSum,VERIFYSum]
+    assertNamelst = ['Assert','gcc_assert','gcc_checking_assert','ASSERT_ALWAYS','FFI_ASSERT','CHECK','_Static_assert','VERIFY']
+    labels = 'Assert','gcc_assert','ASSERT_ALWAYS','CHECK','_Static_assert','VERIFY'
+    df2 = pd.DataFrame(list(zip(assertNamelst, assertCountlst)),
+               columns =['Name', 'Count'])
+    df2 = df2[df2.Count != 0]
+
+    name_data = df2.get("Name")
+    count_data = df2.get("Count")
+
+    # print(count_data)
+    def addlabels(x,y):
+        for i in range(len(x)):
+            plt.text(i, y[i], y[i], ha = 'center')
+
+    df2.plot(x="Name", y=["Count"], kind="bar", figsize=(9, 8))
+    # plt.bar(list(name_data),list(count_data))
+    plt.tight_layout()
+    addlabels(list(name_data),list(count_data))
+    plt.title("No of assert statements in test folders")
+    plt.xlabel("Types of Assert Statements")
+    plt.ylabel("Count")
+    plt.savefig('figures/assert.png', bbox_inches='tight')
+
+def generateAssertFilesProdPlot():
+    df = pd.read_csv("csv-data/ProductionAssertFiles.csv")
+    assertSum = int(df['Assert'].sum())
+    gcc_assertSum = int(df['gcc_assert'].sum())
+    gcc_checking_assertSum = int(df['gcc_checking_assert'].sum())
+    ASSERT_ALWAYSSum = int(df['ASSERT_ALWAYS'].sum())
+    FFI_ASSERTSum = int(df['FFI_ASSERT'].sum())
+    CHECKSum = int(df['CHECK'].sum())
+    _Static_assertSum = int(df['_Static_assert'].sum())
+    VERIFYSum = int(df['VERIFY'].sum())
+    DEBUGSum = int(df['DEBUG'].sum())
+
+    assertCountlst = [assertSum,gcc_assertSum,gcc_checking_assertSum,ASSERT_ALWAYSSum,FFI_ASSERTSum,CHECKSum,_Static_assertSum,VERIFYSum,DEBUGSum]
+    assertNamelst = ['Assert','gcc_assert','gcc_checking_assert','ASSERT_ALWAYS','FFI_ASSERT','CHECK','_Static_assert','VERIFY','DEBUG']
+    
+    df2 = pd.DataFrame(list(zip(assertNamelst, assertCountlst)),
+               columns =['Name', 'Count'])
+
+    # print (df2)
+    name_data = df2.get("Name")
+    count_data = df2.get("Count")
+
+    # print(count_data)
+    def addlabels(x,y):
+        for i in range(len(x)):
+            plt.text(i, y[i], y[i], ha = 'center')
+
+    df2.plot(x="Name", y=["Count"], kind="bar", figsize=(9, 8))
+    # plt.bar(list(name_data),list(count_data))
+    plt.tight_layout()
+    addlabels(list(name_data),list(count_data))
+    plt.title("No of assert and debug statements in production files")
+    plt.xlabel("Types of Assert and Debug Statements")
+    plt.ylabel("Count")
+    plt.savefig('figures/assertProd.png', bbox_inches='tight')
 
 def changesPerWeek():
     data = pd.read_csv("csv-data/changesperweek.csv")
@@ -59,3 +168,7 @@ generateExtensionPlot()
 changesPerWeek()
 topContributers()
 quarterlyData()
+generateAssertFilesPlot()
+generateAssertFilesProdPlot()
+generateLanguageBasedTestFiles()
+generateLanguageBasedDebugFiles()
