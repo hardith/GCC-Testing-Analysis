@@ -844,7 +844,6 @@ gcc/testsuite/gfortran.dg/chmod_3.f90,2019-09-03,['Ulrich Weigand'],1
 gcc/testsuite/gfortran.dg/default_format_1.f90,2019-09-03,"['Ulrich Weigand', 'David Edelsohn']",2
 gcc/testsuite/gfortran.dg/default_format_denormal_1.f90,2019-09-03,"['Ulrich Weigand', 'David Edelsohn']",2
 gcc/testsuite/gfortran.dg/erf_2.F90,2019-09-03,['Ulrich Weigand'],1
-gcc/testsuite/gfortran.dg/erf_3.F90,2013-11-21,"['Ulrich Weigand', 'Andreas Schwab']",2
 gcc/testsuite/gfortran.dg/init_flag_10.f90,2019-09-03,['Ulrich Weigand'],1
 gcc/testsuite/gfortran.dg/init_flag_3.f90,2019-09-03,['Ulrich Weigand'],1
 gcc/testsuite/gfortran.dg/int_conv_2.f90,2019-09-03,['Ulrich Weigand'],1
@@ -10482,16 +10481,12 @@ gcc/testsuite/gcc.dg/tree-ssa/ssa-dse-28.c,2019-01-17,"['Kewen Lin', 'Andrew Stu
 gcc/testsuite/gcc.dg/tree-ssa/ssa-dse-29.c,2020-11-03,"['Kewen Lin', 'Richard Biener']",2
 gcc/testsuite/c-c++-common/goacc/nested-reductions-1-kernels.c,2020-10-22,['Thomas Schwinge'],3
 gcc/testsuite/c-c++-common/goacc/nested-reductions-1-parallel.c,2020-10-22,['Thomas Schwinge'],2
-gcc/testsuite/c-c++-common/goacc/nested-reductions-1-routine.c,2017-05-01,"['Thomas Schwinge', 'Cesar Philippidis']",4
 gcc/testsuite/c-c++-common/goacc/nested-reductions-2-kernels.c,2020-10-22,['Thomas Schwinge'],3
 gcc/testsuite/c-c++-common/goacc/nested-reductions-2-parallel.c,2020-10-22,['Thomas Schwinge'],2
-gcc/testsuite/c-c++-common/goacc/nested-reductions-2-routine.c,2017-05-01,"['Thomas Schwinge', 'Cesar Philippidis']",4
 gcc/testsuite/gfortran.dg/goacc/nested-reductions-1-kernels.f90,2020-10-22,['Thomas Schwinge'],3
 gcc/testsuite/gfortran.dg/goacc/nested-reductions-1-parallel.f90,2020-10-22,['Thomas Schwinge'],2
-gcc/testsuite/gfortran.dg/goacc/nested-reductions-1-routine.f90,2017-05-01,"['Thomas Schwinge', 'Cesar Philippidis']",4
 gcc/testsuite/gfortran.dg/goacc/nested-reductions-2-kernels.f90,2020-10-22,['Thomas Schwinge'],3
 gcc/testsuite/gfortran.dg/goacc/nested-reductions-2-parallel.f90,2020-10-22,['Thomas Schwinge'],2
-gcc/testsuite/gfortran.dg/goacc/nested-reductions-2-routine.f90,2017-05-01,"['Thomas Schwinge', 'Cesar Philippidis']",4
 gcc/testsuite/gfortran.dg/attr_deprecated.f90,2020-11-03,['Tobias Burnus'],1
 gcc/testsuite/gcc.dg/vect/pr97678.c,2020-11-03,"['Richard Biener', 'Richard Sandiford']",3
 gcc/testsuite/gcc.c-torture/compile/pr97578.c,2020-11-03,['Jan Hubicka'],1
@@ -31255,7 +31250,6 @@ gcc/testsuite/gcc.target/i386/pr101248.c,2021-06-28,['liuhongt'],1
 gcc/testsuite/gfortran.dg/pr101264.f90,2021-06-30,['Richard Biener'],1
 gcc/testsuite/gcc.dg/analyzer/clobbers-1.c,2021-06-30,['David Malcolm'],2
 gcc/testsuite/gcc.dg/analyzer/clobbers-2.c,2021-06-30,['David Malcolm'],1
-gcc/testsuite/gcc.dg/analyzer/memset-CVE-2017-18549-1.c,2021-06-30,['David Malcolm'],3
 gcc/testsuite/gcc.dg/analyzer/symbolic-8.c,2021-06-30,['David Malcolm'],1
 gcc/testsuite/gfortran.dg/pr101267.f90,2021-06-30,['Richard Biener'],1
 gcc/testsuite/g++.dg/cpp23/auto-array.C,2021-06-29,['Marek Polacek'],1
@@ -31281,9 +31275,7 @@ gcc/testsuite/gcc.target/i386/pr100865-12a.c,2021-06-02,['H.J. Lu'],1
 gcc/testsuite/gcc.target/i386/pr100865-12b.c,2021-06-02,['H.J. Lu'],3
 gcc/testsuite/gcc.target/i386/pr100865-12c.c,2021-06-02,['H.J. Lu'],1
 gcc/testsuite/gcc.target/i386/pr100865-2.c,2021-06-02,['H.J. Lu'],2
-gcc/testsuite/gcc.target/i386/pr100865-3.c,2016-03-06,['H.J. Lu'],3
 gcc/testsuite/gcc.target/i386/pr100865-4a.c,2021-06-02,['H.J. Lu'],3
-gcc/testsuite/gcc.target/i386/pr100865-4b.c,2016-03-06,['H.J. Lu'],5
 gcc/testsuite/gcc.target/i386/pr100865-5a.c,2021-06-02,['H.J. Lu'],1
 gcc/testsuite/gcc.target/i386/pr100865-5b.c,2021-06-02,['H.J. Lu'],1
 gcc/testsuite/gcc.target/i386/pr100865-6a.c,2021-06-02,['H.J. Lu'],1
@@ -31704,7 +31696,6 @@ gcc/testsuite/gcc.dg/tree-ssa/vrp19.c,2021-06-15,['Aldy Hernandez'],1
 gcc/testsuite/gcc.dg/tree-ssa/vrp20.c,2021-06-15,"['Aldy Hernandez', 'Andrew MacLeod']",2
 gcc/testsuite/gcc.dg/uninit-pred-9_b.c,2021-06-15,"['Aldy Hernandez', 'Martin Sebor', 'Hans-Peter Nilsson']",6
 gcc/testsuite/gcc.target/i386/avx2-vect-aggressive.c,2021-06-15,['Aldy Hernandez'],1
-gcc/testsuite/gcc.dg/goacc/loop-processing-1.c,2017-05-01,"['Thomas Schwinge', 'Cesar Philippidis']",2
 gcc/testsuite/g++.dg/cpp0x/initlist48.C,2021-07-29,['Jakub Jelinek'],1
 gcc/testsuite/g++.dg/pr71389.C,2021-07-29,['Jakub Jelinek'],1
 gcc/testsuite/gdc.dg/pr101657.d,2021-07-26,['Iain Buclaw'],1
@@ -34380,10 +34371,6 @@ gcc/testsuite/gcc.dg/vect/vect-gather-3.c,2021-11-30,['Richard Sandiford'],1
 gcc/testsuite/gcc.dg/vect/vect-gather-4.c,2021-11-30,['Richard Sandiford'],1
 gcc/testsuite/gcc.target/aarch64/sve/mask_gather_load_8.c,2021-11-30,['Richard Sandiford'],1
 gcc/testsuite/gcc.dg/pr103451.c,2021-11-29,['Aldy Hernandez'],1
-gcc/testsuite/c-c++-common/goacc/orphan-reductions-1.c,2017-05-01,['Cesar Philippidis'],1
-gcc/testsuite/c-c++-common/goacc/orphan-reductions-2.c,2017-05-01,"['Cesar Philippidis', 'Thomas Schwinge']",2
-gcc/testsuite/gfortran.dg/goacc/orphan-reductions-1.f90,2017-05-01,"['Cesar Philippidis', 'Thomas Schwinge']",3
-gcc/testsuite/gfortran.dg/goacc/orphan-reductions-2.f90,2017-05-01,"['Cesar Philippidis', 'Thomas Schwinge']",2
 gcc/testsuite/c-c++-common/goacc/orphan-reductions-3.c,2020-07-20,['Frederik Harwath'],1
 gcc/testsuite/gfortran.dg/goacc/orphan-reductions-3.f90,2020-07-20,['Frederik Harwath'],1
 gcc/testsuite/gcc.dg/torture/pr103489.c,2021-11-30,['Richard Biener'],1

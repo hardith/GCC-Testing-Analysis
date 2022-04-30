@@ -17,6 +17,7 @@ def generateExtensionPlot():
     plt.axis('equal')
     plt.title("Types of languages in GCC")
     plt.savefig('figures/extension.png', bbox_inches='tight')
+    plt.clf()
 
 def generateLanguageBasedTestFiles():
     df = pd.read_csv("csv-data/LanguageTestFiles.csv")
@@ -150,10 +151,18 @@ def topContributers():
     dfa = pd.DataFrame(dataauthor,columns=["author", "No of commits"])
     sorted_df = dfa.sort_values(["No of commits"], ascending=False)
     df2 = sorted_df[0:10]
+    auth_data = df2.get("author")
+    commit_data = df2.get("No of commits")
+    # plt.show()
+    def addlabels(x,y):
+        for i in range(len(x)):
+            plt.text(i, y[i], y[i], ha = 'center')
     df2.plot(x="author", y=["No of commits"], kind="bar", figsize=(9, 8))
     plt.tight_layout()
-    # plt.show()
+    addlabels(list(auth_data),list(commit_data))
     plt.title("Top Contributers")
+    plt.xlabel("Authors for top contributions")
+    plt.ylabel("Count")
     plt.savefig('figures/topContibuters.png', bbox_inches='tight')
 
 
@@ -168,10 +177,10 @@ def quarterlyData():
 
 
 generateExtensionPlot()
-# changesPerWeek()
-# topContributers()
-# quarterlyData()
-# generateAssertFilesPlot()
-# generateAssertFilesProdPlot()
-# generateLanguageBasedTestFiles()
-# generateLanguageBasedDebugFiles()
+quarterlyData()
+changesPerWeek()
+topContributers()
+generateAssertFilesPlot()
+generateAssertFilesProdPlot()
+generateLanguageBasedTestFiles()
+generateLanguageBasedDebugFiles()
