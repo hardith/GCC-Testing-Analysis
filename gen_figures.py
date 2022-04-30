@@ -28,7 +28,7 @@ def generateLanguageBasedTestFiles():
     def addlabels(x,y):
         for i in range(len(x)):
             plt.text(i, y[i], y[i], ha = 'center')
-
+    c=['blue','orange','red','purple',"brown"]
     df.plot(x="Name", y=["Count"], kind="bar", figsize=(9, 8))
     # plt.bar(list(name_data),list(count_data))
     plt.tight_layout()
@@ -176,11 +176,11 @@ def quarterlyData():
     plt.savefig('figures/quarterlyData.png', bbox_inches='tight')
 
 
-generateExtensionPlot()
-quarterlyData()
-changesPerWeek()
-topContributers()
-generateAssertFilesPlot()
-generateAssertFilesProdPlot()
+# generateExtensionPlot()
+# quarterlyData()
+# changesPerWeek()
+# topContributers()
+# generateAssertFilesPlot()
+# generateAssertFilesProdPlot()
 generateLanguageBasedTestFiles()
-generateLanguageBasedDebugFiles()
+# generateLanguageBasedDebugFiles()
