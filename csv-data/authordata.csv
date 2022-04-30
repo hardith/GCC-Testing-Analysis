@@ -1,0 +1,344 @@
+author,No of commits
+Eric Botcazou,202
+Yannick Moy,13
+Gary Dismukes,7
+Ed Schonberg,66
+Javier Miranda,16
+Janne Blomqvist,7
+Richard Sandiford,417
+Jozef Lawrynowicz,54
+Wilco Dijkstra,37
+Olivier Hainque,20
+Marek Polacek,480
+Thomas Koenig,134
+Martin Sebor,391
+Steven G. Kargl,110
+Iain Sandoe,226
+Martin Liska,300
+Paolo Carlini,137
+Richard Biener,876
+Bob Duff,13
+Christophe Lyon,146
+Jakub Jelinek,1498
+Jonathan Wakely,31
+Jason Merrill,548
+Alexandre Oliva,99
+Mark Eggleston,49
+Jeff Law,92
+Kito Cheng,42
+Joel Hutton,12
+Bernd Edlinger,32
+Hongtao Liu,12
+Matthew Beliveau,6
+Ian Lance Taylor,40
+Prathamesh Kulkarni,23
+Sylvia Taylor,6
+Kyrylo Tkachov,65
+Rainer Orth,48
+Mihailo Stojanovic,7
+Segher Boessenkool,54
+Nathan Sidwell,158
+Robin Dapp,26
+Tejas Joshi,2
+Uros Bizjak,189
+Harald Anlauf,197
+Martin Jambor,79
+Paul Thomas,121
+Ilya Leoshkevich,48
+Ulrich Weigand,1
+Kamlesh Kumar,4
+Caroline Tice,1
+David Edelsohn,95
+Jose E. Marchesi,7
+Barnaby Wilks,1
+Sandra Loosemore,54
+Yuliang Wang,5
+Kewen Lin,62
+Li Jia He,7
+Vadim Godunko,2
+Feng Xue,22
+Steve Baird,3
+Nicolas Roche,2
+Justin Squirek,15
+H.J. Lu,230
+Tom Tromey,1
+Richard Henderson,4
+Lewis Hyatt,6
+Tobias Burnus,217
+Maciej W. Rozycki,17
+Will Schmidt,29
+Max Filippov,6
+Manfred Schwarb,5
+Alan Modra,23
+William Schmidt,2
+Jan Hubicka,147
+David Malcolm,345
+Joseph Myers,63
+Alexander Monakov,4
+Dragan Mladjenovic,4
+Rafael Tsuha,1
+Dmitrij Pochepko,3
+Jim Wilson,13
+Damian Rouson,1
+Aldy Hernandez,73
+Maya Rashish,1
+Bill Schmidt,33
+Andrew Pinski,62
+Peter Bergner,58
+Georg-Johann Lay,3
+Andre Vieira,26
+Richard Earnshaw,26
+JeanHeyd Meneide,2
+Michael Matz,3
+Marc Glisse,10
+Andrew Sutton,8
+Andreas Krebbel,66
+Cesar Philippidis,8
+Andreas Tobler,2
+Jiufu Guo,11
+Andrew Burgess,2
+Jeff Chapman II,1
+Xiong Hu Luo,5
+Frederik Harwath,6
+Claudiu Zissulescu,32
+Matthias Kretz,4
+Jerry DeLisle,19
+Thomas Schwinge,109
+José Rui Faustino de Sousa,13
+Matthew Malcomson,27
+Dennis Zhang,16
+Andrew Stubbs,22
+Tamar Christina,109
+Srinath Parvathaneni,56
+Vladimir Makarov,22
+Luo Xiong Hu,2
+Sudakshina Das,14
+Pierre-Marie de Rodat,2
+Roman Zhuykov,9
+Hongyu Wang,35
+Julian Brown,20
+Stam Markianos-Wright,13
+Joel Brobecker,9
+Mihail Ionescu,17
+Kerem Kat,1
+Thomas König,12
+Hans-Peter Nilsson,65
+GCC Administrator,651
+Yang Yang,2
+Andrea Corallo,31
+Omar Tahir,2
+Fei Yang,8
+Roger Sayle,103
+Aaron Sawdey,13
+Patrick Palka,286
+Bin Cheng,23
+"Cui,Lili",3
+Carl Love,21
+Simon Cook,1
+Xionghu Luo,26
+Szabolcs Nagy,12
+Alex Coplan,21
+y00520163,1
+Dimitar Dimitrov,18
+Sunil K Pandey,5
+Przemyslaw Wirkus,9
+Dominique d'Humieres,18
+Tom de Vries,72
+Sergei Trofimovich,3
+Joe Ramsay,6
+Tiziano Müller,1
+Iain Buclaw,169
+Michael Meissner,45
+Kwok Cheung Yeung,13
+liuhongt,211
+Peixin Qiao,2
+Andre Vehreschild,5
+Pat Bernardi,1
+Qian Jianhua,1
+John David Anglin,38
+Steve Kargl,5
+David Faust,6
+Francois-Xavier Coudert,17
+Jojo R,2
+Mark Wielaard,9
+Yeting Kuo,1
+Sudi Das,3
+Stefan Schulze Frielinghaus,15
+Paul A. Clarke,25
+Florian Weimer,1
+Andrew MacLeod,68
+Vladimir N. Makarov,35
+Duan bo,3
+guojiufu,2
+Arnaud Charlet,6
+Ville Voutilainen,5
+qing zhao,7
+kamlesh kumar,1
+Eugene Rozenfeld,8
+David Candler,2
+Martin Uecker,12
+hongyuw1,1
+Chung-Lin Tang,11
+Nagaraju Mekala,2
+Gergö Barany,1
+Monk Chiang,1
+Matthew Glazar,1
+Sebastian Huber,2
+Liu Hao,1
+Steve Ellcey,15
+Sharon Dvir,1
+Pat Haugen,4
+Will Wray,2
+Janus Weil,16
+Kelvin Nilsen,21
+Johan Karlsson,1
+Mateusz B,2
+Andrey Belevantsev,5
+Clément Chigot,1
+Qing Zhao,11
+Vladislav Ivanishin,3
+Giuliano Belinassi,4
+Alejandro Martinez,7
+Cherry Zhang,5
+Jun Ma,3
+Xuepeng Guo,1
+Sam Tebbs,9
+Thomas De Schampheleire,1
+Harald van Dijk,1
+Nina Dinka Ranns,1
+Faraz Shahbazker,1
+Kugan Vivekanandarajah,6
+Jim MacArthur,1
+Jan Beulich,6
+Hristian Kirtchev,24
+Joern Rennecke,4
+Chenghua Xu,7
+Thomas Quinot,3
+Jiangning Liu,1
+Bill Seurer,3
+Stafford Horne,4
+Maxim Blinov,1
+Senthil Kumar Selvaraj,3
+Tom Honermann,3
+Thomas Preud'homme,9
+Jackson Woodruff,1
+Bogdan Harjoc,1
+Andreas Schwab,5
+Alan Hayward,1
+Allan Sandfeld Jensen,2
+Vlad Lazar,2
+Nicolas Koenig,1
+MCC CS,2
+Pádraig Brady,1
+Bernhard Reutner-Fischer,2
+Joey Ye,1
+Omar Sandoval,1
+Indu Bhagat,13
+Vinay Kumar,1
+Yury Gribov,2
+Anthony Green,1
+Renlin Li,3
+Michael Ploujnikov,3
+Paul Koning,6
+Wei Xiao,6
+Nikolai Merinov,1
+Andi Kleen,5
+Xianmiao Qu,1
+Piotr Trojanek,2
+Patrick Bernardi,1
+Lokesh Janghel,1
+Matthias Klose,1
+Mike Gulick,1
+Fritz Reese,8
+Stefan Agner,1
+Nikhil Benesch,4
+Johannes Pfau,1
+Ulrich Drepper,1
+Marius Hillenbrand,4
+Venkataramanan Kumar,1
+Matt Thomas,1
+Takayuki 'January June' Suwa,1
+Jerome Lambourg,10
+Anthony Sharp,3
+Paul Fee,1
+Harris Snyder,1
+Xing GUO,2
+Jonathan Wright,36
+Ed Smith-Rowland,1
+Tom Greenslade (thomgree),1
+emsr,1
+YunQiang Su,2
+Marcus Comstedt,1
+luoxhu@cn.ibm.com,1
+Hafiz Abid Qadeer,3
+Richard Wai,1
+Patrick McGehearty,1
+Ivan Sorokin,1
+Marcel Vollweiler,6
+Michael de Lang,1
+JunMa,5
+Andrew Benson,4
+Delia Burduv,5
+Jon Beniston,1
+James Greenhalgh,1
+Vasee Vinayagamoorthy,1
+Alexey Neyman,1
+Andre Simoes Dias Vieira,14
+AndreaCorallo,2
+Felix Yang,1
+Linus Koenig,1
+XieZhiheng,1
+Jose Rui Faustino de Sousa,1
+Haijian Zhang,1
+Craig Blackmore,1
+Douglas Rupp,1
+Vitor Guidi,1
+Hao Liu,1
+Marco Elver,2
+Qian Chao,1
+z00219097,1
+Kaipeng Zhou,2
+Nicholas Krause,1
+Yichao Yu,1
+Geng Qi,4
+Cooper Qu,1
+Haochen Gui,7
+prathamesh.kulkarni,8
+Xi Ruoyao,18
+Maxim Kuvyrkov,1
+Antoni Boucher,9
+Siddhesh Poyarekar,17
+Tejas Belagod,1
+Ankur Saini,4
+Jonathan Yong,1
+konglin1,8
+"Guo, Xuepeng",1
+"Liu, Hongtao",1
+Petter Tomner,2
+wangpc,1
+Barrett Adair,1
+dianhong xu,5
+Michel Morin,1
+qingzhe huang,1
+John Eivind Helset,1
+Raphael Moreira Zinsly,1
+Oracle Public Cloud User,1
+Mikael Morin,8
+Navid Rahimi,3
+Haochen Jiang,6
+François-Xavier Coudert,1
+Jiang Haochen,1
+Murray Steele,1
+LiaoShihua,3
+wwwhhhyyy,1
+Rimvydas Jasinskas,2
+Ard Biesheuvel,1
+Raoni Fassina Firmino,1
+Allan McRae,1
+Zhao Wei Liew,1
+Joel Teichroeb,1
+Dan Li,1
+Marc Poulhiès,2
+chenglulu,1
+Benno Evers,1
+Ed Catmur,1
