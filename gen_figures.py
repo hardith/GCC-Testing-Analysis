@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from selenium import webdriver
 
 def generateExtensionPlot():
     df = pd.read_csv("csv-data/ExtensionsData.csv")
@@ -11,7 +12,6 @@ def generateExtensionPlot():
     plt.legend(patches, language_data, loc='center left', bbox_to_anchor=(-0.1, 1.))
     plt.axis('equal')
     plt.title("Types of languages in GCC")
-    # plt.show()
     plt.savefig('figures/extension.png', bbox_inches='tight')
 
-generateExtensionPlot()
+# generateExtensionPlot()
