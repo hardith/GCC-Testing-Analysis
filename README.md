@@ -1,5 +1,5 @@
 # GCC-Testing-Analysis
-Project regarding analyzing large software projects and providing assessment of testing in GCC.
+Analyzing large software projects and providing assessment of testing in GCC.
 
 ## Team Members
 
